@@ -1,0 +1,22 @@
+﻿body {
+    margin: 0px 0px 1px 0px; /* the extra 1px allows the iOS inner/outer check to work */
+    background: #ffffff;
+}
+
+#content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    /* Prevent canvas from blurring image */
+    image-rendering: pixelated;
+
+    /*image-rendering: optimizeSpeed;*/
+    image-rendering: -moz-crisp-edges;
+    /*image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;*/
+
+}
