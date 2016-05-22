@@ -2,6 +2,8 @@
 
     export class Util extends Phaser.Game {
 
+        roomNum: number = 0;
+
         constructor() {
             super(640, 400, Phaser.CANVAS, 'content', null);
 

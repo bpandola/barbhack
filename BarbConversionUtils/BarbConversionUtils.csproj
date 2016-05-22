@@ -19,6 +19,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="assets\area.png" />
+    <Content Include="assets\hero.png" />
+    <Content Include="assets\miscspr.png" />
     <Content Include="assets\SteveScratch.png" />
     <Content Include="css\app.css" />
     <Content Include="index.html" />
@@ -30,6 +32,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\boot.ts" />
+    <TypeScriptCompile Include="src\fsm.ts" />
+    <TypeScriptCompile Include="src\hero.ts" />
+    <TypeScriptCompile Include="src\herostates.ts" />
     <TypeScriptCompile Include="src\layout.ts" />
     <TypeScriptCompile Include="src\test.ts" />
     <TypeScriptCompile Include="src\_ref\phaser.d.ts" />
@@ -39,6 +44,9 @@
     <Content Include="assets\AREA.BIN" />
     <Content Include="assets\area.json" />
     <Content Include="assets\rooms.json" />
+    <Content Include="assets\miscspr.json" />
+    <Content Include="assets\heroanims.json" />
+    <Content Include="assets\hero.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

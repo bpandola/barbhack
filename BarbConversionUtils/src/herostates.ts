@@ -40,6 +40,17 @@ namespace BarbConversionUtils.HeroStates {
                     this.hero.fsm.transition('ChangeDirection');
             }
 
+            if (this.hero.keys.down.isDown) {
+                if ("*+,".indexOf(this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y)) != -1) {
+                    this.hero.fsm.transition('DownLadder');
+                }
+            } else if (this.hero.keys.up.isDown) {
+                if ("-+.".indexOf(this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y)) != -1) {
+                    this.hero.fsm.transition('UpLadder');
+                }
+
+            }
+
         }
 
         onFrameChange() {
@@ -68,6 +79,11 @@ namespace BarbConversionUtils.HeroStates {
         onEnter() {
             this.hero.animNum = 0;
             this.hero.frame = 0;
+            if (this.hero.direction == Direction.Right)
+                this.hero.tilePos.x += 1;
+            else
+                this.hero.tilePos.x -= 1;
+            this.hero.checkMovement();
         }
 
         onUpdate() {
@@ -93,7 +109,8 @@ namespace BarbConversionUtils.HeroStates {
                 this.hero.tilePos.x += 1;
             else
                 this.hero.tilePos.x -= 1;
-           
+
+            this.hero.checkMovement();
         }
 
         onLeave() {
@@ -154,6 +171,335 @@ namespace BarbConversionUtils.HeroStates {
                 this.hero.direction = Direction.Right;
             else
                 this.hero.direction = Direction.Left;
+        }
+
+    }
+
+    export class HitWall implements FSM.IState {
+
+        private hero: Hero;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.animNum = Animations.HitWall;
+            this.hero.frame = 0;
+        }
+
+        onUpdate() {
+
+        }
+
+        onFrameChange() {
+
+            var adjust = this.hero.direction == Direction.Left ? 1 : -1;
+
+            switch (this.hero.frame) {
+               
+                case 2:
+                    this.hero.tilePos.x += (1 * adjust);
+                    break;
+                case 5:
+                    this.hero.tilePos.x += (1 * adjust);
+                    break;
+                case 7:
+                    this.hero.tilePos.x -= (1 * adjust);
+                    break;
+                case 0:
+                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
+                    //this.hero.tilePos.x -= (3 * adjust);
+                    this.hero.fsm.transition('Idle');
+                    break;
+            }
+        }
+
+        onLeave() {
+
+            //if (this.hero.direction == Direction.Left)
+            //    this.hero.direction = Direction.Right;
+            //else
+            //    this.hero.direction = Direction.Left;
+        }
+
+    }
+
+    export class UpStairs implements FSM.IState {
+
+        private hero: Hero;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.animNum = Animations.UpStairs;
+            this.hero.frame = 0;
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+            this.hero.tilePos.x += (2 * adjust);
+
+            var stupidAdjustment = 0;
+            if (this.hero.direction == Direction.Left)
+                stupidAdjustment = 1;
+            this.hero.tilePos.x += stupidAdjustment;
+            
+        }
+
+        onUpdate() {
+
+        }
+
+        onFrameChange() {
+            var stupidAdjustment = 0;
+            if (this.hero.direction == Direction.Left)
+                stupidAdjustment = -1;
+            
+            if ('$&'.indexOf(this.hero.getTile(this.hero.tilePos.x+stupidAdjustment, this.hero.tilePos.y - 1)) != -1)
+                this.hero.fsm.transition('Walk');
+
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+
+            switch (this.hero.frame) {
+                case 1:
+                    this.hero.tilePos.x += (1 * adjust);
+                    this.hero.tilePos.y -= 1;
+                    break;
+                case 2:
+                    this.hero.tilePos.x += (1 * adjust);
+                    //this.hero.tilePos.y -= 1;
+                    break;
+                case 3:
+                    this.hero.tilePos.x += (1 * adjust);
+                    this.hero.tilePos.y -= 1;
+                    break;
+                case 0:
+                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
+                    //this.hero.tilePos.x -= (3 * adjust);
+                    //this.hero.fsm.transition('Idle');
+                    this.hero.tilePos.x += (1 * adjust);
+                    //this.hero.tilePos.y -= 1;
+                    break;
+                //default:
+                //    this.hero.tilePos.x += 1;
+                //    this.hero.tilePos.y -= 1;
+            }
+
+            
+        }
+
+        onLeave() {
+
+            this.hero.tilePos.y -= 1;
+        }
+
+    }
+
+    export class DownStairs implements FSM.IState {
+
+        private hero: Hero;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.animNum = Animations.DownStairs;
+            this.hero.frame = 0;
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+            this.hero.tilePos.x += (2 * adjust);
+            var stupidAdjustment = 0;
+            if (this.hero.direction == Direction.Left)
+                stupidAdjustment = 1;
+            this.hero.tilePos.x += stupidAdjustment;
+        }
+
+        onUpdate() {
+
+        }
+
+        onFrameChange() {
+            var stupidAdjustment =0;
+            if (this.hero.direction == Direction.Left)
+                stupidAdjustment = -1;
+            
+
+            if ('%('.indexOf(this.hero.getTile(this.hero.tilePos.x+stupidAdjustment, this.hero.tilePos.y + 1)) != -1)
+                this.hero.fsm.transition('Walk');
+
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+
+            switch (this.hero.frame) {
+                case 1:
+                    this.hero.tilePos.x += (1 * adjust);
+                    this.hero.tilePos.y += 1;
+                    break;
+                case 2:
+                    this.hero.tilePos.x += (1 * adjust);
+                    //this.hero.tilePos.y -= 1;
+                    break;
+                case 3:
+                    this.hero.tilePos.x += (1 * adjust);
+                    this.hero.tilePos.y += 1;
+                    break;
+                case 0:
+                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
+                    //this.hero.tilePos.x -= (3 * adjust);
+                    //this.hero.fsm.transition('Idle');
+                    this.hero.tilePos.x += (1 * adjust);
+                    //this.hero.tilePos.y -= 1;
+                    break;
+                //default:
+                //    this.hero.tilePos.x += 1;
+                //    this.hero.tilePos.y -= 1;
+            }
+
+
+        }
+
+        onLeave() {
+
+            this.hero.tilePos.y += 1;
+        }
+
+    }
+
+
+    export class DownLadder implements FSM.IState {
+
+        private hero: Hero;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.animNum = Animations.DownLadder;
+            this.hero.frame = 0;
+
+            this.hero.direction = Direction.Down;
+
+            var tile = this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y);
+
+            
+            var adjust = 0;
+
+            if (tile == '*')
+                adjust = 2;
+            else if (tile == ',')
+                adjust = 0;
+            else if (tile == '+')
+                adjust = 1;
+            else {
+                this.hero.fsm.transition('Idle');
+                return;
+            }
+
+            
+            this.hero.tilePos.x += adjust;
+           
+        }
+
+        onUpdate() {
+
+        }
+
+        onFrameChange() {
+            
+            if (this.hero.tilePos.y < 20) {
+                if (this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y + 1) == '.') {
+                    this.hero.fsm.transition('Idle');
+                    return;
+                }
+            }
+
+            if (this.hero.frame == 2 || this.hero.frame == 4)
+                this.hero.tilePos.y += 1;
+            //switch (this.hero.frame) {
+
+
+            //    default:
+                
+            //       this.hero.tilePos.y += 1;
+            //}
+
+
+        }
+
+        onLeave() {
+
+            this.hero.tilePos.y += 1;
+            this.hero.direction = Direction.Right;
+        }
+
+    }
+
+
+    export class UpLadder implements FSM.IState {
+
+        private hero: Hero;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.animNum = Animations.UpLadder;
+            this.hero.frame = 0;
+
+            this.hero.direction = Direction.Up;
+
+            var tile = this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y);
+
+
+            var adjust = 0;
+
+            if (tile == '-')
+                adjust = 2;
+            else if (tile == '.')
+                adjust = 0;
+            else if (tile == '+')
+                adjust = 1;
+            else {
+                this.hero.fsm.transition('Idle');
+                return;
+            }
+
+
+            this.hero.tilePos.x += adjust;
+
+        }
+
+        onUpdate() {
+
+        }
+
+        onFrameChange() {
+
+            if (this.hero.tilePos.y >0) {
+                if (this.hero.getTile(this.hero.tilePos.x, this.hero.tilePos.y - 1) == ',') {
+                    this.hero.fsm.transition('Idle');
+                    return;
+                }
+            }
+
+            if (this.hero.frame == 2 || this.hero.frame == 4)
+                this.hero.tilePos.y -= 1;
+            //switch (this.hero.frame) {
+
+
+            //    default:
+
+            //       this.hero.tilePos.y += 1;
+            //}
+
+
+        }
+
+        onLeave() {
+
+            this.hero.tilePos.y -= 1;
+            this.hero.direction = Direction.Right;
         }
 
     }

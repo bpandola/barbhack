@@ -1,11 +1,13 @@
 ﻿[
     {
         "id": 0,
-        "mapData": { "left": -1, "right": 1, "up": -1, "down": -1 },
+        "map": { "left": -1, "right": 1, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0 },
             { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ { "name": "bat", "x": -50, "y": 30 } ],
         "area": [
             { "imageId": 56, "flags": 0, "unknown": 1, "xOff": 112, "yOff": 240 },
             { "imageId": 56, "flags": 0, "unknown": 1, "xOff": 48, "yOff": 224 },
@@ -27,15 +29,39 @@
             { "imageId": 54, "flags": 0, "unknown": 0, "xOff": 448, "yOff": 288 },
             { "imageId": 53, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 288 },
             { "imageId": 55, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "44                                      " },
+            { "rowData": "33\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 1,
-        "mapData": { "left": 0, "right": 2, "up": -1, "down": -1 },
+        "map": { "left": 0, "right": 2, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 5, "yOff": 288, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 56, "flags": 0, "unknown": 1, "xOff": 112, "yOff": 240 },
             { "imageId": 56, "flags": 0, "unknown": 1, "xOff": 48, "yOff": 224 },
@@ -60,15 +86,39 @@
             { "imageId": 54, "flags": 0, "unknown": 0, "xOff": 448, "yOff": 288 },
             { "imageId": 53, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 288 },
             { "imageId": 55, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 2,
-        "mapData": { "left": 1, "right": 3, "up": -1, "down": -1 },
+        "map": { "left": 1, "right": 3, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 32, "yOff": 16, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 26, "flags": 2, "unknown": 0, "xOff": 0, "yOff": 306 },
             { "imageId": 28, "flags": 3, "unknown": 0, "xOff": 46, "yOff": 312 },
@@ -158,15 +208,39 @@
             { "imageId": 42, "flags": 0, "unknown": 0, "xOff": 176, "yOff": 32 },
             { "imageId": 39, "flags": 0, "unknown": 0, "xOff": 288, "yOff": 74 },
             { "imageId": 40, "flags": 0, "unknown": 0, "xOff": 352, "yOff": 74 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "               #                        " },
+            { "rowData": "               #                        " },
+            { "rowData": "               #                        " },
+            { "rowData": "               #                        " },
+            { "rowData": "    #          #                        " },
+            { "rowData": "    #          #                        " },
+            { "rowData": "    #         B$\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "    #       CC!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "    #     CC!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "    #   CC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "    # CC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "\"\"\"\"%A!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 3,
-        "mapData": { "left": 2, "right": 4, "up": -1, "down": -1 },
+        "map": { "left": 2, "right": 4, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 9, "yOff": 208, "xMin": 48, "xMax": 352 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -248,15 +322,39 @@
             { "imageId": 101, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 39, "flags": 0, "unknown": 0, "xOff": 288, "yOff": 74 },
             { "imageId": 40, "flags": 0, "unknown": 0, "xOff": 352, "yOff": 74 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                       #                " },
+            { "rowData": "                       #                " },
+            { "rowData": "                       #                " },
+            { "rowData": "                       #                " },
+            { "rowData": "                       #                " },
+            { "rowData": "                       #          #     " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"$H         #     " },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!II       #     " },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!II     #     " },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!II   #     " },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!II #     " },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!G%\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 4,
-        "mapData": { "left": 3, "right": -1, "up": -1, "down": 5 },
+        "map": { "left": 3, "right": -1, "up": -1, "down": 5 },
+        "items": [ { "id": 0, "x": 560, "y": 288 } ],
         "enemies": [
             { "id": 2, "yOff": 144, "xMin": 0, "xMax": 0 },
             { "id": 10, "yOff": 288, "xMin": 16, "xMax": 560 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 47, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 248 },
             { "imageId": 48, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 224 },
@@ -326,15 +424,39 @@
             { "imageId": 67, "flags": 0, "unknown": 0, "xOff": 304, "yOff": 108 },
             { "imageId": 67, "flags": 0, "unknown": 0, "xOff": 316, "yOff": 124 },
             { "imageId": 67, "flags": 0, "unknown": 0, "xOff": 292, "yOff": 124 }
+        ],
+        "layout": [
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 5,
-        "mapData": { "left": -1, "right": 6, "up": 4, "down": -1 },
+        "map": { "left": -1, "right": 6, "up": 4, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 9, "yOff": 208, "xMin": 272, "xMax": 608 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 384, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 384, "yOff": 40 },
@@ -434,15 +556,39 @@
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": -16 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 48 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 112 }
+        ],
+        "layout": [
+            { "rowData": "!!4 +++                                 " },
+            { "rowData": "!!4 +++                                 " },
+            { "rowData": "!!4 +++                                 " },
+            { "rowData": "!!4 +++                                 " },
+            { "rowData": "!!4 +++     #                           " },
+            { "rowData": "!!4 +++     #                           " },
+            { "rowData": "!!4 +++     #    #                      " },
+            { "rowData": "!!4 +++     #    #                      " },
+            { "rowData": "!!4 +++     #    #                      " },
+            { "rowData": "!!4 +++     #    #                      " },
+            { "rowData": "!!3\"-+.\"\"\"\"\"$H   #                      " },
+            { "rowData": "!!!!!!!!!!!!!!II #                      " },
+            { "rowData": "!!!!!!!!!!!!!!!!G%\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 6,
-        "mapData": { "left": 5, "right": 7, "up": -1, "down": 8 },
+        "map": { "left": 5, "right": 7, "up": -1, "down": 8 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 39, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 33, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 208 },
@@ -483,15 +629,39 @@
             { "imageId": 86, "flags": 0, "unknown": 0, "xOff": 384, "yOff": 208 },
             { "imageId": 82, "flags": 1, "unknown": 0, "xOff": 360, "yOff": 216 },
             { "imageId": 91, "flags": 0, "unknown": 0, "xOff": 364, "yOff": 216 }
+        ],
+        "layout": [
+            { "rowData": "////////////////////////////////////////" },
+            { "rowData": "////////////////////////////////////////" },
+            { "rowData": "                                       #" },
+            { "rowData": "                                       #" },
+            { "rowData": "                                       #" },
+            { "rowData": "                                       #" },
+            { "rowData": "                              #        #" },
+            { "rowData": "               77777777       #        #" },
+            { "rowData": "               77777777       #       B$" },
+            { "rowData": "               77777777       #     CC!!" },
+            { "rowData": "               77777777       #   CC!!!!" },
+            { "rowData": "               77777777       # CC!!!!!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"0011111100\"\"\"\"\"\"%A!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!222222!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!            222222        !!!!!!!!!!" },
+            { "rowData": "!!!!                          !!!!!!!!!!" },
+            { "rowData": "!!!!                          !!!!!!!!!!" },
+            { "rowData": "!!!!                          !!!!!!!!!!" },
+            { "rowData": "!!!!                          !!!!!!!!!!" },
+            { "rowData": "!!!!                          !!!!!!!!!!" }
         ]
     },
     {
         "id": 7,
-        "mapData": { "left": 6, "right": -1, "up": -1, "down": 10 },
+        "map": { "left": 6, "right": -1, "up": -1, "down": 10 },
+        "items": [ { "id": 0, "x": 560, "y": 256 } ],
         "enemies": [
             { "id": 12, "yOff": 144, "xMin": 0, "xMax": 0 },
             { "id": 16, "yOff": 144, "xMin": 16, "xMax": 576 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 0, "unknown": 0, "xOff": 32, "yOff": 24 },
             { "imageId": 80, "flags": 1, "unknown": 0, "xOff": 124, "yOff": 24 },
@@ -596,15 +766,39 @@
             { "imageId": 60, "flags": 0, "unknown": 0, "xOff": 256, "yOff": 240 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "                                      4!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"E&\"\"\"\"\"\"\"\"3!" },
+            { "rowData": "!4                        CC!!!!!!!!!!!!" },
+            { "rowData": "!4                      CC            4!" },
+            { "rowData": "!4                    CC              4!" },
+            { "rowData": "!4                  CC                4!" },
+            { "rowData": "!4                CC                  4!" },
+            { "rowData": "!4              CC                    4!" },
+            { "rowData": "!3\"\"*+,\"\"\"\"\"\"\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 8,
-        "mapData": { "left": -1, "right": -1, "up": 6, "down": 9 },
+        "map": { "left": -1, "right": -1, "up": 6, "down": 9 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 40 },
@@ -639,15 +833,39 @@
             { "imageId": 18, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 240 },
             { "imageId": 22, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 280 },
             { "imageId": 42, "flags": 0, "unknown": 0, "xOff": 32, "yOff": 0 }
+        ],
+        "layout": [
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" }
         ]
     },
     {
         "id": 9,
-        "mapData": { "left": -1, "right": -1, "up": 8, "down": -1 },
+        "map": { "left": -1, "right": -1, "up": 8, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 40 },
@@ -701,15 +919,39 @@
             { "imageId": 40, "flags": 2, "unknown": 0, "xOff": 576, "yOff": 256 },
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 288 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!                                    !!" },
+            { "rowData": "!!555555555555555555555555555555555555!!" },
+            { "rowData": "5555555555555555555555555555555555555555" },
+            { "rowData": "5555555555555555555555555555555555555555" }
         ]
     },
     {
         "id": 10,
-        "mapData": { "left": -1, "right": 11, "up": 7, "down": -1 },
+        "map": { "left": -1, "right": 11, "up": 7, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 17, "yOff": 288, "xMin": 32, "xMax": 624 },
             { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 0, "unknown": 0, "xOff": 272, "yOff": 0 },
             { "imageId": 80, "flags": 1, "unknown": 0, "xOff": 364, "yOff": 0 },
@@ -824,15 +1066,39 @@
             { "imageId": 112, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 224 },
             { "imageId": 112, "flags": 2, "unknown": 0, "xOff": 0, "yOff": 256 },
             { "imageId": 112, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!4  +++                                 " },
+            { "rowData": "!3\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"E&\"\"\"\"\"///////" },
+            { "rowData": "!4                      CC       ///////" },
+            { "rowData": "!4                    CC         ///////" },
+            { "rowData": "!4                  CC           ///////" },
+            { "rowData": "!4                CC             ///////" },
+            { "rowData": "!4              CC                      " },
+            { "rowData": "!4            CC                        " },
+            { "rowData": "!4          CC                          " },
+            { "rowData": "!4        CC                            " },
+            { "rowData": "!4      CC                              " },
+            { "rowData": "!3\"\"\"\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 11,
-        "mapData": { "left": 10, "right": 12, "up": 7, "down": -1 },
+        "map": { "left": 10, "right": 12, "up": 7, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 3, "yOff": 304, "xMin": 0, "xMax": 0 },
             { "id": 19, "yOff": 288, "xMin": 144, "xMax": 624 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 574, "yOff": 0 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 574, "yOff": 64 },
@@ -922,14 +1188,45 @@
             { "imageId": 60, "flags": 0, "unknown": 0, "xOff": 208, "yOff": 240 },
             { "imageId": 60, "flags": 0, "unknown": 0, "xOff": 176, "yOff": 256 },
             { "imageId": 60, "flags": 0, "unknown": 0, "xOff": 144, "yOff": 272 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                            #           " },
+            { "rowData": "                            #           " },
+            { "rowData": "                            #           " },
+            { "rowData": "                            #           " },
+            { "rowData": "                            #           " },
+            { "rowData": "                            #           " },
+            { "rowData": "                           B$\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "                         CC             " },
+            { "rowData": "                       CC               " },
+            { "rowData": "                     CC                 " },
+            { "rowData": "                   CC                   " },
+            { "rowData": "                 CC                     " },
+            { "rowData": "               CC                       " },
+            { "rowData": "             CC                         " },
+            { "rowData": "           CC                           " },
+            { "rowData": "         CC                             " },
+            { "rowData": "\"\"\"\"\"\"\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 12,
-        "mapData": { "left": 11, "right": 13, "up": -1, "down": -1 },
+        "map": { "left": 11, "right": 13, "up": -1, "down": -1 },
+        "items": [
+            { "id": 0, "x": 336, "y": 128 },
+            { "id": 0, "x": 400, "y": 128 }
+        ],
         "enemies": [
             { "id": 22, "yOff": 128, "xMin": 16, "xMax": 464 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+        ],
+        "effects": [
+            { "name": "torch1", "x": 64, "y": 8 },
+            { "name": "fire", "x": 228, "y": 76 },
+            { "name": "torch2", "x": 432, "y": 8 }
         ],
         "area": [
             { "imageId": 114, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 16 },
@@ -1061,15 +1358,39 @@
             { "imageId": 70, "flags": 0, "unknown": 0, "xOff": 228, "yOff": 96 },
             { "imageId": 66, "flags": 0, "unknown": 1, "xOff": 64, "yOff": 48 },
             { "imageId": 66, "flags": 0, "unknown": 1, "xOff": 432, "yOff": 48 }
+        ],
+        "layout": [
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "                              4!!       " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!       " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 13,
-        "mapData": { "left": 12, "right": -1, "up": -1, "down": 14 },
+        "map": { "left": 12, "right": -1, "up": -1, "down": 14 },
+        "items": [ ],
         "enemies": [
             { "id": 21, "yOff": 288, "xMin": 16, "xMax": 288 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 158, "yOff": 32 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 158, "yOff": 96 },
@@ -1115,15 +1436,39 @@
             { "imageId": 116, "flags": 0, "unknown": 0, "xOff": 256, "yOff": 320 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                    !!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "                                   !!!!!" },
+            { "rowData": "\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" }
         ]
     },
     {
         "id": 14,
-        "mapData": { "left": -1, "right": -1, "up": 13, "down": 15 },
+        "map": { "left": -1, "right": -1, "up": 13, "down": 15 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 40 },
@@ -1204,15 +1549,39 @@
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 128 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" }
         ]
     },
     {
         "id": 15,
-        "mapData": { "left": 16, "right": -1, "up": 14, "down": -1 },
+        "map": { "left": 16, "right": -1, "up": 14, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 40 },
@@ -1287,14 +1656,41 @@
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 64 }
+        ],
+        "layout": [
+            { "rowData": "!!!!+++!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "    +++             ///////////////!!!!!" },
+            { "rowData": "\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!///////////////!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!555555555555555!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!5555555555555555555555" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!5555555555555555555555" }
         ]
     },
     {
         "id": 16,
-        "mapData": { "left": 17, "right": 15, "up": -1, "down": -1 },
+        "map": { "left": 17, "right": 15, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 25, "yOff": 128, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+        ],
+        "effects": [
+            { "name": "blood_drip", "x": 110, "y": 208 },
+            { "name": "blood_drip", "x": 526, "y": 208 }
         ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 206, "yOff": 16 },
@@ -1408,15 +1804,39 @@
             { "imageId": 99, "flags": 1, "unknown": 0, "xOff": 530, "yOff": 176 },
             { "imageId": 99, "flags": 0, "unknown": 0, "xOff": 96, "yOff": 176 },
             { "imageId": 99, "flags": 1, "unknown": 0, "xOff": 114, "yOff": 176 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 17,
-        "mapData": { "left": 18, "right": 16, "up": -1, "down": -1 },
+        "map": { "left": 18, "right": 16, "up": -1, "down": -1 },
+        "items": [ { "id": 0, "x": 512, "y": 288 } ],
         "enemies": [
             { "id": 6, "yOff": 128, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 16 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 80 },
@@ -1573,15 +1993,45 @@
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 288 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"E&\"\"\"\"\"\"" },
+            { "rowData": "                              CC     !!!" },
+            { "rowData": "                            CC      4!!!" },
+            { "rowData": "                          CC        4!!!" },
+            { "rowData": "                        CC          4!!!" },
+            { "rowData": "                      CC            4!!!" },
+            { "rowData": "                    CC              4!!!" },
+            { "rowData": "                  CC                4!!!" },
+            { "rowData": "                CC                  4!!!" },
+            { "rowData": "              CC                    4!!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 18,
-        "mapData": { "left": -1, "right": 17, "up": -1, "down": 19 },
+        "map": { "left": -1, "right": 17, "up": -1, "down": 19 },
+        "items": [
+            { "id": 0, "x": 336, "y": 128 },
+            { "id": 0, "x": 360, "y": 128 },
+            { "id": 0, "x": 480, "y": 128 },
+            { "id": 0, "x": 504, "y": 128 },
+            { "id": 1, "x": 120, "y": 128 }
+        ],
         "enemies": [
             { "id": 8, "yOff": 128, "xMin": 64, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 16 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 80 },
@@ -1723,15 +2173,39 @@
             { "imageId": 22, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 280 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 112, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 112, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!3\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!3\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 19,
-        "mapData": { "left": 20, "right": -1, "up": 18, "down": -1 },
+        "map": { "left": 20, "right": -1, "up": 18, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 7, "yOff": 128, "xMin": 16, "xMax": 544 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 16 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 80 },
@@ -1880,15 +2354,39 @@
             { "imageId": 13, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 200 },
             { "imageId": 17, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 240 },
             { "imageId": 21, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "       +++                           4!!" },
+            { "rowData": "\"\"\"\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"E&\"\"\"3!!" },
+            { "rowData": "                              CC    4!!!" },
+            { "rowData": "                            CC      4!!!" },
+            { "rowData": "                          CC        4!!!" },
+            { "rowData": "                        CC          4!!!" },
+            { "rowData": "                      CC            4!!!" },
+            { "rowData": "                    CC              4!!!" },
+            { "rowData": "                  CC                4!!!" },
+            { "rowData": "                CC                  4!!!" },
+            { "rowData": "              CC                    4!!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 20,
-        "mapData": { "left": 21, "right": 19, "up": -1, "down": -1 },
+        "map": { "left": 21, "right": 19, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 34, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 4, "yOff": 288, "xMin": 16, "xMax": 592 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 16 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 80 },
@@ -2011,15 +2509,44 @@
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 288 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 21,
-        "mapData": { "left": -1, "right": 20, "up": -1, "down": 22 },
+        "map": { "left": -1, "right": 20, "up": -1, "down": 22 },
+        "items": [
+            { "id": 0, "x": 352, "y": 128 },
+            { "id": 0, "x": 376, "y": 128 },
+            { "id": 0, "x": 512, "y": 128 },
+            { "id": 0, "x": 536, "y": 128 }
+        ],
         "enemies": [
             { "id": 15, "yOff": 128, "xMin": 64, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 16 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 94, "yOff": 80 },
@@ -2151,15 +2678,39 @@
             { "imageId": 22, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 280 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 112, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 112, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!4                                     " },
+            { "rowData": "!!3\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!4                                    " },
+            { "rowData": "!!!3\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 22,
-        "mapData": { "left": -1, "right": 23, "up": 21, "down": -1 },
+        "map": { "left": -1, "right": 23, "up": 21, "down": -1 },
+        "items": [ { "id": 0, "x": 288, "y": 288 } ],
         "enemies": [
             { "id": 7, "yOff": 288, "xMin": 64, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 33, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 36, "flags": 2, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -2273,15 +2824,39 @@
             { "imageId": 92, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 224 },
             { "imageId": 92, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 256 },
             { "imageId": 92, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!4    +++                              " },
+            { "rowData": "!!3\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 23,
-        "mapData": { "left": 22, "right": 30, "up": -1, "down": 24 },
+        "map": { "left": 22, "right": 30, "up": -1, "down": 24 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -2332,15 +2907,39 @@
             { "imageId": 91, "flags": 0, "unknown": 0, "xOff": 372, "yOff": 296 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 24,
-        "mapData": { "left": -1, "right": -1, "up": 23, "down": 25 },
+        "map": { "left": -1, "right": -1, "up": 23, "down": 25 },
+        "items": [ ],
         "enemies": [
             { "id": 24, "yOff": 288, "xMin": 96, "xMax": 528 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 1, "unknown": 0, "xOff": 56, "yOff": -24 },
             { "imageId": 83, "flags": 0, "unknown": 0, "xOff": 56, "yOff": 8 },
@@ -2481,15 +3080,39 @@
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!3*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"3!!!" },
+            { "rowData": "!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!" },
+            { "rowData": "!!!!!+++                            4!!!" }
         ]
     },
     {
         "id": 25,
-        "mapData": { "left": -1, "right": -1, "up": 24, "down": 26 },
+        "map": { "left": -1, "right": -1, "up": 24, "down": 26 },
+        "items": [ ],
         "enemies": [
             { "id": 20, "yOff": 288, "xMin": 96, "xMax": 528 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 1, "unknown": 0, "xOff": 56, "yOff": -24 },
             { "imageId": 83, "flags": 0, "unknown": 0, "xOff": 56, "yOff": 8 },
@@ -2630,15 +3253,39 @@
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!3*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"3!!!" },
+            { "rowData": "!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!" },
+            { "rowData": "!!!!!+++                            4!!!" }
         ]
     },
     {
         "id": 26,
-        "mapData": { "left": -1, "right": -1, "up": 25, "down": 27 },
+        "map": { "left": -1, "right": -1, "up": 25, "down": 27 },
+        "items": [ ],
         "enemies": [
             { "id": 25, "yOff": 288, "xMin": 96, "xMax": 528 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 1, "unknown": 0, "xOff": 56, "yOff": -24 },
             { "imageId": 83, "flags": 0, "unknown": 0, "xOff": 56, "yOff": 8 },
@@ -2779,15 +3426,42 @@
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 80, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!4 +++                            4!!!" },
+            { "rowData": "!!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!3*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"3!!!" },
+            { "rowData": "!!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!" },
+            { "rowData": "!!!!!+++                            4!!!" }
         ]
     },
     {
         "id": 27,
-        "mapData": { "left": 28, "right": 35, "up": 26, "down": -1 },
+        "map": { "left": 28, "right": 35, "up": 26, "down": -1 },
+        "items": [
+            { "id": 0, "x": 32, "y": 288 },
+            { "id": 0, "x": 592, "y": 288 }
+        ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 1, "unknown": 0, "xOff": 56, "yOff": -24 },
             { "imageId": 83, "flags": 0, "unknown": 0, "xOff": 56, "yOff": 8 },
@@ -2881,27 +3555,75 @@
             { "imageId": 33, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 40, "flags": 3, "unknown": 0, "xOff": 576, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "     +++                                " },
+            { "rowData": "\"\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 28,
-        "mapData": { "left": -1, "right": 27, "up": -1, "down": 29 },
+        "map": { "left": -1, "right": 27, "up": -1, "down": 29 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 36, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "////////////////////////////////////\"\"\"\"" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" }
         ]
     },
     {
         "id": 29,
-        "mapData": { "left": -1, "right": -1, "up": 28, "down": -1 },
+        "map": { "left": -1, "right": -1, "up": 28, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 560, "yOff": 40 },
@@ -2968,15 +3690,39 @@
             { "imageId": 26, "flags": 2, "unknown": 0, "xOff": 320, "yOff": 282 },
             { "imageId": 28, "flags": 3, "unknown": 0, "xOff": 366, "yOff": 288 },
             { "imageId": 27, "flags": 2, "unknown": 0, "xOff": 340, "yOff": 208 }
+        ],
+        "layout": [
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "////////////////////////////////////!!!!" },
+            { "rowData": "5555555555555555555555555555555555555555" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 30,
-        "mapData": { "left": 23, "right": 31, "up": -1, "down": -1 },
+        "map": { "left": 23, "right": 31, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 24, "yOff": 288, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -3008,15 +3754,39 @@
             { "imageId": 114, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 320 },
             { "imageId": 64, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 116, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 320 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 31,
-        "mapData": { "left": 30, "right": -1, "up": -1, "down": 32 },
+        "map": { "left": 30, "right": -1, "up": -1, "down": 32 },
+        "items": [ { "id": 1, "x": 288, "y": 288 } ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -3073,15 +3843,39 @@
             { "imageId": 13, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 200 },
             { "imageId": 17, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 240 },
             { "imageId": 21, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                    66666666666666663!!!" },
+            { "rowData": "                    11!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "\"\"\"\"\"       1111111111//////////////!!!!" },
+            { "rowData": "!!!!!///////2222222222//////////////!!!!" },
+            { "rowData": "!!!!!///////2222222222//////////////!!!!" }
         ]
     },
     {
         "id": 32,
-        "mapData": { "left": -1, "right": -1, "up": 31, "down": 33 },
+        "map": { "left": -1, "right": -1, "up": 31, "down": 33 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 79, "flags": 0, "unknown": 0, "xOff": 536, "yOff": -56 },
             { "imageId": 83, "flags": 1, "unknown": 0, "xOff": 482, "yOff": -64 },
@@ -3127,15 +3921,39 @@
             { "imageId": 13, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 200 },
             { "imageId": 17, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 240 },
             { "imageId": 21, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" }
         ]
     },
     {
         "id": 33,
-        "mapData": { "left": -1, "right": -1, "up": 32, "down": 34 },
+        "map": { "left": -1, "right": -1, "up": 32, "down": 34 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 596, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 596, "yOff": 40 },
@@ -3169,15 +3987,39 @@
             { "imageId": 13, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 200 },
             { "imageId": 17, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 240 },
             { "imageId": 21, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" }
         ]
     },
     {
         "id": 34,
-        "mapData": { "left": -1, "right": -1, "up": 33, "down": -1 },
+        "map": { "left": -1, "right": -1, "up": 33, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 0 },
             { "imageId": 15, "flags": 1, "unknown": 0, "xOff": 596, "yOff": 40 },
@@ -3260,15 +4102,39 @@
             { "imageId": 26, "flags": 2, "unknown": 0, "xOff": 320, "yOff": 282 },
             { "imageId": 28, "flags": 3, "unknown": 0, "xOff": 366, "yOff": 288 },
             { "imageId": 27, "flags": 2, "unknown": 0, "xOff": 340, "yOff": 208 }
+        ],
+        "layout": [
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "!!!//////////////////////////////////!!!" },
+            { "rowData": "5555555555555555555555555555555555555555" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 35,
-        "mapData": { "left": 27, "right": 36, "up": -1, "down": -1 },
+        "map": { "left": 27, "right": 36, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 35, "yOff": 288, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 40 },
@@ -3344,15 +4210,39 @@
             { "imageId": 33, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 40, "flags": 3, "unknown": 0, "xOff": 576, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 36,
-        "mapData": { "left": 35, "right": 37, "up": -1, "down": -1 },
+        "map": { "left": 35, "right": 37, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -3404,15 +4294,39 @@
             { "imageId": 33, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 29, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 288 },
             { "imageId": 40, "flags": 3, "unknown": 0, "xOff": 576, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 37,
-        "mapData": { "left": 36, "right": 38, "up": 39, "down": -1 },
+        "map": { "left": 36, "right": 38, "up": 39, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -3469,15 +4383,39 @@
             { "imageId": 59, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 96 },
             { "imageId": 59, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 160 },
             { "imageId": 59, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 }
+        ],
+        "layout": [
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "                               +++      " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 38,
-        "mapData": { "left": 37, "right": -1, "up": -1, "down": -1 },
+        "map": { "left": 37, "right": -1, "up": -1, "down": -1 },
+        "items": [ { "id": 2, "x": 464, "y": 288 } ],
         "enemies": [
             { "id": 1, "yOff": 288, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -3576,15 +4514,39 @@
             { "imageId": 14, "flags": 1, "unknown": 0, "xOff": 644, "yOff": 200 },
             { "imageId": 18, "flags": 1, "unknown": 0, "xOff": 644, "yOff": 240 },
             { "imageId": 22, "flags": 1, "unknown": 0, "xOff": 644, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 39,
-        "mapData": { "left": -1, "right": -1, "up": 40, "down": 39 },
+        "map": { "left": -1, "right": -1, "up": 40, "down": 39 },
+        "items": [ { "id": 0, "x": 376, "y": 288 } ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 84, "flags": 0, "unknown": 1, "xOff": 264, "yOff": 208 },
             { "imageId": 81, "flags": 1, "unknown": 1, "xOff": 312, "yOff": 208 },
@@ -3708,15 +4670,39 @@
             { "imageId": 59, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 0 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 64 }
+        ],
+        "layout": [
+            { "rowData": "!!!!4                          +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                      #   +++  4!!!" },
+            { "rowData": "!!!!4                     B$\"\"\"-+.\"\"3!!!" },
+            { "rowData": "!!!!4                   CC  !!!!!!!!!!!!" },
+            { "rowData": "!!!!4                 CC           4!!!!" },
+            { "rowData": "!!!!4               CC             4!!!!" },
+            { "rowData": "!!!!4             CC               4!!!!" },
+            { "rowData": "!!!!4           CC                 4!!!!" },
+            { "rowData": "!!!!4         CC                   4!!!!" },
+            { "rowData": "!!!!4       CC                     4!!!!" },
+            { "rowData": "!!!!4     CC                       4!!!!" },
+            { "rowData": "!!!!4   CC                         4!!!!" },
+            { "rowData": "!!!!3\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"3!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" }
         ]
     },
     {
         "id": 40,
-        "mapData": { "left": -1, "right": 41, "up": -1, "down": 39 },
+        "map": { "left": -1, "right": 41, "up": -1, "down": 39 },
+        "items": [ { "id": 0, "x": 280, "y": 288 } ],
         "enemies": [
             { "id": 18, "yOff": 288, "xMin": 80, "xMax": 576 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ { "name": "skull_eyes", "x": 614, "y": 138 } ],
         "area": [
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 0, "yOff": -16 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 64, "yOff": -16 },
@@ -3835,15 +4821,39 @@
             { "imageId": 25, "flags": 0, "unknown": 1, "xOff": 608, "yOff": 128 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 256 },
             { "imageId": 62, "flags": 0, "unknown": 0, "xOff": 496, "yOff": 224 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!4                      #            " },
+            { "rowData": "!!!!4                      #            " },
+            { "rowData": "!!!!4                      #            " },
+            { "rowData": "!!!!4                      #            " },
+            { "rowData": "!!!!4                      #            " },
+            { "rowData": "!!!!4                     B$\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!4                   CC  !!!!!!!!!!!!" },
+            { "rowData": "!!!!4                 CC            4!!!" },
+            { "rowData": "!!!!4               CC              4!!!" },
+            { "rowData": "!!!!4             CC                4!!!" },
+            { "rowData": "!!!!4           CC                  4!!!" },
+            { "rowData": "!!!!4         CC                    4!!!" },
+            { "rowData": "!!!!4       CC                      4!!!" },
+            { "rowData": "!!!!4     CC                        4!!!" },
+            { "rowData": "!!!!4   CC                          4!!!" },
+            { "rowData": "!!!!3\"(D\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!!" }
         ]
     },
     {
         "id": 41,
-        "mapData": { "left": 40, "right": 42, "up": -1, "down": -1 },
+        "map": { "left": 40, "right": 42, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 13, "yOff": 128, "xMin": 448, "xMax": 624 },
             { "id": 13, "yOff": 256, "xMin": 64, "xMax": 624 }
         ],
+        "effects": [ { "name": "skull_eyes", "x": 6, "y": 138 } ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": -48, "yOff": 160 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": -48, "yOff": 200 },
@@ -3998,15 +5008,39 @@
             { "imageId": 40, "flags": 2, "unknown": 0, "xOff": 576, "yOff": 272 },
             { "imageId": 34, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 304 },
             { "imageId": 35, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 304 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"\"\"///////\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!+++!!!!///////!!!!!!!!!!!!" },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!4           +++                       " },
+            { "rowData": "!!3\"\"\"\"\"\"\"\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 42,
-        "mapData": { "left": 41, "right": -1, "up": 43, "down": -1 },
+        "map": { "left": 41, "right": -1, "up": 43, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 128, "xMin": 16, "xMax": 592 },
             { "id": 13, "yOff": 256, "xMin": 16, "xMax": 304 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 192, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 192, "yOff": 40 },
@@ -4151,15 +5185,39 @@
             { "imageId": 13, "flags": 0, "unknown": 0, "xOff": 596, "yOff": 200 },
             { "imageId": 17, "flags": 0, "unknown": 0, "xOff": 596, "yOff": 240 },
             { "imageId": 21, "flags": 0, "unknown": 0, "xOff": 596, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "                                +++  4!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"////////\"\"\"\"-+.\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!        !!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!55555555!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "5555555555555555555555555555555555555555" }
         ]
     },
     {
         "id": 43,
-        "mapData": { "left": 44, "right": 45, "up": -1, "down": 42 },
+        "map": { "left": 44, "right": 45, "up": -1, "down": 42 },
+        "items": [ ],
         "enemies": [
             { "id": 13, "yOff": 128, "xMin": 16, "xMax": 576 },
             { "id": 13, "yOff": 256, "xMin": 16, "xMax": 576 }
         ],
+        "effects": [ { "name": "skull_eyes", "x": 614, "y": 138 } ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 192, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 192, "yOff": 40 },
@@ -4276,15 +5334,39 @@
             { "imageId": 25, "flags": 0, "unknown": 1, "xOff": 608, "yOff": 128 },
             { "imageId": 2, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 192 },
             { "imageId": 2, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "                                    4!!!" },
+            { "rowData": "\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "    +++                             !!!!" },
+            { "rowData": "    +++                             !!!!" }
         ]
     },
     {
         "id": 44,
-        "mapData": { "left": -1, "right": 43, "up": -1, "down": -1 },
+        "map": { "left": -1, "right": 43, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 13, "yOff": 256, "xMin": 64, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 416, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 416, "yOff": 40 },
@@ -4382,14 +5464,45 @@
             { "imageId": 14, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 200 },
             { "imageId": 18, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 240 },
             { "imageId": 22, "flags": 1, "unknown": 0, "xOff": 0, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!4         !!!!3                      " },
+            { "rowData": "!!!4         !!!!3                      " },
+            { "rowData": "!!!4         !!!!3                      " },
+            { "rowData": "!!!4         !!!!3                      " },
+            { "rowData": "!!!4         !!!!3                      " },
+            { "rowData": "!!!4         !!!!3\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!4         !!!!!!!!+++!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!4         !!!!!!!!+++!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!4                 +++                " },
+            { "rowData": "!!!4                 +++                " },
+            { "rowData": "!!!4                 +++                " },
+            { "rowData": "!!!4                 +++                " },
+            { "rowData": "!!!4                 +++                " },
+            { "rowData": "!!!3\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!                                    " },
+            { "rowData": "!!!!                                    " }
         ]
     },
     {
         "id": 45,
-        "mapData": { "left": 43, "right": 46, "up": -1, "down": -1 },
+        "map": { "left": 43, "right": 46, "up": -1, "down": -1 },
+        "items": [
+            { "id": 0, "x": 464, "y": 288 },
+            { "id": 0, "x": 496, "y": 288 },
+            { "id": 0, "x": 528, "y": 288 }
+        ],
         "enemies": [
             { "id": 26, "yOff": 288, "xMin": 144, "xMax": 592 },
             { "id": 37, "yOff": 16, "xMin": 0, "xMax": 0 }
+        ],
+        "effects": [
+            { "name": "demon_eyes", "x": 306, "y": 178 },
+            { "name": "demon_eyes", "x": 328, "y": 178 }
         ],
         "area": [
             { "imageId": 47, "flags": 0, "unknown": 0, "xOff": 384, "yOff": 78 },
@@ -4501,14 +5614,41 @@
             { "imageId": 92, "flags": 0, "unknown": 0, "xOff": 608, "yOff": 286 },
             { "imageId": 100, "flags": 0, "unknown": 0, "xOff": 300, "yOff": 168 },
             { "imageId": 100, "flags": 1, "unknown": 0, "xOff": 320, "yOff": 168 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 46,
-        "mapData": { "left": 45, "right": 47, "up": -1, "down": -1 },
+        "map": { "left": 45, "right": 47, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 36, "yOff": 0, "xMin": 0, "xMax": 0 }
+        ],
+        "effects": [
+            { "name": "skull_eyes", "x": 152, "y": 182 },
+            { "name": "skull_eyes", "x": 470, "y": 182 }
         ],
         "area": [
             { "imageId": 102, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
@@ -4579,15 +5719,39 @@
             { "imageId": 104, "flags": 2, "unknown": 0, "xOff": 352, "yOff": 288 },
             { "imageId": 103, "flags": 0, "unknown": 0, "xOff": 566, "yOff": 288 },
             { "imageId": 104, "flags": 2, "unknown": 0, "xOff": 598, "yOff": 288 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 47,
-        "mapData": { "left": 46, "right": 48, "up": -1, "down": -1 },
+        "map": { "left": 46, "right": 48, "up": -1, "down": -1 },
+        "items": [ { "id": 0, "x": 432, "y": 288 } ],
         "enemies": [
             { "id": 27, "yOff": 288, "xMin": 64, "xMax": 576 },
             { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 0 },
             { "imageId": 85, "flags": 0, "unknown": 0, "xOff": 126, "yOff": 64 },
@@ -4686,15 +5850,39 @@
             { "imageId": 92, "flags": 0, "unknown": 0, "xOff": 608, "yOff": 286 },
             { "imageId": 105, "flags": 0, "unknown": 1, "xOff": 128, "yOff": 128 },
             { "imageId": 105, "flags": 0, "unknown": 1, "xOff": 416, "yOff": 128 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"*+,\"\"\"////////////////\"\"\"\"\"\"*+,\"\"\"\"\"" },
+            { "rowData": "!!!!+++!!!                !!!!!!+++!!!!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!4 +++                         +++  4!!" },
+            { "rowData": "!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"-+.\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 48,
-        "mapData": { "left": 47, "right": -1, "up": -1, "down": 49 },
+        "map": { "left": 47, "right": -1, "up": -1, "down": 49 },
+        "items": [ { "id": 0, "x": 40, "y": 288 } ],
         "enemies": [
             { "id": 0, "yOff": 144, "xMin": 0, "xMax": 0 },
             { "id": 27, "yOff": 128, "xMin": 16, "xMax": 576 }
         ],
+        "effects": [ { "name": "fire", "x": 292, "y": 76 } ],
         "area": [
             { "imageId": 93, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 94, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -4856,14 +6044,41 @@
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 256 },
             { "imageId": 65, "flags": 0, "unknown": 1, "xOff": 208, "yOff": 184 },
             { "imageId": 65, "flags": 0, "unknown": 1, "xOff": 400, "yOff": 184 }
+        ],
+        "layout": [
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "                                     4!!" },
+            { "rowData": "\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!4 +++                              4!!" },
+            { "rowData": "!!3\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++!!!!!" }
         ]
     },
     {
         "id": 49,
-        "mapData": { "left": -1, "right": -1, "up": 48, "down": 50 },
+        "map": { "left": -1, "right": -1, "up": 48, "down": 50 },
+        "items": [ { "id": 0, "x": 224, "y": 128 } ],
         "enemies": [
             { "id": 26, "yOff": 288, "xMin": 64, "xMax": 576 },
             { "id": 23, "yOff": 64, "xMin": 0, "xMax": 0 }
+        ],
+        "effects": [
+            { "name": "skull_eyes", "x": 152, "y": 182 },
+            { "name": "skull_eyes", "x": 470, "y": 182 }
         ],
         "area": [
             { "imageId": 93, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
@@ -5004,15 +6219,39 @@
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 288, "yOff": 224 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 192 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 256 }
+        ],
+        "layout": [
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!4                             +++  4!!" },
+            { "rowData": "!!3\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"*+,\"\"\"\"\"\"\"\"\"\"\"-+.\"\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!+++!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!4               +++                4!!" },
+            { "rowData": "!!3\"*+,\"\"\"\"\"\"\"\"\"\"\"-+.\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"3!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 50,
-        "mapData": { "left": 51, "right": -1, "up": 49, "down": -1 },
+        "map": { "left": 51, "right": -1, "up": 49, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 27, "yOff": 304, "xMin": 16, "xMax": 464 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -5092,15 +6331,39 @@
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": -32 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 32 },
             { "imageId": 58, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 96 }
+        ],
+        "layout": [
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!+++!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "    +++                              4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "    +++         #                    4!!" },
+            { "rowData": "\"\"\"\"-+.\"\"\"\"\"\"\"\"\"$H                   4!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!II                 4!!" },
+            { "rowData": "                    II               4!!" },
+            { "rowData": "                      II             4!!" },
+            { "rowData": "                        II           4!!" },
+            { "rowData": "                          II         4!!" },
+            { "rowData": "                            II       4!!" },
+            { "rowData": "                              II     4!!" },
+            { "rowData": "                                II   4!!" },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"J(\"3!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 51,
-        "mapData": { "left": 52, "right": 50, "up": -1, "down": -1 },
+        "map": { "left": 52, "right": 50, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 29, "yOff": 160, "xMin": 16, "xMax": 592 },
             { "id": 30, "yOff": 304, "xMin": 16, "xMax": 592 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -5196,15 +6459,39 @@
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 448, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 304 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 52,
-        "mapData": { "left": 53, "right": 51, "up": -1, "down": -1 },
+        "map": { "left": 53, "right": 51, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 30, "yOff": 160, "xMin": 16, "xMax": 592 },
             { "id": 31, "yOff": 304, "xMin": 16, "xMax": 592 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -5305,15 +6592,39 @@
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 448, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 304 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!4                                      " },
+            { "rowData": "!3\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 53,
-        "mapData": { "left": 54, "right": 52, "up": -1, "down": -1 },
+        "map": { "left": 54, "right": 52, "up": -1, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 11, "yOff": 304, "xMin": 16, "xMax": 592 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 110, "flags": 0, "unknown": 0, "xOff": 0, "yOff": 0 },
             { "imageId": 111, "flags": 0, "unknown": 0, "xOff": 64, "yOff": 0 },
@@ -5335,27 +6646,75 @@
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 448, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 304 }
+        ],
+        "layout": [
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     },
     {
         "id": 54,
-        "mapData": { "left": -1, "right": 53, "up": -1, "down": 55 },
+        "map": { "left": -1, "right": 53, "up": -1, "down": 55 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 512, "yOff": 304 },
             { "imageId": 118, "flags": 0, "unknown": 0, "xOff": 576, "yOff": 304 }
+        ],
+        "layout": [
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "                                        " },
+            { "rowData": "////////////////////////////////88\"\"\"\"\"\"" },
+            { "rowData": "////////////////////////////////!!!!!!!!" }
         ]
     },
     {
         "id": 55,
-        "mapData": { "left": -1, "right": -1, "up": 54, "down": 56 },
+        "map": { "left": -1, "right": -1, "up": 54, "down": 56 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 12, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 0 },
             { "imageId": 16, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 40 },
@@ -5373,15 +6732,39 @@
             { "imageId": 13, "flags": 1, "unknown": 0, "xOff": 640, "yOff": 200 },
             { "imageId": 17, "flags": 1, "unknown": 0, "xOff": 640, "yOff": 240 },
             { "imageId": 21, "flags": 1, "unknown": 0, "xOff": 640, "yOff": 280 }
+        ],
+        "layout": [
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" }
         ]
     },
     {
         "id": 56,
-        "mapData": { "left": -1, "right": -1, "up": 55, "down": -1 },
+        "map": { "left": -1, "right": -1, "up": 55, "down": -1 },
+        "items": [ ],
         "enemies": [
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
             { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
         ],
+        "effects": [ ],
         "area": [
             { "imageId": 11, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 0 },
             { "imageId": 15, "flags": 0, "unknown": 0, "xOff": 592, "yOff": 40 },
@@ -5448,6 +6831,28 @@
             { "imageId": 26, "flags": 2, "unknown": 0, "xOff": 320, "yOff": 282 },
             { "imageId": 28, "flags": 3, "unknown": 0, "xOff": 366, "yOff": 288 },
             { "imageId": 27, "flags": 2, "unknown": 0, "xOff": 340, "yOff": 208 }
+        ],
+        "layout": [
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "/////////////////////////////////////!!!" },
+            { "rowData": "5555555555555555555555555555555555555555" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" },
+            { "rowData": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" }
         ]
     }
 ]

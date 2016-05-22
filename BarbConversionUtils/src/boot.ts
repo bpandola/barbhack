@@ -12,7 +12,7 @@
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.pageAlignHorizontally = true;
                 this.scale.pageAlignVertically = true;
-                this.scale.setMinMax(640, 400, 1280, 800);
+                //this.scale.setMinMax(640, 400, 1280, 800);
            
 
             this.game.time.advancedTiming = true;
