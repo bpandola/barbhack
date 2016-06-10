@@ -1,5 +1,7 @@
 ﻿namespace BarbConversionUtils {
 
+    export const SCALE = 2;
+
     export class Util extends Phaser.Game {
 
         roomNum: number = 0;

@@ -1,11 +1,12 @@
-﻿[
+﻿[ 
     {
         "id": 0,
+        "startPos": { "tileX": 20, "tileY": 18 },
         "map": { "left": -1, "right": 1, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0 },
-            { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0 }
+            { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0, "xOff": [ 192, 192, 192, 192, 192 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 14, "yOff": 288, "xMin": 0, "xMax": 0, "xOff": [ 112, 112, 112, 112, 112 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ { "name": "bat", "x": -50, "y": 30 } ],
         "area": [
@@ -55,11 +56,12 @@
     },
     {
         "id": 1,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 0, "right": 2, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 5, "yOff": 288, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 5, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 464, 96, 464, 464, 464 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -112,11 +114,12 @@
     },
     {
         "id": 2,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 1, "right": 3, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 32, "yOff": 16, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 32, "yOff": 16, "xMin": 0, "xMax": 0, "xOff": [ 384, 384, 384, 384, 384 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -234,11 +237,12 @@
     },
     {
         "id": 3,
+        "startPos": { "tileX": 3, "tileY": 13 },
         "map": { "left": 2, "right": 4, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 9, "yOff": 208, "xMin": 48, "xMax": 352 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 9, "yOff": 208, "xMin": 48, "xMax": 352, "xOff": [ 320, 64, 320, 64, 64 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -348,11 +352,12 @@
     },
     {
         "id": 4,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 3, "right": -1, "up": -1, "down": 5 },
         "items": [ { "id": 0, "x": 560, "y": 288 } ],
         "enemies": [
-            { "id": 2, "yOff": 144, "xMin": 0, "xMax": 0 },
-            { "id": 10, "yOff": 288, "xMin": 16, "xMax": 560 }
+            { "id": 2, "yOff": 144, "xMin": 0, "xMax": 0, "xOff": [ 336, 336, 336, 336, 336 ], "flags": [ 1, 1, 1, 1, 1 ] },
+            { "id": 10, "yOff": 288, "xMin": 16, "xMax": 560, "xOff": [ 496, 496, 496, 496, 496 ], "flags": [ 1, 1, 1, 1, 1 ] }
         ],
         "effects": [ ],
         "area": [
@@ -450,11 +455,12 @@
     },
     {
         "id": 5,
+        "startPos": { "tileX": 11, "tileY": 11 },
         "map": { "left": -1, "right": 6, "up": 4, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 9, "yOff": 208, "xMin": 272, "xMax": 608 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 9, "yOff": 208, "xMin": 272, "xMax": 608, "xOff": [ 560, 304, 560, 560, 560 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -582,11 +588,12 @@
     },
     {
         "id": 6,
+        "startPos": { "tileX": 3, "tileY": 13 },
         "map": { "left": 5, "right": 7, "up": -1, "down": 8 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -655,11 +662,12 @@
     },
     {
         "id": 7,
+        "startPos": { "tileX": 3, "tileY": 9 },
         "map": { "left": 6, "right": -1, "up": -1, "down": 10 },
         "items": [ { "id": 0, "x": 560, "y": 256 } ],
         "enemies": [
-            { "id": 12, "yOff": 144, "xMin": 0, "xMax": 0 },
-            { "id": 16, "yOff": 144, "xMin": 16, "xMax": 576 }
+            { "id": 12, "yOff": 144, "xMin": 0, "xMax": 0, "xOff": [ 192, 192, 192, 192, 192 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 16, "yOff": 144, "xMin": 16, "xMax": 576, "xOff": [ 528, 528, 528, 96, 528 ], "flags": [ 1, 1, 1, 0, 1 ] }
         ],
         "effects": [ ],
         "area": [
@@ -792,11 +800,12 @@
     },
     {
         "id": 8,
+        "startPos": { "tileX": 7, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 6, "down": 9 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -859,11 +868,12 @@
     },
     {
         "id": 9,
+        "startPos": { "tileX": 7, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 8, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -945,11 +955,12 @@
     },
     {
         "id": 10,
+        "startPos": { "tileX": 7, "tileY": 8 },
         "map": { "left": -1, "right": 11, "up": 7, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 17, "yOff": 288, "xMin": 32, "xMax": 624 },
-            { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 17, "yOff": 288, "xMin": 32, "xMax": 624, "xOff": [ 576, 96, 576, 576, 576 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 192, 192, 192, 192, 192 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -1092,11 +1103,12 @@
     },
     {
         "id": 11,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 10, "right": 12, "up": 7, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 3, "yOff": 304, "xMin": 0, "xMax": 0 },
-            { "id": 19, "yOff": 288, "xMin": 144, "xMax": 624 }
+            { "id": 3, "yOff": 304, "xMin": 0, "xMax": 0, "xOff": [ 480, 480, 480, 480, 480 ], "flags": [ 1, 1, 1, 1, 1 ] },
+            { "id": 19, "yOff": 288, "xMin": 144, "xMax": 624, "xOff": [ 320, 320, 320, 320, 320 ], "flags": [ 1, 1, 1, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -1214,14 +1226,15 @@
     },
     {
         "id": 12,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 11, "right": 13, "up": -1, "down": -1 },
         "items": [
             { "id": 0, "x": 336, "y": 128 },
             { "id": 0, "x": 400, "y": 128 }
         ],
         "enemies": [
-            { "id": 22, "yOff": 128, "xMin": 16, "xMax": 464 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 22, "yOff": 128, "xMin": 16, "xMax": 464, "xOff": [ 448, 448, 448, 448, 448 ], "flags": [ 1, 1, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [
             { "name": "torch1", "x": 64, "y": 8 },
@@ -1384,11 +1397,12 @@
     },
     {
         "id": 13,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 12, "right": -1, "up": -1, "down": 14 },
         "items": [ ],
         "enemies": [
-            { "id": 21, "yOff": 288, "xMin": 16, "xMax": 288 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 21, "yOff": 288, "xMin": 16, "xMax": 288, "xOff": [ 272, 272, 272, 272, 272 ], "flags": [ 1, 1, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -1462,11 +1476,12 @@
     },
     {
         "id": 14,
+        "startPos": { "tileX": 14, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 13, "down": 15 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -1575,11 +1590,12 @@
     },
     {
         "id": 15,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 16, "right": -1, "up": 14, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -1682,11 +1698,12 @@
     },
     {
         "id": 16,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 17, "right": 15, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 25, "yOff": 128, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 25, "yOff": 128, "xMin": 16, "xMax": 592, "xOff": [ 480, 320, 480, 320, 320 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [
             { "name": "blood_drip", "x": 110, "y": 208 },
@@ -1830,11 +1847,12 @@
     },
     {
         "id": 17,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 18, "right": 16, "up": -1, "down": -1 },
         "items": [ { "id": 0, "x": 512, "y": 288 } ],
         "enemies": [
-            { "id": 6, "yOff": 128, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 6, "yOff": 128, "xMin": 16, "xMax": 592, "xOff": [ 512, 128, 320, 320, 320 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2019,6 +2037,7 @@
     },
     {
         "id": 18,
+        "startPos": { "tileX": 15, "tileY": 18 },
         "map": { "left": -1, "right": 17, "up": -1, "down": 19 },
         "items": [
             { "id": 0, "x": 336, "y": 128 },
@@ -2028,8 +2047,8 @@
             { "id": 1, "x": 120, "y": 128 }
         ],
         "enemies": [
-            { "id": 8, "yOff": 128, "xMin": 64, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 8, "yOff": 128, "xMin": 64, "xMax": 592, "xOff": [ 256, 256, 256, 256, 256 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2199,11 +2218,12 @@
     },
     {
         "id": 19,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 20, "right": -1, "up": 18, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 7, "yOff": 128, "xMin": 16, "xMax": 544 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 7, "yOff": 128, "xMin": 16, "xMax": 544, "xOff": [ 512, 128, 320, 320, 512 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2380,11 +2400,12 @@
     },
     {
         "id": 20,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 21, "right": 19, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 34, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 4, "yOff": 288, "xMin": 16, "xMax": 592 }
+            { "id": 34, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 192, 192, 192, 192, 192 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 4, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 64, 64, 560, 64, 64 ], "flags": [ 0, 0, 1, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2535,6 +2556,7 @@
     },
     {
         "id": 21,
+        "startPos": { "tileX": 15, "tileY": 18 },
         "map": { "left": -1, "right": 20, "up": -1, "down": 22 },
         "items": [
             { "id": 0, "x": 352, "y": 128 },
@@ -2543,8 +2565,8 @@
             { "id": 0, "x": 536, "y": 128 }
         ],
         "enemies": [
-            { "id": 15, "yOff": 128, "xMin": 64, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 15, "yOff": 128, "xMin": 64, "xMax": 592, "xOff": [ 176, 176, 176, 176, 176 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2704,11 +2726,12 @@
     },
     {
         "id": 22,
+        "startPos": { "tileX": 6, "tileY": 18 },
         "map": { "left": -1, "right": 23, "up": 21, "down": -1 },
         "items": [ { "id": 0, "x": 288, "y": 288 } ],
         "enemies": [
-            { "id": 7, "yOff": 288, "xMin": 64, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 7, "yOff": 288, "xMin": 64, "xMax": 592, "xOff": [ 560, 96, 560, 560, 560 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2850,11 +2873,12 @@
     },
     {
         "id": 23,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 22, "right": 30, "up": -1, "down": 24 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -2933,11 +2957,12 @@
     },
     {
         "id": 24,
+        "startPos": { "tileX": 12, "tileY": 8 },
         "map": { "left": -1, "right": -1, "up": 23, "down": 25 },
         "items": [ ],
         "enemies": [
-            { "id": 24, "yOff": 288, "xMin": 96, "xMax": 528 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 24, "yOff": 288, "xMin": 96, "xMax": 528, "xOff": [ 224, 224, 224, 480, 224 ], "flags": [ 0, 0, 0, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3106,11 +3131,12 @@
     },
     {
         "id": 25,
+        "startPos": { "tileX": 12, "tileY": 8 },
         "map": { "left": -1, "right": -1, "up": 24, "down": 26 },
         "items": [ ],
         "enemies": [
-            { "id": 20, "yOff": 288, "xMin": 96, "xMax": 528 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 20, "yOff": 288, "xMin": 96, "xMax": 528, "xOff": [ 224, 224, 224, 480, 224 ], "flags": [ 0, 0, 0, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3279,11 +3305,12 @@
     },
     {
         "id": 26,
+        "startPos": { "tileX": 12, "tileY": 8 },
         "map": { "left": -1, "right": -1, "up": 25, "down": 27 },
         "items": [ ],
         "enemies": [
-            { "id": 25, "yOff": 288, "xMin": 96, "xMax": 528 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 25, "yOff": 288, "xMin": 96, "xMax": 528, "xOff": [ 224, 224, 224, 480, 224 ], "flags": [ 0, 0, 0, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3452,14 +3479,15 @@
     },
     {
         "id": 27,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 28, "right": 35, "up": 26, "down": -1 },
         "items": [
             { "id": 0, "x": 32, "y": 288 },
             { "id": 0, "x": 592, "y": 288 }
         ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3581,11 +3609,12 @@
     },
     {
         "id": 28,
+        "startPos": { "tileX": 28, "tileY": 0 },
         "map": { "left": -1, "right": 27, "up": -1, "down": 29 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3617,11 +3646,12 @@
     },
     {
         "id": 29,
+        "startPos": { "tileX": 28, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 28, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3716,11 +3746,12 @@
     },
     {
         "id": 30,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 23, "right": 31, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 24, "yOff": 288, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 24, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 512, 128, 512, 320, 320 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3780,11 +3811,12 @@
     },
     {
         "id": 31,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 30, "right": -1, "up": -1, "down": 32 },
         "items": [ { "id": 1, "x": 288, "y": 288 } ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3869,11 +3901,12 @@
     },
     {
         "id": 32,
+        "startPos": { "tileX": 32, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 31, "down": 33 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -3947,11 +3980,12 @@
     },
     {
         "id": 33,
+        "startPos": { "tileX": 32, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 32, "down": 34 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4013,11 +4047,12 @@
     },
     {
         "id": 34,
+        "startPos": { "tileX": 32, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 33, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4128,11 +4163,12 @@
     },
     {
         "id": 35,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 27, "right": 36, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 35, "yOff": 288, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 35, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 400, 192, 400, 400, 96 ], "flags": [ 1, 0, 1, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4236,11 +4272,12 @@
     },
     {
         "id": 36,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 35, "right": 37, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 400, 192, 400, 400, 96 ], "flags": [ 1, 0, 1, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4320,11 +4357,12 @@
     },
     {
         "id": 37,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 36, "right": 38, "up": 39, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 288, "xMin": 16, "xMax": 592, "xOff": [ 400, 192, 400, 400, 96 ], "flags": [ 1, 0, 1, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4409,11 +4447,12 @@
     },
     {
         "id": 38,
+        "startPos": { "tileX": 3, "tileY": 18 },
         "map": { "left": 37, "right": -1, "up": -1, "down": -1 },
         "items": [ { "id": 2, "x": 464, "y": 288 } ],
         "enemies": [
-            { "id": 1, "yOff": 288, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 1, "yOff": 288, "xMin": 0, "xMax": 0, "xOff": [ 80, 80, 80, 80, 80 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4540,11 +4579,12 @@
     },
     {
         "id": 39,
+        "startPos": { "tileX": 30, "tileY": 18 },
         "map": { "left": -1, "right": -1, "up": 40, "down": 39 },
         "items": [ { "id": 0, "x": 376, "y": 288 } ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -4696,11 +4736,12 @@
     },
     {
         "id": 40,
+        "startPos": { "tileX": 30, "tileY": 18 },
         "map": { "left": -1, "right": 41, "up": -1, "down": 39 },
         "items": [ { "id": 0, "x": 280, "y": 288 } ],
         "enemies": [
-            { "id": 18, "yOff": 288, "xMin": 80, "xMax": 576 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 18, "yOff": 288, "xMin": 80, "xMax": 576, "xOff": [ 128, 480, 128, 128, 128 ], "flags": [ 0, 1, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ { "name": "skull_eyes", "x": 614, "y": 138 } ],
         "area": [
@@ -4847,11 +4888,12 @@
     },
     {
         "id": 41,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 40, "right": 42, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 13, "yOff": 128, "xMin": 448, "xMax": 624 },
-            { "id": 13, "yOff": 256, "xMin": 64, "xMax": 624 }
+            { "id": 13, "yOff": 128, "xMin": 448, "xMax": 624, "xOff": [ 448, 448, 496, 496, 496 ], "flags": [ 1, 1, 0, 0, 0 ] },
+            { "id": 13, "yOff": 256, "xMin": 64, "xMax": 624, "xOff": [ 592, 128, 592, 592, 592 ], "flags": [ 1, 0, 1, 1, 1 ] }
         ],
         "effects": [ { "name": "skull_eyes", "x": 6, "y": 138 } ],
         "area": [
@@ -5034,11 +5076,12 @@
     },
     {
         "id": 42,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 41, "right": -1, "up": 43, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 128, "xMin": 16, "xMax": 592 },
-            { "id": 13, "yOff": 256, "xMin": 16, "xMax": 304 }
+            { "id": 0, "yOff": 128, "xMin": 16, "xMax": 592, "xOff": [ 528, 128, 528, 128, 528 ], "flags": [ 1, 0, 1, 0, 1 ] },
+            { "id": 13, "yOff": 256, "xMin": 16, "xMax": 304, "xOff": [ 32, 32, 272, 272, 32 ], "flags": [ 0, 0, 1, 1, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -5211,11 +5254,12 @@
     },
     {
         "id": 43,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 44, "right": 45, "up": -1, "down": 42 },
         "items": [ ],
         "enemies": [
-            { "id": 13, "yOff": 128, "xMin": 16, "xMax": 576 },
-            { "id": 13, "yOff": 256, "xMin": 16, "xMax": 576 }
+            { "id": 13, "yOff": 128, "xMin": 16, "xMax": 576, "xOff": [ 528, 128, 528, 128, 160 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 13, "yOff": 256, "xMin": 16, "xMax": 576, "xOff": [ 528, 128, 528, 128, 160 ], "flags": [ 1, 0, 1, 0, 0 ] }
         ],
         "effects": [ { "name": "skull_eyes", "x": 614, "y": 138 } ],
         "area": [
@@ -5360,11 +5404,12 @@
     },
     {
         "id": 44,
+        "startPos": { "tileX": 32, "tileY": 16 },
         "map": { "left": -1, "right": 43, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 13, "yOff": 256, "xMin": 64, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 13, "yOff": 256, "xMin": 64, "xMax": 592, "xOff": [ 160, 160, 160, 160, 160 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -5490,6 +5535,7 @@
     },
     {
         "id": 45,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 43, "right": 46, "up": -1, "down": -1 },
         "items": [
             { "id": 0, "x": 464, "y": 288 },
@@ -5497,8 +5543,8 @@
             { "id": 0, "x": 528, "y": 288 }
         ],
         "enemies": [
-            { "id": 26, "yOff": 288, "xMin": 144, "xMax": 592 },
-            { "id": 37, "yOff": 16, "xMin": 0, "xMax": 0 }
+            { "id": 26, "yOff": 288, "xMin": 144, "xMax": 592, "xOff": [ 512, 512, 512, 512, 512 ], "flags": [ 1, 1, 1, 1, 1 ] },
+            { "id": 37, "yOff": 16, "xMin": 0, "xMax": 0, "xOff": [ 464, 464, 464, 464, 464 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [
             { "name": "demon_eyes", "x": 306, "y": 178 },
@@ -5640,11 +5686,12 @@
     },
     {
         "id": 46,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 45, "right": 47, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 36, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 320, 320, 320, 320, 320 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 36, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 336, 336, 336, 336, 336 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [
             { "name": "skull_eyes", "x": 152, "y": 182 },
@@ -5745,11 +5792,12 @@
     },
     {
         "id": 47,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 46, "right": 48, "up": -1, "down": -1 },
         "items": [ { "id": 0, "x": 432, "y": 288 } ],
         "enemies": [
-            { "id": 27, "yOff": 288, "xMin": 64, "xMax": 576 },
-            { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 27, "yOff": 288, "xMin": 64, "xMax": 576, "xOff": [ 512, 128, 512, 128, 128 ], "flags": [ 1, 0, 1, 0, 0 ] },
+            { "id": 33, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 256, 256, 256, 256, 256 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -5876,11 +5924,12 @@
     },
     {
         "id": 48,
+        "startPos": { "tileX": 3, "tileY": 8 },
         "map": { "left": 47, "right": -1, "up": -1, "down": 49 },
         "items": [ { "id": 0, "x": 40, "y": 288 } ],
         "enemies": [
-            { "id": 0, "yOff": 144, "xMin": 0, "xMax": 0 },
-            { "id": 27, "yOff": 128, "xMin": 16, "xMax": 576 }
+            { "id": 0, "yOff": 144, "xMin": 0, "xMax": 0, "xOff": [ 432, 432, 432, 432, 432 ], "flags": [ 1, 0, 0, 0, 0 ] },
+            { "id": 27, "yOff": 128, "xMin": 16, "xMax": 576, "xOff": [ 528, 528, 528, 528, 528 ], "flags": [ 1, 0, 0, 0, 0 ] }
         ],
         "effects": [ { "name": "fire", "x": 292, "y": 76 } ],
         "area": [
@@ -6070,11 +6119,12 @@
     },
     {
         "id": 49,
+        "startPos": { "tileX": 26, "tileY": 8 },
         "map": { "left": -1, "right": -1, "up": 48, "down": 50 },
         "items": [ { "id": 0, "x": 224, "y": 128 } ],
         "enemies": [
-            { "id": 26, "yOff": 288, "xMin": 64, "xMax": 576 },
-            { "id": 23, "yOff": 64, "xMin": 0, "xMax": 0 }
+            { "id": 26, "yOff": 288, "xMin": 64, "xMax": 576, "xOff": [ 96, 96, 96, 512, 96 ], "flags": [ 0, 0, 0, 1, 0 ] },
+            { "id": 23, "yOff": 64, "xMin": 0, "xMax": 0, "xOff": [ 128, 128, 128, 128, 128 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [
             { "name": "skull_eyes", "x": 152, "y": 182 },
@@ -6245,11 +6295,12 @@
     },
     {
         "id": 50,
+        "startPos": { "tileX": 6, "tileY": 10 },
         "map": { "left": 51, "right": -1, "up": 49, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 27, "yOff": 304, "xMin": 16, "xMax": 464 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 27, "yOff": 304, "xMin": 16, "xMax": 464, "xOff": [ 224, 320, 384, 320, 224 ], "flags": [ 0, 1, 1, 1, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6357,11 +6408,12 @@
     },
     {
         "id": 51,
+        "startPos": { "tileX": 3, "tileY": 19 },
         "map": { "left": 52, "right": 50, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 29, "yOff": 160, "xMin": 16, "xMax": 592 },
-            { "id": 30, "yOff": 304, "xMin": 16, "xMax": 592 }
+            { "id": 29, "yOff": 160, "xMin": 16, "xMax": 592, "xOff": [ 384, 128, 512, 512, 512 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 30, "yOff": 304, "xMin": 16, "xMax": 592, "xOff": [ 384, 128, 512, 512, 512 ], "flags": [ 1, 0, 1, 1, 1 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6485,11 +6537,12 @@
     },
     {
         "id": 52,
+        "startPos": { "tileX": 3, "tileY": 19 },
         "map": { "left": 53, "right": 51, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 30, "yOff": 160, "xMin": 16, "xMax": 592 },
-            { "id": 31, "yOff": 304, "xMin": 16, "xMax": 592 }
+            { "id": 30, "yOff": 160, "xMin": 16, "xMax": 592, "xOff": [ 384, 128, 384, 384, 384 ], "flags": [ 1, 0, 1, 1, 1 ] },
+            { "id": 31, "yOff": 304, "xMin": 16, "xMax": 592, "xOff": [ 384, 128, 512, 512, 512 ], "flags": [ 1, 0, 1, 1, 1 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6618,11 +6671,12 @@
     },
     {
         "id": 53,
+        "startPos": { "tileX": 26, "tileY": 19 },
         "map": { "left": 54, "right": 52, "up": -1, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 11, "yOff": 304, "xMin": 16, "xMax": 592 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 11, "yOff": 304, "xMin": 16, "xMax": 592, "xOff": [ 64, 64, 320, 64, 64 ], "flags": [ 0, 0, 1, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6672,11 +6726,12 @@
     },
     {
         "id": 54,
+        "startPos": { "tileX": 38, "tileY": 19 },
         "map": { "left": -1, "right": 53, "up": -1, "down": 55 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6708,11 +6763,12 @@
     },
     {
         "id": 55,
+        "startPos": { "tileX": 1, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 54, "down": 56 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [
@@ -6758,11 +6814,12 @@
     },
     {
         "id": 56,
+        "startPos": { "tileX": 1, "tileY": 0 },
         "map": { "left": -1, "right": -1, "up": 55, "down": -1 },
         "items": [ ],
         "enemies": [
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 },
-            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0 }
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] },
+            { "id": 0, "yOff": 0, "xMin": 0, "xMax": 0, "xOff": [ 0, 0, 0, 0, 0 ], "flags": [ 0, 0, 0, 0, 0 ] }
         ],
         "effects": [ ],
         "area": [

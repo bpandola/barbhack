@@ -1,0 +1,20 @@
+{"frames": [
+
+{
+	"filename": "000.PNG",
+	"frame": {"x":0,"y":0,"w":2,"h":2},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2,"h":2},
+	"sourceSize": {"w":2,"h":2}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "nll.png",
+	"format": "RGBA8888",
+	"size": {"w":2,"h":2},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:bec94b6c24482c812bcb62cb4ed44f83:a24237d0c18445335f65dc1f4b38601c:d1ecc5807ab5fb1b63d44f6a669688bd$"
+}
+}

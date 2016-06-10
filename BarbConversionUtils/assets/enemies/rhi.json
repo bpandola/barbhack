@@ -1,0 +1,92 @@
+{"frames": [
+
+{
+	"filename": "000.PNG",
+	"frame": {"x":0,"y":0,"w":2,"h":2},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2,"h":2},
+	"sourceSize": {"w":2,"h":2}
+},
+{
+	"filename": "001.PNG",
+	"frame": {"x":2,"y":0,"w":48,"h":40},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":40},
+	"sourceSize": {"w":48,"h":40}
+},
+{
+	"filename": "002.PNG",
+	"frame": {"x":50,"y":0,"w":40,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":64},
+	"sourceSize": {"w":40,"h":64}
+},
+{
+	"filename": "003.PNG",
+	"frame": {"x":90,"y":0,"w":58,"h":48},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":48},
+	"sourceSize": {"w":58,"h":48}
+},
+{
+	"filename": "004.PNG",
+	"frame": {"x":148,"y":0,"w":106,"h":52},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":106,"h":52},
+	"sourceSize": {"w":106,"h":52}
+},
+{
+	"filename": "005.PNG",
+	"frame": {"x":254,"y":0,"w":90,"h":52},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":90,"h":52},
+	"sourceSize": {"w":90,"h":52}
+},
+{
+	"filename": "006.PNG",
+	"frame": {"x":344,"y":0,"w":68,"h":52},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":52},
+	"sourceSize": {"w":68,"h":52}
+},
+{
+	"filename": "007.PNG",
+	"frame": {"x":412,"y":0,"w":58,"h":52},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":52},
+	"sourceSize": {"w":58,"h":52}
+},
+{
+	"filename": "008.PNG",
+	"frame": {"x":470,"y":0,"w":78,"h":56},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":78,"h":56},
+	"sourceSize": {"w":78,"h":56}
+},
+{
+	"filename": "009.PNG",
+	"frame": {"x":548,"y":0,"w":78,"h":48},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":78,"h":48},
+	"sourceSize": {"w":78,"h":48}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rhi.png",
+	"format": "RGBA8888",
+	"size": {"w":626,"h":64},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:a5ef675c82d0a216a1afee5b623780a7:d96c44f0adc8a979b601537ab0e21449:14a43e1f94e434fd8a2bbf024933a3a0$"
+}
+}

@@ -10,11 +10,26 @@
         DownStairs = 8,
         Idle1 = 12,
         Idle2 = 13,
+        Attack1,
+        Attack2,
+        Attack3,
+        Attack4,
+        Attack5,
+        Attack6,
+        ShootArrow = 22,
         HitWall = 24,
+        HitGround = 28,
+        Falling = 36,
+        TripFall = 37,
         Idle = 43
         
 
 
+    }
+    export enum Weapon {
+        Sword = 2,
+        Shield = 3,
+        Bow = 4
     }
 
     export enum Direction {
@@ -26,17 +41,20 @@
 
     export class Hero extends Phaser.Group {
 
-        static ANIMATION_INTERVAL: number = 150; //170;
+        static ANIMATION_INTERVAL: number = 100; //170;
+        static TILE_SIZE: number = 16;
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
         frame: number;
         animData: any;
-        weapon: number;
-        keys: Phaser.CursorKeys;
+        weapon: Weapon;
+        keys: any;
         fsm: BarbConversionUtils.StateMachine.StateMachine;
         direction: Direction;
         animTimer: Phaser.TimerEvent;
         game: BarbConversionUtils.Util;
+        
+        currentTile: string = "?";
 
         constructor(game: BarbConversionUtils.Util, tileX: number, tileY: number) {
             super(game);
@@ -44,17 +62,18 @@
             this.tilePos.setTo(tileX, tileY);
 
             this.x = tileX << 4;
-            this.y = (tileY + 1) << 4;
+            this.y = (tileY ) << 4;  // FIX THIS PLUS ONE!!!
 
             this.animData = this.game.cache.getJSON('hero');
 
-            this.weapon = 2;
+            this.weapon = Weapon.Sword;
             this.direction = Direction.Right;
            
 
             //this.animTimer = this.game.time.events.loop(Hero.ANIMATION_INTERVAL, this.animate, this);
 
-            this.keys = this.game.input.keyboard.createCursorKeys();
+            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT });
+
 
             this.fsm = new BarbConversionUtils.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new BarbConversionUtils.HeroStates.Idle(this));
@@ -65,40 +84,105 @@
             this.fsm.add('DownStairs', new BarbConversionUtils.HeroStates.DownStairs(this));
             this.fsm.add('DownLadder', new BarbConversionUtils.HeroStates.DownLadder(this));
             this.fsm.add('UpLadder', new BarbConversionUtils.HeroStates.UpLadder(this));
+            this.fsm.add('Run', new BarbConversionUtils.HeroStates.Run(this));
+            this.fsm.add('Attack', new BarbConversionUtils.HeroStates.Attack(this));
+            this.fsm.add('TripFall', new BarbConversionUtils.HeroStates.TripFall(this));
+            this.fsm.add('Fall', new BarbConversionUtils.HeroStates.Fall(this));
             this.fsm.transition('Idle');
 
             this.drawHero();
         }
 
-        getTile(x, y) {
-            if (x < 0 || x >= 40 || y < 0 || y >= 20)
+        previousPreviousTile() {
+
+            if (this.x < 0 || this.x >= 640 || this.y < 0 || this.y >= 320)
                 return '?';
 
+            var tileX = this.direction == Direction.Right ? (this.x >> 4) - 3 : (this.x >> 4)+2;
+            var tileY = (this.y >> 4) - 1;
+
+
+
             var tile = this.game.cache.getJSON('rooms')[this.game.roomNum]
-                .layout[y].rowData
-                .substring(x, x+1);
-            console.log(tile);
+                .layout[tileY].rowData
+                .substring(tileX, tileX + 1);
+
+
             return tile;
+        }
+
+        previousTile() {
+
+            if (this.x < 0 || this.x >= 640 || this.y < 0 || this.y >= 320)
+                return '?';
+
+            var tileX = this.direction == Direction.Right ? (this.x >> 4) - 2 : (this.x >> 4)+1;
+            var tileY = (this.y >> 4) - 1;
+
+            
+
+            var tile = this.game.cache.getJSON('rooms')[this.game.roomNum]
+                .layout[tileY].rowData
+                .substring(tileX, tileX + 1);
+
+            
+            return tile;
+        }
+
+        getTile(adjustX?: number, adjustY?: number) {
+            if (adjustX == null) { adjustX = 0 }
+            if (adjustY == null) { adjustY = 0 }
+
+            if (this.x < Hero.TILE_SIZE || this.x >= 640 || this.y < Hero.TILE_SIZE || this.y >= 320)
+                return '?';
+
+            var tileX = this.direction == Direction.Right ? (this.x >> 4) - 1 : (this.x >> 4);
+            var tileY = (this.y >> 4) - 1;
+
+            
+
+            this.currentTile = this.game.cache.getJSON('rooms')[this.game.roomNum]
+                .layout[tileY+adjustY].rowData
+                .substring(tileX+adjustX, tileX+adjustX + 1);
+
+            //if (this.currentTile != '"')
+              //  console.log(this.currentTile);
+            return this.currentTile;
         }
 
         
         checkMovement() {
-            if (this.tilePos.y >= 20) return;
-            var adjust = this.direction == Direction.Right ? 1 : -1;
-            var tile = this.game.cache.getJSON('rooms')[this.game.roomNum]
-                .layout[this.tilePos.y].rowData
-                .substring(this.tilePos.x, this.tilePos.x + 1); // don't adjust!
-
+            //if (this.tilePos.y >= 20) return;
+            var adjust = this.direction == Direction.Right ? -1 : 0;
+            var tile = this.getTile(); //this.game.cache.getJSON('rooms')[this.game.roomNum]
+                //.layout[this.tilePos.y].rowData
+               // .substring(this.tilePos.x, this.tilePos.x + 1); // don't adjust!
             switch (tile) {
+
                 case '3':
                     this.fsm.transition('HitWall');
-                    break;
+                    return;
+                //case '/':
+                //    this.fsm.transition('TripFall');
+                //    return;
+                //case '5':
+                //case '!':
+                //    this.fsm.transition('Idle');
+                //    return;
+                 
+            }
+
+            switch (this.previousTile()) {
+                case '3':
+                    
                 case 'A':
                 case 'G':
+                    if (this.previousPreviousTile() == '%')
                     this.fsm.transition('UpStairs');
                     break;
                 case 'H':
                 case 'B':
+                    if (this.previousPreviousTile() == '$')
                     this.fsm.transition('DownStairs');
                     break;
                 case 'E':
@@ -110,6 +194,7 @@
                         this.fsm.transition('UpStairs');
                     break;
                 case 'J':
+                    if (this.previousPreviousTile() == '(')
                     if (this.direction == Direction.Left && this.keys.up.isDown)
                         this.fsm.transition('UpStairs');
                     break;
@@ -138,8 +223,8 @@
         update() {
             this.fsm.getCurrentState().onUpdate();
 
-            this.x = this.tilePos.x << 4;
-            this.y = (this.tilePos.y + 1) << 4;
+            //this.x = this.tilePos.x << 4;
+            //this.y = (this.tilePos.y ) << 4;
 
             this.drawHero();
                 
