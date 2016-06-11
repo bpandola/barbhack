@@ -1,4 +1,4 @@
-﻿namespace BarbConversionUtils {
+﻿namespace Barbarian {
 
     export class TileMap {
 

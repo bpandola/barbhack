@@ -1,4 +1,4 @@
-﻿namespace BarbConversionUtils {
+﻿namespace Barbarian {
 
     export enum Animations {
         Walk,
@@ -41,7 +41,7 @@
 
     export class Hero extends Phaser.Group {
 
-        static ANIMATION_INTERVAL: number = 100; //170;
+        static ANIMATION_INTERVAL: number = 170; //170;
         static TILE_SIZE: number = 16;
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -49,14 +49,14 @@
         animData: any;
         weapon: Weapon;
         keys: any;
-        fsm: BarbConversionUtils.StateMachine.StateMachine;
+        fsm: Barbarian.StateMachine.StateMachine;
         direction: Direction;
         animTimer: Phaser.TimerEvent;
-        game: BarbConversionUtils.Util;
+        game: Barbarian.Game;
         
         currentTile: string = "?";
 
-        constructor(game: BarbConversionUtils.Util, tileX: number, tileY: number) {
+        constructor(game: Barbarian.Game, tileX: number, tileY: number) {
             super(game);
 
             this.tilePos.setTo(tileX, tileY);
@@ -75,19 +75,19 @@
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT });
 
 
-            this.fsm = new BarbConversionUtils.StateMachine.StateMachine(this);
-            this.fsm.add('Idle', new BarbConversionUtils.HeroStates.Idle(this));
-            this.fsm.add('Walk', new BarbConversionUtils.HeroStates.Walk(this));
-            this.fsm.add('ChangeDirection', new BarbConversionUtils.HeroStates.ChangeDirection(this));
-            this.fsm.add('HitWall', new BarbConversionUtils.HeroStates.HitWall(this));
-            this.fsm.add('UpStairs', new BarbConversionUtils.HeroStates.UpStairs(this));
-            this.fsm.add('DownStairs', new BarbConversionUtils.HeroStates.DownStairs(this));
-            this.fsm.add('DownLadder', new BarbConversionUtils.HeroStates.DownLadder(this));
-            this.fsm.add('UpLadder', new BarbConversionUtils.HeroStates.UpLadder(this));
-            this.fsm.add('Run', new BarbConversionUtils.HeroStates.Run(this));
-            this.fsm.add('Attack', new BarbConversionUtils.HeroStates.Attack(this));
-            this.fsm.add('TripFall', new BarbConversionUtils.HeroStates.TripFall(this));
-            this.fsm.add('Fall', new BarbConversionUtils.HeroStates.Fall(this));
+            this.fsm = new Barbarian.StateMachine.StateMachine(this);
+            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this));
+            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this));
+            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this));
+            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this));
+            this.fsm.add('UpStairs', new Barbarian.HeroStates.UpStairs(this));
+            this.fsm.add('DownStairs', new Barbarian.HeroStates.DownStairs(this));
+            this.fsm.add('DownLadder', new Barbarian.HeroStates.DownLadder(this));
+            this.fsm.add('UpLadder', new Barbarian.HeroStates.UpLadder(this));
+            this.fsm.add('Run', new Barbarian.HeroStates.Run(this));
+            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this));
+            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this));
+            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this));
             this.fsm.transition('Idle');
 
             this.drawHero();

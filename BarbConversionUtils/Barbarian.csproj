@@ -58,12 +58,11 @@
     <Content Include="assets\enemies\ver.png" />
     <Content Include="assets\enemies\vsp.png" />
     <Content Include="assets\hero.png" />
+    <Content Include="assets\hud.png" />
     <Content Include="assets\miscspr.png" />
-    <Content Include="assets\SteveScratch.png" />
     <Content Include="css\app.css" />
     <Content Include="index.html" />
     <Content Include="js\barbutils.js" />
-    <Content Include="js\lib\FileSaver.min.js" />
     <Content Include="js\lib\phaser.js" />
     <Content Include="js\lib\phaser.min.js" />
     <Content Include="web.config" />
@@ -75,14 +74,12 @@
     <TypeScriptCompile Include="src\hero.ts" />
     <TypeScriptCompile Include="src\herostates.ts" />
     <TypeScriptCompile Include="src\layout.ts" />
-    <TypeScriptCompile Include="src\test.ts" />
     <TypeScriptCompile Include="src\tilemap.ts" />
     <TypeScriptCompile Include="src\_ref\p2.d.ts" />
     <TypeScriptCompile Include="src\_ref\phaser.comments.d.ts" />
     <TypeScriptCompile Include="src\_ref\pixi.comments.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\AREA.BIN" />
     <Content Include="assets\area.json" />
     <Content Include="assets\rooms.json" />
     <Content Include="assets\miscspr.json" />

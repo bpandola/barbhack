@@ -1,4 +1,4 @@
-﻿namespace BarbConversionUtils.StateMachine {
+﻿namespace Barbarian.StateMachine {
 
     export interface IState {
         onEnter();
@@ -12,9 +12,9 @@
         private states: { id: string, value: IState }[] = [];
         private currentState: IState = null;
         private currentStateName: string;
-        private hero: BarbConversionUtils.Hero;
+        private hero: Barbarian.Hero;
 
-        constructor(hero: BarbConversionUtils.Hero) {
+        constructor(hero: Barbarian.Hero) {
             this.hero = hero;
         }
 
@@ -34,7 +34,7 @@
 
             // Reset timer - HACK!
             this.hero.game.time.events.remove(this.hero.animTimer);
-            this.hero.animTimer = this.hero.game.time.events.loop(BarbConversionUtils.Hero.ANIMATION_INTERVAL, this.hero.animate, this.hero);
+            this.hero.animTimer = this.hero.game.time.events.loop(Barbarian.Hero.ANIMATION_INTERVAL, this.hero.animate, this.hero);
             
         }
 

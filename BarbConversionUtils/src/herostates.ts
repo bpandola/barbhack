@@ -1,7 +1,7 @@
-﻿import FSM = BarbConversionUtils.StateMachine;
-import Hero = BarbConversionUtils.Hero;
+﻿import FSM = Barbarian.StateMachine;
+import Hero = Barbarian.Hero;
 
-namespace BarbConversionUtils.HeroStates {
+namespace Barbarian.HeroStates {
 
     export class Idle implements FSM.IState {
 

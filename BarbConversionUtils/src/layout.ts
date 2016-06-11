@@ -1,4 +1,4 @@
-﻿namespace BarbConversionUtils {
+﻿namespace Barbarian {
 
     export interface RoomObj {
         flags: number;
@@ -52,9 +52,9 @@
 
     export class Layout extends Phaser.State {
 
-        game: BarbConversionUtils.Util;
+        game: Barbarian.Game;
         roomsJSON: any;
-        hero: BarbConversionUtils.Hero;
+        hero: Barbarian.Hero;
         //tmpHero: Phaser.Group = null;
         //box: Phaser.Sprite;
         keys: Phaser.CursorKeys;
@@ -68,6 +68,7 @@
             this.load.atlasJSONArray('misc', 'assets/miscspr.png', 'assets/miscspr.json');
             this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
             this.load.json('hero', 'assets/heroanims.json');
+            this.load.image('hud', 'assets/hud.png');
 
             // Enemies
             this.load.json('enemies', 'assets/enemyanims.json');
@@ -118,12 +119,17 @@
             //this.box.anchor.setTo(0.5, 1);
 
             // Just testing constants...
-            var tmp = 20 * BarbConversionUtils.SCALE;
+            var tmp = 20 * Barbarian.SCALE;
             // Test
             var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
-            this.hero = new BarbConversionUtils.Hero(this.game, startPos.tileX, startPos.tileY);
+            this.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
             //var tmp = new BarbConversionUtils.Hero(this.game, 12, 17);
             //tmp.direction = Direction.Left;
+
+            // draw hud
+            var hud = this.make.image(0, 320, 'hud');
+            this.stage.addChild(hud);
+           
             
         }
 
@@ -222,7 +228,7 @@
                 }
                 else {
                     // black out area of background with height of a single tile and width of tile * obj.unkonwn
-                    background.rect(obj.xOff, obj.yOff, 16 * obj.unknown, 16, '#000');
+                    background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
                 }
 
             }
@@ -260,6 +266,7 @@
                 spr.y -= spr.height - 2;
             }
 
+            
         }
 
         drawEnemy(/*xPos, yPos,id: number, animation: number*/enemy: any, direction: Direction) {

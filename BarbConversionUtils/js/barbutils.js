@@ -3,28 +3,28 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
-    BarbConversionUtils.SCALE = 2;
-    var Util = (function (_super) {
-        __extends(Util, _super);
-        function Util() {
-            _super.call(this, 640, 400, Phaser.CANVAS, 'content', null);
+var Barbarian;
+(function (Barbarian) {
+    Barbarian.SCALE = 2;
+    Barbarian.TILE_SIZE = 16;
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.call(this, 640, 400, Phaser.CANVAS, 'game', null);
             this.roomNum = 0;
-            this.state.add('Boot', new BarbConversionUtils.Boot());
-            this.state.add('Test', new BarbConversionUtils.Test());
-            this.state.add('Layout', new BarbConversionUtils.Layout());
+            this.state.add('Boot', new Barbarian.Boot());
+            this.state.add('Layout', new Barbarian.Layout());
             this.state.start('Boot', true, true, 'Layout');
         }
-        return Util;
+        return Game;
     }(Phaser.Game));
-    BarbConversionUtils.Util = Util;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
+    Barbarian.Game = Game;
+})(Barbarian || (Barbarian = {}));
 window.onload = function () {
-    var game = new BarbConversionUtils.Util();
+    var game = new Barbarian.Game();
 };
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+var Barbarian;
+(function (Barbarian) {
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -43,10 +43,10 @@ var BarbConversionUtils;
         };
         return Boot;
     }(Phaser.State));
-    BarbConversionUtils.Boot = Boot;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+    Barbarian.Boot = Boot;
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
     var StateMachine;
     (function (StateMachine_1) {
         var StateMachine = (function () {
@@ -65,7 +65,7 @@ var BarbConversionUtils;
                 this.currentStateName = newState;
                 this.currentState.onEnter();
                 this.hero.game.time.events.remove(this.hero.animTimer);
-                this.hero.animTimer = this.hero.game.time.events.loop(BarbConversionUtils.Hero.ANIMATION_INTERVAL, this.hero.animate, this.hero);
+                this.hero.animTimer = this.hero.game.time.events.loop(Barbarian.Hero.ANIMATION_INTERVAL, this.hero.animate, this.hero);
             };
             StateMachine.prototype.getCurrentState = function () {
                 return this.currentState;
@@ -80,10 +80,10 @@ var BarbConversionUtils;
             return StateMachine;
         }());
         StateMachine_1.StateMachine = StateMachine;
-    })(StateMachine = BarbConversionUtils.StateMachine || (BarbConversionUtils.StateMachine = {}));
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+    })(StateMachine = Barbarian.StateMachine || (Barbarian.StateMachine = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
     (function (Animations) {
         Animations[Animations["Walk"] = 0] = "Walk";
         Animations[Animations["Run"] = 1] = "Run";
@@ -106,21 +106,21 @@ var BarbConversionUtils;
         Animations[Animations["Falling"] = 36] = "Falling";
         Animations[Animations["TripFall"] = 37] = "TripFall";
         Animations[Animations["Idle"] = 43] = "Idle";
-    })(BarbConversionUtils.Animations || (BarbConversionUtils.Animations = {}));
-    var Animations = BarbConversionUtils.Animations;
+    })(Barbarian.Animations || (Barbarian.Animations = {}));
+    var Animations = Barbarian.Animations;
     (function (Weapon) {
         Weapon[Weapon["Sword"] = 2] = "Sword";
         Weapon[Weapon["Shield"] = 3] = "Shield";
         Weapon[Weapon["Bow"] = 4] = "Bow";
-    })(BarbConversionUtils.Weapon || (BarbConversionUtils.Weapon = {}));
-    var Weapon = BarbConversionUtils.Weapon;
+    })(Barbarian.Weapon || (Barbarian.Weapon = {}));
+    var Weapon = Barbarian.Weapon;
     (function (Direction) {
         Direction[Direction["Left"] = 0] = "Left";
         Direction[Direction["Right"] = 1] = "Right";
         Direction[Direction["Up"] = 2] = "Up";
         Direction[Direction["Down"] = 3] = "Down";
-    })(BarbConversionUtils.Direction || (BarbConversionUtils.Direction = {}));
-    var Direction = BarbConversionUtils.Direction;
+    })(Barbarian.Direction || (Barbarian.Direction = {}));
+    var Direction = Barbarian.Direction;
     var Hero = (function (_super) {
         __extends(Hero, _super);
         function Hero(game, tileX, tileY) {
@@ -134,19 +134,19 @@ var BarbConversionUtils;
             this.weapon = Weapon.Sword;
             this.direction = Direction.Right;
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT });
-            this.fsm = new BarbConversionUtils.StateMachine.StateMachine(this);
-            this.fsm.add('Idle', new BarbConversionUtils.HeroStates.Idle(this));
-            this.fsm.add('Walk', new BarbConversionUtils.HeroStates.Walk(this));
-            this.fsm.add('ChangeDirection', new BarbConversionUtils.HeroStates.ChangeDirection(this));
-            this.fsm.add('HitWall', new BarbConversionUtils.HeroStates.HitWall(this));
-            this.fsm.add('UpStairs', new BarbConversionUtils.HeroStates.UpStairs(this));
-            this.fsm.add('DownStairs', new BarbConversionUtils.HeroStates.DownStairs(this));
-            this.fsm.add('DownLadder', new BarbConversionUtils.HeroStates.DownLadder(this));
-            this.fsm.add('UpLadder', new BarbConversionUtils.HeroStates.UpLadder(this));
-            this.fsm.add('Run', new BarbConversionUtils.HeroStates.Run(this));
-            this.fsm.add('Attack', new BarbConversionUtils.HeroStates.Attack(this));
-            this.fsm.add('TripFall', new BarbConversionUtils.HeroStates.TripFall(this));
-            this.fsm.add('Fall', new BarbConversionUtils.HeroStates.Fall(this));
+            this.fsm = new Barbarian.StateMachine.StateMachine(this);
+            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this));
+            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this));
+            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this));
+            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this));
+            this.fsm.add('UpStairs', new Barbarian.HeroStates.UpStairs(this));
+            this.fsm.add('DownStairs', new Barbarian.HeroStates.DownStairs(this));
+            this.fsm.add('DownLadder', new Barbarian.HeroStates.DownLadder(this));
+            this.fsm.add('UpLadder', new Barbarian.HeroStates.UpLadder(this));
+            this.fsm.add('Run', new Barbarian.HeroStates.Run(this));
+            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this));
+            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this));
+            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this));
             this.fsm.transition('Idle');
             this.drawHero();
         }
@@ -252,16 +252,16 @@ var BarbConversionUtils;
                 }
             }
         };
-        Hero.ANIMATION_INTERVAL = 100;
+        Hero.ANIMATION_INTERVAL = 170;
         Hero.TILE_SIZE = 16;
         return Hero;
     }(Phaser.Group));
-    BarbConversionUtils.Hero = Hero;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var FSM = BarbConversionUtils.StateMachine;
-var Hero = BarbConversionUtils.Hero;
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+    Barbarian.Hero = Hero;
+})(Barbarian || (Barbarian = {}));
+var FSM = Barbarian.StateMachine;
+var Hero = Barbarian.Hero;
+var Barbarian;
+(function (Barbarian) {
     var HeroStates;
     (function (HeroStates) {
         var Idle = (function () {
@@ -277,7 +277,7 @@ var BarbConversionUtils;
                     this.hero.fsm.transition('Attack');
                     return;
                 }
-                if (this.hero.direction == BarbConversionUtils.Direction.Right) {
+                if (this.hero.direction == Barbarian.Direction.Right) {
                     if (this.hero.keys.right.isDown) {
                         if (this.hero.keys.shift.isDown) {
                             this.hero.fsm.transition('Run');
@@ -289,7 +289,7 @@ var BarbConversionUtils;
                     else if (this.hero.keys.left.isDown)
                         this.hero.fsm.transition('ChangeDirection');
                 }
-                else if (this.hero.direction == BarbConversionUtils.Direction.Left) {
+                else if (this.hero.direction == Barbarian.Direction.Left) {
                     if (this.hero.keys.left.isDown)
                         this.hero.fsm.transition('Walk');
                     else if (this.hero.keys.right.isDown)
@@ -322,19 +322,19 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             Walk.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.Walk;
+                this.hero.animNum = Barbarian.Animations.Walk;
                 this.hero.frame = 0;
-                if (this.hero.direction == BarbConversionUtils.Direction.Right)
-                    this.hero.x += BarbConversionUtils.Hero.TILE_SIZE;
+                if (this.hero.direction == Barbarian.Direction.Right)
+                    this.hero.x += Barbarian.Hero.TILE_SIZE;
                 else
-                    this.hero.x -= BarbConversionUtils.Hero.TILE_SIZE;
+                    this.hero.x -= Barbarian.Hero.TILE_SIZE;
                 this.hero.checkMovement();
             };
             Walk.prototype.onUpdate = function () {
-                if (this.hero.direction == BarbConversionUtils.Direction.Left && this.hero.keys.right.isDown) {
+                if (this.hero.direction == Barbarian.Direction.Left && this.hero.keys.right.isDown) {
                     this.hero.fsm.transition('ChangeDirection');
                 }
-                else if (this.hero.direction == BarbConversionUtils.Direction.Right && this.hero.keys.left.isDown) {
+                else if (this.hero.direction == Barbarian.Direction.Right && this.hero.keys.left.isDown) {
                     this.hero.fsm.transition('ChangeDirection');
                 }
                 else if (!this.hero.keys.left.isDown && !this.hero.keys.right.isDown) {
@@ -342,10 +342,10 @@ var BarbConversionUtils;
                 }
             };
             Walk.prototype.onFrameChange = function () {
-                if (this.hero.direction == BarbConversionUtils.Direction.Right)
-                    this.hero.x += BarbConversionUtils.Hero.TILE_SIZE;
+                if (this.hero.direction == Barbarian.Direction.Right)
+                    this.hero.x += Barbarian.Hero.TILE_SIZE;
                 else
-                    this.hero.x -= BarbConversionUtils.Hero.TILE_SIZE;
+                    this.hero.x -= Barbarian.Hero.TILE_SIZE;
                 this.hero.checkMovement();
             };
             Walk.prototype.onLeave = function () {
@@ -358,19 +358,19 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             Run.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.Run;
+                this.hero.animNum = Barbarian.Animations.Run;
                 this.hero.frame = 0;
-                if (this.hero.direction == BarbConversionUtils.Direction.Right)
-                    this.hero.x += BarbConversionUtils.Hero.TILE_SIZE << 1;
+                if (this.hero.direction == Barbarian.Direction.Right)
+                    this.hero.x += Barbarian.Hero.TILE_SIZE << 1;
                 else
-                    this.hero.x -= BarbConversionUtils.Hero.TILE_SIZE << 1;
+                    this.hero.x -= Barbarian.Hero.TILE_SIZE << 1;
                 this.hero.checkMovement();
             };
             Run.prototype.onUpdate = function () {
-                if (this.hero.direction == BarbConversionUtils.Direction.Left && this.hero.keys.right.isDown) {
+                if (this.hero.direction == Barbarian.Direction.Left && this.hero.keys.right.isDown) {
                     this.hero.fsm.transition('ChangeDirection');
                 }
-                else if (this.hero.direction == BarbConversionUtils.Direction.Right && this.hero.keys.left.isDown) {
+                else if (this.hero.direction == Barbarian.Direction.Right && this.hero.keys.left.isDown) {
                     this.hero.fsm.transition('ChangeDirection');
                 }
                 else if (!this.hero.keys.left.isDown && !this.hero.keys.right.isDown) {
@@ -378,10 +378,10 @@ var BarbConversionUtils;
                 }
             };
             Run.prototype.onFrameChange = function () {
-                if (this.hero.direction == BarbConversionUtils.Direction.Right)
-                    this.hero.x += BarbConversionUtils.Hero.TILE_SIZE << 1;
+                if (this.hero.direction == Barbarian.Direction.Right)
+                    this.hero.x += Barbarian.Hero.TILE_SIZE << 1;
                 else
-                    this.hero.x -= BarbConversionUtils.Hero.TILE_SIZE << 1;
+                    this.hero.x -= Barbarian.Hero.TILE_SIZE << 1;
                 this.hero.checkMovement();
             };
             Run.prototype.onLeave = function () {
@@ -394,37 +394,37 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             ChangeDirection.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.ChangeDirection;
+                this.hero.animNum = Barbarian.Animations.ChangeDirection;
                 this.hero.frame = 0;
             };
             ChangeDirection.prototype.onUpdate = function () {
             };
             ChangeDirection.prototype.onFrameChange = function () {
-                var adjust = this.hero.direction == BarbConversionUtils.Direction.Right ? 1 : -1;
+                var adjust = this.hero.direction == Barbarian.Direction.Right ? 1 : -1;
                 switch (this.hero.frame) {
                     case 1:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 2:
-                        this.hero.x -= (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x -= (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 3:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 4:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 0:
-                        this.hero.x -= (3 * adjust * BarbConversionUtils.Hero.TILE_SIZE);
+                        this.hero.x -= (3 * adjust * Barbarian.Hero.TILE_SIZE);
                         this.hero.fsm.transition('Idle');
                         break;
                 }
             };
             ChangeDirection.prototype.onLeave = function () {
-                if (this.hero.direction == BarbConversionUtils.Direction.Left)
-                    this.hero.direction = BarbConversionUtils.Direction.Right;
+                if (this.hero.direction == Barbarian.Direction.Left)
+                    this.hero.direction = Barbarian.Direction.Right;
                 else
-                    this.hero.direction = BarbConversionUtils.Direction.Left;
+                    this.hero.direction = Barbarian.Direction.Left;
             };
             return ChangeDirection;
         }());
@@ -434,22 +434,22 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             HitWall.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.HitWall;
+                this.hero.animNum = Barbarian.Animations.HitWall;
                 this.hero.frame = 0;
             };
             HitWall.prototype.onUpdate = function () {
             };
             HitWall.prototype.onFrameChange = function () {
-                var adjust = this.hero.direction == BarbConversionUtils.Direction.Left ? 1 : -1;
+                var adjust = this.hero.direction == Barbarian.Direction.Left ? 1 : -1;
                 switch (this.hero.frame) {
                     case 1:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 2:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 3:
-                        this.hero.x -= (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x -= (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 0:
                         this.hero.fsm.transition('Idle');
@@ -466,7 +466,7 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             UpStairs.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.UpStairs;
+                this.hero.animNum = Barbarian.Animations.UpStairs;
                 this.hero.frame = 0;
             };
             UpStairs.prototype.onUpdate = function () {
@@ -474,26 +474,26 @@ var BarbConversionUtils;
             UpStairs.prototype.onFrameChange = function () {
                 if ('$&BHE'.indexOf(this.hero.getTile(0, -1)) != -1)
                     this.hero.fsm.transition('Idle');
-                var adjust = this.hero.direction == BarbConversionUtils.Direction.Right ? 1 : -1;
+                var adjust = this.hero.direction == Barbarian.Direction.Right ? 1 : -1;
                 switch (this.hero.frame) {
                     case 1:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
-                        this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
+                        this.hero.y -= Barbarian.Hero.TILE_SIZE;
                         break;
                     case 2:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 3:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
-                        this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
+                        this.hero.y -= Barbarian.Hero.TILE_SIZE;
                         break;
                     case 0:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                 }
             };
             UpStairs.prototype.onLeave = function () {
-                this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.y -= Barbarian.Hero.TILE_SIZE;
             };
             return UpStairs;
         }());
@@ -503,7 +503,7 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             DownStairs.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.DownStairs;
+                this.hero.animNum = Barbarian.Animations.DownStairs;
                 this.hero.frame = 0;
             };
             DownStairs.prototype.onUpdate = function () {
@@ -511,27 +511,27 @@ var BarbConversionUtils;
             DownStairs.prototype.onFrameChange = function () {
                 if ('%AGDJ('.indexOf(this.hero.getTile(0, +1)) != -1)
                     this.hero.fsm.transition('Idle');
-                var adjust = this.hero.direction == BarbConversionUtils.Direction.Right ? 1 : -1;
+                var adjust = this.hero.direction == Barbarian.Direction.Right ? 1 : -1;
                 switch (this.hero.frame) {
                     case 1:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
-                        this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
+                        this.hero.y += Barbarian.Hero.TILE_SIZE;
                         break;
                     case 2:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                     case 3:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
-                        this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
+                        this.hero.y += Barbarian.Hero.TILE_SIZE;
                         break;
                     case 0:
-                        this.hero.x += (BarbConversionUtils.Hero.TILE_SIZE * adjust);
+                        this.hero.x += (Barbarian.Hero.TILE_SIZE * adjust);
                         break;
                 }
             };
             DownStairs.prototype.onLeave = function () {
-                this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
-                var move = this.hero.direction == BarbConversionUtils.Direction.Left ? -BarbConversionUtils.Hero.TILE_SIZE : BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.y += Barbarian.Hero.TILE_SIZE;
+                var move = this.hero.direction == Barbarian.Direction.Left ? -Barbarian.Hero.TILE_SIZE : Barbarian.Hero.TILE_SIZE;
                 this.hero.x += move;
             };
             return DownStairs;
@@ -542,7 +542,7 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             DownLadder.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.DownLadder;
+                this.hero.animNum = Barbarian.Animations.DownLadder;
                 this.hero.frame = 0;
                 var tile = this.hero.getTile();
                 var adjust = 0;
@@ -556,9 +556,9 @@ var BarbConversionUtils;
                     this.hero.fsm.transition('Idle');
                     return;
                 }
-                this.hero.x += this.hero.direction == BarbConversionUtils.Direction.Right ? adjust * BarbConversionUtils.Hero.TILE_SIZE : -adjust * BarbConversionUtils.Hero.TILE_SIZE;
-                this.hero.y += BarbConversionUtils.Hero.TILE_SIZE / 2;
-                this.hero.direction = BarbConversionUtils.Direction.Down;
+                this.hero.x += this.hero.direction == Barbarian.Direction.Right ? adjust * Barbarian.Hero.TILE_SIZE : -adjust * Barbarian.Hero.TILE_SIZE;
+                this.hero.y += Barbarian.Hero.TILE_SIZE / 2;
+                this.hero.direction = Barbarian.Direction.Down;
             };
             DownLadder.prototype.onUpdate = function () {
             };
@@ -572,12 +572,12 @@ var BarbConversionUtils;
                     case 1:
                     case 4:
                     case 5:
-                        this.hero.y += BarbConversionUtils.Hero.TILE_SIZE / 2;
+                        this.hero.y += Barbarian.Hero.TILE_SIZE / 2;
                         break;
                 }
             };
             DownLadder.prototype.onLeave = function () {
-                this.hero.direction = BarbConversionUtils.Direction.Right;
+                this.hero.direction = Barbarian.Direction.Right;
             };
             return DownLadder;
         }());
@@ -587,7 +587,7 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             UpLadder.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.UpLadder;
+                this.hero.animNum = Barbarian.Animations.UpLadder;
                 this.hero.frame = 0;
                 var tile = this.hero.getTile();
                 var adjust = 0;
@@ -601,8 +601,8 @@ var BarbConversionUtils;
                     this.hero.fsm.transition('Idle');
                     return;
                 }
-                this.hero.x += this.hero.direction == BarbConversionUtils.Direction.Right ? adjust * BarbConversionUtils.Hero.TILE_SIZE : -adjust * BarbConversionUtils.Hero.TILE_SIZE;
-                this.hero.direction = BarbConversionUtils.Direction.Up;
+                this.hero.x += this.hero.direction == Barbarian.Direction.Right ? adjust * Barbarian.Hero.TILE_SIZE : -adjust * Barbarian.Hero.TILE_SIZE;
+                this.hero.direction = Barbarian.Direction.Up;
             };
             UpLadder.prototype.onUpdate = function () {
             };
@@ -616,13 +616,13 @@ var BarbConversionUtils;
                     case 3:
                     case 6:
                     case 7:
-                        this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE / 2;
+                        this.hero.y -= Barbarian.Hero.TILE_SIZE / 2;
                         break;
                 }
             };
             UpLadder.prototype.onLeave = function () {
-                this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE / 2;
-                this.hero.direction = BarbConversionUtils.Direction.Right;
+                this.hero.y -= Barbarian.Hero.TILE_SIZE / 2;
+                this.hero.direction = Barbarian.Direction.Right;
             };
             return UpLadder;
         }());
@@ -632,10 +632,10 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             Attack.prototype.onEnter = function () {
-                if (this.hero.weapon === BarbConversionUtils.Weapon.Bow)
-                    this.hero.animNum = BarbConversionUtils.Animations.ShootArrow;
+                if (this.hero.weapon === Barbarian.Weapon.Bow)
+                    this.hero.animNum = Barbarian.Animations.ShootArrow;
                 else
-                    this.hero.animNum = this.hero.game.rnd.integerInRange(BarbConversionUtils.Animations.Attack1, BarbConversionUtils.Animations.Attack6);
+                    this.hero.animNum = this.hero.game.rnd.integerInRange(Barbarian.Animations.Attack1, Barbarian.Animations.Attack6);
                 this.hero.frame = 0;
             };
             Attack.prototype.onUpdate = function () {
@@ -655,25 +655,25 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             TripFall.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.TripFall;
+                this.hero.animNum = Barbarian.Animations.TripFall;
                 this.hero.frame = 0;
-                this.hero.x += BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.x += Barbarian.Hero.TILE_SIZE;
             };
             TripFall.prototype.onUpdate = function () {
             };
             TripFall.prototype.onFrameChange = function () {
                 switch (this.hero.frame) {
                     case 1:
-                        this.hero.x += BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += Barbarian.Hero.TILE_SIZE;
                         break;
                     case 2:
-                        this.hero.x += BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.x += Barbarian.Hero.TILE_SIZE;
                         break;
                     case 3:
-                        this.hero.x += BarbConversionUtils.Hero.TILE_SIZE * 2;
+                        this.hero.x += Barbarian.Hero.TILE_SIZE * 2;
                         break;
                     case 4:
-                        this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
+                        this.hero.y += Barbarian.Hero.TILE_SIZE;
                         break;
                 }
                 if (this.hero.frame == 0) {
@@ -690,26 +690,26 @@ var BarbConversionUtils;
                 this.hero = hero;
             }
             Fall.prototype.onEnter = function () {
-                this.hero.animNum = BarbConversionUtils.Animations.Falling;
+                this.hero.animNum = Barbarian.Animations.Falling;
                 this.hero.frame = 0;
-                this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.y += Barbarian.Hero.TILE_SIZE;
             };
             Fall.prototype.onUpdate = function () {
             };
             Fall.prototype.onFrameChange = function () {
-                this.hero.y += BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.y += Barbarian.Hero.TILE_SIZE;
                 this.hero.checkMovement();
             };
             Fall.prototype.onLeave = function () {
-                this.hero.y -= BarbConversionUtils.Hero.TILE_SIZE;
+                this.hero.y -= Barbarian.Hero.TILE_SIZE;
             };
             return Fall;
         }());
         HeroStates.Fall = Fall;
-    })(HeroStates = BarbConversionUtils.HeroStates || (BarbConversionUtils.HeroStates = {}));
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+    })(HeroStates = Barbarian.HeroStates || (Barbarian.HeroStates = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
     (function (EnemyKeys) {
         EnemyKeys[EnemyKeys["nll"] = 0] = "nll";
         EnemyKeys[EnemyKeys["axe"] = 1] = "axe";
@@ -749,8 +749,8 @@ var BarbConversionUtils;
         EnemyKeys[EnemyKeys["dra"] = 35] = "dra";
         EnemyKeys[EnemyKeys["rot"] = 36] = "rot";
         EnemyKeys[EnemyKeys["vsp"] = 37] = "vsp";
-    })(BarbConversionUtils.EnemyKeys || (BarbConversionUtils.EnemyKeys = {}));
-    var EnemyKeys = BarbConversionUtils.EnemyKeys;
+    })(Barbarian.EnemyKeys || (Barbarian.EnemyKeys = {}));
+    var EnemyKeys = Barbarian.EnemyKeys;
     var Layout = (function (_super) {
         __extends(Layout, _super);
         function Layout() {
@@ -762,6 +762,7 @@ var BarbConversionUtils;
             this.load.atlasJSONArray('misc', 'assets/miscspr.png', 'assets/miscspr.json');
             this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
             this.load.json('hero', 'assets/heroanims.json');
+            this.load.image('hud', 'assets/hud.png');
             this.load.json('enemies', 'assets/enemyanims.json');
             for (var i = 0; i < 38; i++) {
                 var key = EnemyKeys[i];
@@ -771,11 +772,13 @@ var BarbConversionUtils;
         Layout.prototype.create = function () {
             this.roomsJSON = this.cache.getJSON('rooms');
             this.stage.smoothed = false;
-            this.drawRoom(BarbConversionUtils.Direction.Right);
+            this.drawRoom(Barbarian.Direction.Right);
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
-            var tmp = 20 * BarbConversionUtils.SCALE;
+            var tmp = 20 * Barbarian.SCALE;
             var startPos = this.roomsJSON[this.game.roomNum].startPos;
-            this.hero = new BarbConversionUtils.Hero(this.game, startPos.tileX, startPos.tileY);
+            this.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
+            var hud = this.make.image(0, 320, 'hud');
+            this.stage.addChild(hud);
         };
         Layout.prototype.createEffect = function (x, y, name) {
             var effect = this.add.sprite(x, y, 'misc');
@@ -812,16 +815,16 @@ var BarbConversionUtils;
         Layout.prototype.nextRoom = function (direction) {
             var newRoom;
             switch (direction) {
-                case BarbConversionUtils.Direction.Left:
+                case Barbarian.Direction.Left:
                     newRoom = this.roomsJSON[this.game.roomNum].map.left;
                     break;
-                case BarbConversionUtils.Direction.Right:
+                case Barbarian.Direction.Right:
                     newRoom = this.roomsJSON[this.game.roomNum].map.right;
                     break;
-                case BarbConversionUtils.Direction.Up:
+                case Barbarian.Direction.Up:
                     newRoom = this.roomsJSON[this.game.roomNum].map.up;
                     break;
-                case BarbConversionUtils.Direction.Down:
+                case Barbarian.Direction.Down:
                     newRoom = this.roomsJSON[this.game.roomNum].map.down;
                     break;
             }
@@ -833,25 +836,26 @@ var BarbConversionUtils;
         };
         Layout.prototype.drawRoom = function (direction) {
             this.world.removeAll();
+            var background = this.add.bitmapData(640, 320);
             for (var _i = 0, _a = this.roomsJSON[this.game.roomNum].area; _i < _a.length; _i++) {
                 var o = _a[_i];
                 var obj = o;
                 var spr;
                 if (obj.flags !== 5) {
-                    spr = this.add.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
+                    spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
                     spr.x += spr.width / 2;
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);
                     var xScale = obj.flags & 1 ? -1 : 1;
                     var yScale = obj.flags & 2 ? -1 : 1;
                     spr.scale.setTo(xScale, yScale);
+                    background.draw(spr, spr.x, spr.y);
                 }
                 else {
-                    var rect = this.add.bitmapData(16 * obj.unknown, 16);
-                    rect.fill(0, 0, 0, 1);
-                    rect.addToWorld(obj.xOff, obj.yOff);
+                    background.rect(obj.xOff, obj.yOff, Barbarian.TILE_SIZE * obj.unknown, Barbarian.TILE_SIZE, '#000');
                 }
             }
+            background.addToWorld(0, 0);
             for (var _b = 0, _c = this.roomsJSON[this.game.roomNum].effects; _b < _c.length; _b++) {
                 var effect = _c[_b];
                 this.createEffect(effect.x, effect.y, effect.name);
@@ -897,7 +901,7 @@ var BarbConversionUtils;
                 spr.scale.setTo(xScale, yScale);
             }
         };
-        Layout.prototype.drawHero = function () {
+        Layout.prototype.drawHeroOld = function () {
             var anims = this.cache.getJSON('hero');
             var tmpGroup = this.add.group();
             var animNum = 43;
@@ -925,33 +929,33 @@ var BarbConversionUtils;
         Layout.prototype.preRender = function () {
         };
         Layout.prototype.handleMovement = function () {
-            if (this.hero.x >= this.world.width + BarbConversionUtils.Hero.TILE_SIZE && this.hero.direction == BarbConversionUtils.Direction.Right) {
-                this.nextRoom(BarbConversionUtils.Direction.Right);
+            if (this.hero.x >= this.world.width + Barbarian.Hero.TILE_SIZE && this.hero.direction == Barbarian.Direction.Right) {
+                this.nextRoom(Barbarian.Direction.Right);
                 this.hero.x = 0;
                 this.hero.tilePos.x = 0;
             }
-            else if (this.hero.x <= -16 && this.hero.direction == BarbConversionUtils.Direction.Left) {
-                this.nextRoom(BarbConversionUtils.Direction.Left);
+            else if (this.hero.x <= -16 && this.hero.direction == Barbarian.Direction.Left) {
+                this.nextRoom(Barbarian.Direction.Left);
                 this.hero.x = 640;
                 this.hero.tilePos.x = 39;
             }
-            else if (this.hero.y <= 0 && this.hero.direction == BarbConversionUtils.Direction.Up) {
-                this.nextRoom(BarbConversionUtils.Direction.Up);
+            else if (this.hero.y <= 0 && this.hero.direction == Barbarian.Direction.Up) {
+                this.nextRoom(Barbarian.Direction.Up);
                 this.hero.y = 320;
                 this.hero.tilePos.y = 19;
             }
             else if (this.hero.y >= this.world.height) {
-                this.nextRoom(BarbConversionUtils.Direction.Down);
-                this.hero.y = BarbConversionUtils.Hero.TILE_SIZE;
+                this.nextRoom(Barbarian.Direction.Down);
+                this.hero.y = Barbarian.Hero.TILE_SIZE;
                 this.hero.tilePos.y = 1;
             }
         };
         Layout.prototype.update = function () {
             this.handleMovement();
             if (this.changeFrameRate.fast.isDown)
-                BarbConversionUtils.Hero.ANIMATION_INTERVAL -= 5;
+                Barbarian.Hero.ANIMATION_INTERVAL -= 5;
             else if (this.changeFrameRate.slow.isDown)
-                BarbConversionUtils.Hero.ANIMATION_INTERVAL += 5;
+                Barbarian.Hero.ANIMATION_INTERVAL += 5;
         };
         Layout.prototype.moveHero = function () {
         };
@@ -959,122 +963,16 @@ var BarbConversionUtils;
         };
         return Layout;
     }(Phaser.State));
-    BarbConversionUtils.Layout = Layout;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
-    var egaColors = [
-        '#000000',
-        '#0000A8',
-        '#00A800',
-        '#00A8A8',
-        '#A80000',
-        '#A800A8',
-        '#A85400',
-        '#A8A8A8',
-        '#545454',
-        '#5454FE',
-        '#54FE54',
-        '#54FEFE',
-        '#FE5454',
-        '#FE54FE',
-        '#FEFE54',
-        '#FEFEFE'];
-    var Test = (function (_super) {
-        __extends(Test, _super);
-        function Test() {
-            _super.apply(this, arguments);
-            this.firstTime = false;
-            this.index = 0;
-        }
-        Test.prototype.init = function () {
-        };
-        Test.prototype.preload = function () {
-            this.load.image('test', 'assets/SteveScratch.png');
-            this.load.binary('area', 'assets/AREA.BIN', this.binaryLoadCallback, this);
-        };
-        Test.prototype.create = function () {
-            this.stage.backgroundColor = '#0072bc';
-            this.stage.smoothed = false;
-            this.add.sprite(0, 0, 'test');
-            var buffer = this.cache.getBinary('area');
-            this.createTestBMP(this.index);
-            this.testBMP.addToWorld(100, 100, 0, 0, 1, 1);
-            this.time.events.loop(500, this.updateTest, this);
-        };
-        Test.prototype.createAreaData = function (i) {
-            this.createTestBMP(i);
-            var canvas = this.testBMP.canvas;
-            var indexStr = "0000" + i.toString();
-            canvas.toBlob(function (blob) {
-                saveAs(blob, "area_" + indexStr.slice(-4) + ".png");
-            });
-            this.testBMP.destroy();
-        };
-        Test.prototype.updateTest = function () {
-            this.index++;
-            if (this.index > 122) {
-                this.index = 0;
-                this.firstTime = false;
-            }
-            this.testBMP.destroy();
-            this.createTestBMP(this.index);
-            this.testBMP.addToWorld(100, 100, 0, 0, 1, 1);
-        };
-        Test.prototype.render = function () {
-        };
-        Test.prototype.binaryLoadCallback = function (key, data) {
-            return new Uint8Array(data);
-        };
-        Test.prototype.createTestBMP = function (index, scale) {
-            if (scale === undefined)
-                scale = 2;
-            var buffer = this.cache.getBinary('area');
-            var offset = (buffer[(index * 2) + 1] * 256) + buffer[(index * 2)];
-            var width = buffer[offset++] * scale;
-            var height = buffer[offset++] * scale;
-            offset++;
-            this.testBMP = this.make.bitmapData(width, height);
-            this.testBMP.smoothed = false;
-            for (var y = 0; y < height / scale; y++) {
-                for (var x = 0; x < width / scale;) {
-                    var data = buffer[offset];
-                    var colorLen = (data >> 4);
-                    var colorIndex = data & 0x0F;
-                    var alpha = 255;
-                    if (colorIndex === 0) {
-                        colorIndex = 13;
-                        alpha = 0;
-                    }
-                    else if (colorIndex === 13) {
-                        colorIndex = 0;
-                    }
-                    var c = Phaser.Color.hexToColor(egaColors[colorIndex]);
-                    for (var j = 0; j <= colorLen; j++) {
-                        for (var sx = 0; sx < scale; sx++) {
-                            for (var sy = 0; sy < scale; sy++) {
-                                this.testBMP.setPixel32((x * scale) + sx, (y * scale) + sy, c.r, c.g, c.b, alpha);
-                            }
-                        }
-                        x++;
-                    }
-                    offset++;
-                }
-            }
-            this.testBMP.update();
-        };
-        return Test;
-    }(Phaser.State));
-    BarbConversionUtils.Test = Test;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
-var BarbConversionUtils;
-(function (BarbConversionUtils) {
+    Barbarian.Layout = Layout;
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
     var TileMap = (function () {
         function TileMap(layout) {
             this.tileData = [];
         }
         return TileMap;
     }());
-    BarbConversionUtils.TileMap = TileMap;
-})(BarbConversionUtils || (BarbConversionUtils = {}));
+    Barbarian.TileMap = TileMap;
+})(Barbarian || (Barbarian = {}));
 //# sourceMappingURL=barbutils.js.map

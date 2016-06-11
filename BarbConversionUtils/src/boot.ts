@@ -1,8 +1,8 @@
-﻿namespace BarbConversionUtils {
+﻿namespace Barbarian {
 
     export class Boot extends Phaser.State {
 
-        game: BarbConversionUtils.Util;
+        game: Barbarian.Game;
 
         init(stateToStart) {
             this.input.maxPointers = 1;
