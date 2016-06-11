@@ -71,10 +71,6 @@
 
             // Enemies
             this.load.json('enemies', 'assets/enemyanims.json');
-            //this.load.atlasJSONArray('axe', 'assets/axe.png', 'assets/axe.json');
-            //this.load.atlasJSONArray('ren', 'assets/ren.png', 'assets/ren.json');
-            //this.load.atlasJSONArray('ver', 'assets/ver.png', 'assets/ver.json');
-            //this.load.atlasJSONArray('thr', 'assets/thr.png', 'assets/thr.json');
 
             // Loop to load enemies
             for (var i = 0; i < 38; i++) {
@@ -200,16 +196,19 @@
         }
 
         drawRoom(direction: Direction) {
-
+            // clear world
             this.world.removeAll();
-
+            // create bitmap to hold room background
+            var background = this.add.bitmapData(640, 320);
+            // loop through area data to create background
             for (var o of this.roomsJSON[this.game.roomNum].area) {
 
                 var obj: RoomObj = o;
                 var spr: Phaser.Sprite;
 
                 if (obj.flags !== 5) {
-                    spr = this.add.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
+
+                    spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
                     spr.x += spr.width / 2;
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);
@@ -218,29 +217,32 @@
                     var yScale = obj.flags & 2 ? -1 : 1;
 
                     spr.scale.setTo(xScale, yScale);
+
+                    background.draw(spr, spr.x, spr.y);
                 }
                 else {
-                    var rect: Phaser.BitmapData = this.add.bitmapData(16 * obj.unknown, 16);
-                    rect.fill(0, 0, 0, 1);
-                    rect.addToWorld(obj.xOff, obj.yOff);
+                    // black out area of background with height of a single tile and width of tile * obj.unkonwn
+                    background.rect(obj.xOff, obj.yOff, 16 * obj.unknown, 16, '#000');
                 }
 
             }
+            // add background to world
+            background.addToWorld(0, 0);
 
-            
-
+            // add effects to room
             for (var effect of this.roomsJSON[this.game.roomNum].effects) {
 
                 this.createEffect(effect.x, effect.y, effect.name);
             }
 
-            // Draw Enemies
+            // add enemies to room
             for (var enemy of this.roomsJSON[this.game.roomNum].enemies) {
                 if (enemy.id !== 0) {
                     this.drawEnemy(enemy, direction);
                 }
             }
 
+            // add static items
             for (var item of this.roomsJSON[this.game.roomNum].items) {
 
                 var spr: Phaser.Sprite;
@@ -253,16 +255,11 @@
                 else
                     imageId = 2;
 
-                    spr = this.add.sprite(item.x, item.y, 'misc', imageId);
-                    spr.x -= spr.width / 2;
-                    spr.y -= spr.height - 2;
-                    //spr.anchor.setTo(0.5,1);
-
-                
-
+                spr = this.add.sprite(item.x, item.y, 'misc', imageId);
+                spr.x -= spr.width / 2;
+                spr.y -= spr.height - 2;
             }
 
-            
         }
 
         drawEnemy(/*xPos, yPos,id: number, animation: number*/enemy: any, direction: Direction) {
@@ -298,7 +295,7 @@
             
         }
 
-        drawHero() {
+        drawHeroOld() {
 
             var anims = this.cache.getJSON('hero');
             var tmpGroup:Phaser.Group = this.add.group();
