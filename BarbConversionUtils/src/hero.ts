@@ -41,7 +41,7 @@
 
     export class Hero extends Phaser.Group {
 
-        static ANIMATION_INTERVAL: number = 160; //170;
+        static ANIMATION_INTERVAL: number = 60; //170;
         
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -99,6 +99,15 @@
         setAnimation(id: Animations) {
             this.animNum = id;
             this.frame = 0;
+        }
+
+        moveRelative(relTileX: number, relTileY: number) {
+
+            var xMovement = this.direction == Direction.Right ? TILE_SIZE : -TILE_SIZE;
+
+            this.x += xMovement * relTileX;
+            this.y += TILE_SIZE * relTileY;
+
         }
 
         previousPreviousTile() {
