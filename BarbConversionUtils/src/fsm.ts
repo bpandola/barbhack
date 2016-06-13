@@ -4,12 +4,12 @@
         onEnter();
         onUpdate();
         onLeave();
-        onFrameChange();
     }
 
     export class StateMachine {
 
         private states: { id: string, value: IState }[] = [];
+        private validFromStates: { id: string, value: string[] }[] = [];
         private currentState: IState = null;
         private currentStateName: string;
         private hero: Barbarian.Hero;
@@ -18,24 +18,27 @@
             this.hero = hero;
         }
 
-        add(key: string, state: IState) {
+        add(key: string, state: IState, validFromStates: string[]) {
 
             this.states[key] = state;
             //this.currentState = this.states[key];
+            this.validFromStates[key] = validFromStates;
         }
 
         transition(newState: string) {
+            if (this.currentState != null && !this.isValidFrom(newState))
+                return;
+
             if (this.currentState)
                 this.currentState.onLeave();
 
             this.currentState = this.states[newState];
             this.currentStateName = newState;
             this.currentState.onEnter();
+            this.currentState.onUpdate();
 
-            // Reset timer - HACK!
-            this.hero.game.time.events.remove(this.hero.animTimer);
-            this.hero.animTimer = this.hero.game.time.events.loop(Barbarian.Hero.ANIMATION_INTERVAL, this.hero.animate, this.hero);
-            
+            // HACK?
+            this.hero.timeStep = 0;
         }
 
         getCurrentState(): IState {
@@ -44,6 +47,17 @@
 
         get getCurrentStateName(): string {
             return this.currentStateName;
+        }
+
+        isValidFrom(newState: string): boolean {
+            var isValid = false;
+            if (newState != this.currentStateName) {
+                for (var state of this.validFromStates[newState]) {
+                    if (state == this.currentStateName || state == '*')
+                        isValid = true;
+                }
+            }
+            return isValid;
         }
 
     }

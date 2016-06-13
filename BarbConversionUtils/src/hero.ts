@@ -18,7 +18,7 @@
         Attack6,
         ShootArrow = 22,
         HitWall = 24,
-        HitGround = 28,
+        HitGround = 34,
         Falling = 36,
         TripFall = 37,
         Idle = 43
@@ -41,8 +41,8 @@
 
     export class Hero extends Phaser.Group {
 
-        static ANIMATION_INTERVAL: number = 170; //170;
-        static TILE_SIZE: number = 16;
+        static ANIMATION_INTERVAL: number = 160; //170;
+        
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
         frame: number;
@@ -51,8 +51,9 @@
         keys: any;
         fsm: Barbarian.StateMachine.StateMachine;
         direction: Direction;
-        animTimer: Phaser.TimerEvent;
         game: Barbarian.Game;
+
+        timeStep: number = 0;
         
         currentTile: string = "?";
 
@@ -70,27 +71,34 @@
             this.direction = Direction.Right;
            
 
-            //this.animTimer = this.game.time.events.loop(Hero.ANIMATION_INTERVAL, this.animate, this);
+            
 
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT });
 
 
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
-            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this));
-            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this));
-            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this));
-            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this));
-            this.fsm.add('UpStairs', new Barbarian.HeroStates.UpStairs(this));
-            this.fsm.add('DownStairs', new Barbarian.HeroStates.DownStairs(this));
-            this.fsm.add('DownLadder', new Barbarian.HeroStates.DownLadder(this));
-            this.fsm.add('UpLadder', new Barbarian.HeroStates.UpLadder(this));
-            this.fsm.add('Run', new Barbarian.HeroStates.Run(this));
-            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this));
-            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this));
-            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this));
+            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this),['*']);
+            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle']);
+            this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk']);
+            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle','Walk']);
+            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this), ['Walk']);
+            this.fsm.add('UpStairs', new Barbarian.HeroStates.UpStairs(this), ['*']);
+            this.fsm.add('DownStairs', new Barbarian.HeroStates.DownStairs(this), ['Idle', 'Walk', 'Run']);
+            this.fsm.add('DownLadder', new Barbarian.HeroStates.DownLadder(this), ['Idle','Walk','Run']);
+            this.fsm.add('UpLadder', new Barbarian.HeroStates.UpLadder(this), ['Idle', 'Walk', 'Run']);
+            this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['*']);
+            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run']);
+            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['*']);
+            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), ['*']);
+            this.fsm.add('Die', new Barbarian.HeroStates.Die(this), ['*']);
             this.fsm.transition('Idle');
 
             this.drawHero();
+        }
+
+        setAnimation(id: Animations) {
+            this.animNum = id;
+            this.frame = 0;
         }
 
         previousPreviousTile() {
@@ -133,7 +141,7 @@
             if (adjustX == null) { adjustX = 0 }
             if (adjustY == null) { adjustY = 0 }
 
-            if (this.x < Hero.TILE_SIZE || this.x >= 640 || this.y < Hero.TILE_SIZE || this.y >= 320)
+            if (this.x < TILE_SIZE || this.x >= 640 || this.y < TILE_SIZE || this.y >= 320)
                 return '?';
 
             var tileX = this.direction == Direction.Right ? (this.x >> 4) - 1 : (this.x >> 4);
@@ -162,14 +170,18 @@
                 case '3':
                     this.fsm.transition('HitWall');
                     return;
-                //case '/':
-                //    this.fsm.transition('TripFall');
-                //    return;
-                //case '5':
-                //case '!':
-                //    this.fsm.transition('Idle');
-                //    return;
-                 
+                case '/':
+                    if (this.direction != Direction.Down) {
+                        this.fsm.transition('TripFall');
+                        return;
+                    }
+                    break;
+                case '5':
+                case '!':
+                    if (this.direction == Direction.Down) {
+                        this.fsm.transition('Die');
+                        return;
+                    }
             }
 
             switch (this.previousTile()) {
@@ -214,14 +226,57 @@
             if (this.frame >= numFrames)
                 this.frame = 0;
 
-            this.fsm.getCurrentState().onFrameChange();
+            //this.fsm.getCurrentState().onFrameChange();
 
-            this.drawHero();
+            //this.drawHero();
 
         }
 
         update() {
-            this.fsm.getCurrentState().onUpdate();
+            this.timeStep += this.game.time.elapsedMS;
+            if (this.timeStep >= Hero.ANIMATION_INTERVAL) {
+                this.timeStep = this.timeStep % Hero.ANIMATION_INTERVAL;
+                this.animate();
+                this.fsm.getCurrentState().onUpdate();
+            }
+            if (this.keys.attack.isDown) {
+                this.fsm.transition('Attack');
+              
+            }
+            
+            if (this.direction == Direction.Right) {
+                if (this.keys.right.isDown) {
+                    if (this.keys.shift.isDown) {
+                        this.fsm.transition('Run');
+                    } else {
+                        this.fsm.transition('Walk');
+                    }
+                } else if (this.keys.left.isDown)
+                    this.fsm.transition('ChangeDirection');
+            } else if (this.direction == Direction.Left) {
+                if (this.keys.left.isDown)
+                    this.fsm.transition('Walk');
+                else if (this.keys.right.isDown)
+                    this.fsm.transition('ChangeDirection');
+            }
+
+            if (this.keys.down.isDown) {
+                if ("*+,".indexOf(this.getTile()) != -1) {
+                    this.fsm.transition('DownLadder');
+                }
+            } else if (this.keys.up.isDown) {
+                if ("-+.".indexOf(this.getTile()) != -1) {
+                    this.fsm.transition('UpLadder');
+                }
+
+            }
+            if (!this.keys.left.isDown && !this.keys.right.isDown) {
+                this.fsm.transition('Stop');
+            }
+
+           
+
+            
 
             //this.x = this.tilePos.x << 4;
             //this.y = (this.tilePos.y ) << 4;

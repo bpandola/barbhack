@@ -56,6 +56,7 @@ namespace Barbarian.HeroStates {
         }
 
     }
+
     export class Walk implements FSM.IState {
 
         private hero: Hero;
@@ -68,11 +69,11 @@ namespace Barbarian.HeroStates {
 
             this.hero.setAnimation(Animations.Walk);
 
-            if (this.hero.direction == Direction.Right)
-                this.hero.x += TILE_SIZE;
-            else
-                this.hero.x -= TILE_SIZE;
-            this.hero.checkMovement();
+            //if (this.hero.direction == Direction.Right)
+            //    this.hero.x += TILE_SIZE;
+            //else
+            //    this.hero.x -= TILE_SIZE;
+            //this.hero.checkMovement();
         }
 
         onUpdate() {
@@ -135,13 +136,15 @@ namespace Barbarian.HeroStates {
     export class ChangeDirection implements FSM.IState {
 
         private hero: Hero;
+        private animDone = false;
 
         constructor(hero: Hero) {
             this.hero = hero;
         }
 
         onEnter() {
-            this.hero.setAnimation(Animations.ChangeDirection);           
+            this.hero.setAnimation(Animations.ChangeDirection);
+            this.animDone = false;
         }
 
         onUpdate() {
@@ -149,6 +152,14 @@ namespace Barbarian.HeroStates {
        
 
             var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+
+            if (this.animDone == true) {
+                
+                // If we hit this we've come to the end and looped back to the first frame, so we're done.
+                this.hero.x -= (3 * adjust * TILE_SIZE);
+                this.hero.fsm.transition('Idle');
+                return;
+            }
 
             switch (this.hero.frame) {
                 case 1:
@@ -161,13 +172,10 @@ namespace Barbarian.HeroStates {
                     this.hero.x += (TILE_SIZE  * adjust);
                     break;
                 case 4:
-                    this.hero.x += (TILE_SIZE  * adjust);
+                    this.hero.x += (TILE_SIZE * adjust);
+                    this.animDone = true;
                     break;
-                case 0:
-                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    this.hero.x -= (3 * adjust * TILE_SIZE);
-                    this.hero.fsm.transition('Idle');
-                    break;
+               
             }
         }
 
@@ -184,16 +192,15 @@ namespace Barbarian.HeroStates {
     export class HitWall implements FSM.IState {
 
         private hero: Hero;
+        private animDone = false;
 
         constructor(hero: Hero) {
             this.hero = hero;
         }
 
         onEnter() {
-            this.hero.animNum = Animations.HitWall;
-            this.hero.frame = 0;
-            //var adjust = this.hero.direction == Direction.Left ? -1 : 1;
-            //this.hero.x += (TILE_SIZE * adjust);
+            this.hero.setAnimation(Animations.HitWall);
+            this.animDone = false;
         }
 
         onUpdate() {
@@ -201,6 +208,11 @@ namespace Barbarian.HeroStates {
        
 
             var adjust = this.hero.direction == Direction.Left ? 1 : -1;
+
+            if (this.hero.frame == 0 && this.animDone == true) {
+                    this.hero.fsm.transition('Idle');
+                return;
+            }
 
             switch (this.hero.frame) {
                
@@ -212,21 +224,20 @@ namespace Barbarian.HeroStates {
                     break;
                 case 3:
                     this.hero.x -= (TILE_SIZE * adjust);
+                   
+
                     break;
                 case 0:
                     // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    //this.hero.tilePos.x -= (3 * adjust);
-                    this.hero.fsm.transition('Idle');
+                    if (this.animDone == false)
+                        this.animDone = true;
                     break;
             }
         }
 
         onLeave() {
 
-            //if (this.hero.direction == Direction.Left)
-            //    this.hero.direction = Direction.Right;
-            //else
-            //    this.hero.direction = Direction.Left;
+           
         }
 
     }
@@ -240,52 +251,28 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-            this.hero.animNum = Animations.UpStairs;
-            this.hero.frame = 0;
-            //var adjust = this.hero.direction == Direction.Right ? 1 : -1;
-            //this.hero.x += (1 * adjust * TILE_SIZE);
+            this.hero.setAnimation(Animations.UpStairs);
 
-            //var stupidAdjustment = 0;
-            //if (this.hero.direction == Direction.Left)
-            //    stupidAdjustment = 1;
-            //this.hero.tilePos.x += stupidAdjustment;
-            
+            // Set him back one so animation works properly...
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+            this.hero.x -= (TILE_SIZE * adjust);
         }
 
         onUpdate() {
 
-      
-            //var look = this.hero.direction == Direction.Right ? -1 : 1;
             if ('$&BHE'.indexOf(this.hero.getTile(0,-1)) != -1)
                 this.hero.fsm.transition('Idle');
 
             var adjust = this.hero.direction == Direction.Right ? 1 : -1;
 
-            switch (this.hero.frame) {
-                case 1:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y -= TILE_SIZE;
-                    break;
-                case 2:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                case 3:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y -= TILE_SIZE;
-                    break;
-                case 0:
-                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    //this.hero.tilePos.x -= (3 * adjust);
-                    //this.hero.fsm.transition('Idle');
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                //default:
-                //    this.hero.tilePos.x += 1;
-                //    this.hero.tilePos.y -= 1;
+            if (this.hero.frame % 2 == 0) {
+                this.hero.x += (TILE_SIZE * adjust);
+            } else {
+                this.hero.x += (TILE_SIZE * adjust);
+                this.hero.y -= TILE_SIZE;
             }
 
+          
             
         }
 
@@ -305,14 +292,10 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-            this.hero.animNum = Animations.DownStairs;
-            this.hero.frame = 0;
-            //var adjust = this.hero.direction == Direction.Right ? 1 : -1;
-            //this.hero.tilePos.x += (2 * adjust);
-            //var stupidAdjustment = 0;
-            //if (this.hero.direction == Direction.Left)
-            //    stupidAdjustment = 1;
-            //this.hero.tilePos.x += stupidAdjustment;
+            this.hero.setAnimation(Animations.DownStairs);
+             // Set him back one so animation works properly...
+            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+            this.hero.x -= (TILE_SIZE * adjust);
         }
 
         onUpdate() {
@@ -324,178 +307,24 @@ namespace Barbarian.HeroStates {
 
             var adjust = this.hero.direction == Direction.Right ? 1 : -1;
 
-            switch (this.hero.frame) {
-                case 1:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y += TILE_SIZE;
-                    break;
-                case 2:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                case 3:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y += TILE_SIZE;
-                    break;
-                case 0:
-                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    //this.hero.tilePos.x -= (3 * adjust);
-                    //this.hero.fsm.transition('Idle');
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                //default:
-                //    this.hero.tilePos.x += 1;
-                //    this.hero.tilePos.y -= 1;
-            }
-
-        }
-
-        onLeave() {
-
-            this.hero.y += TILE_SIZE;
-            var move = this.hero.direction == Direction.Left ? -TILE_SIZE : TILE_SIZE;
-            this.hero.x += move;
-        }
-
-    }
-
-    export class WalkStairs implements FSM.IState {
-
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
-
-        onEnter() {
-            this.hero.animNum = Animations.DownStairs;
-            this.hero.frame = 0;
-            //var adjust = this.hero.direction == Direction.Right ? 1 : -1;
-            //this.hero.tilePos.x += (2 * adjust);
-            //var stupidAdjustment = 0;
-            //if (this.hero.direction == Direction.Left)
-            //    stupidAdjustment = 1;
-            //this.hero.tilePos.x += stupidAdjustment;
-        }
-
-        onUpdate() {
-
-        }
-
-        onFrameChange() {
-
-            if ('%AGDJ('.indexOf(this.hero.getTile(0, +1)) != -1)
-                this.hero.fsm.transition('Idle');
-
-            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
-
-            switch (this.hero.frame) {
-                case 1:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y += TILE_SIZE;
-                    break;
-                case 2:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                case 3:
-                    this.hero.x += (TILE_SIZE * adjust);
-                    this.hero.y += TILE_SIZE;
-                    break;
-                case 0:
-                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    //this.hero.tilePos.x -= (3 * adjust);
-                    //this.hero.fsm.transition('Idle');
-                    this.hero.x += (TILE_SIZE * adjust);
-                    //this.hero.tilePos.y -= 1;
-                    break;
-                //default:
-                //    this.hero.tilePos.x += 1;
-                //    this.hero.tilePos.y -= 1;
-            }
-
-        }
-
-        onLeave() {
-
-            this.hero.y += TILE_SIZE;
-            var move = this.hero.direction == Direction.Left ? -TILE_SIZE : TILE_SIZE;
-            this.hero.x += move;
-        }
-
-    }
-
-    export class UseLadder implements FSM.IState {
-
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
-
-        onEnter() {
-
-            if (this.hero.direction == Direction.Down) {
-                this.hero.setAnimation(Animations.DownLadder);
+            if (this.hero.frame % 2 == 0) {
+                this.hero.x += (TILE_SIZE * adjust);
             } else {
-                this.hero.setAnimation(Animations.UpLadder);
+                this.hero.x += (TILE_SIZE * adjust);
+                this.hero.y += TILE_SIZE;
             }
-
-            var tile = this.hero.getTile();
-
-
-            var adjust = 0;
-
-            if (tile == '*')
-                this.hero.direction == Direction.Right ? adjust = 1 : adjust = 2;
-            else if (tile == ',')
-                this.hero.direction == Direction.Right ? adjust = -1 : adjust = 0;
-            else if (tile == '+')
-                this.hero.direction == Direction.Right ? adjust = 0 : adjust = 1;
-            else {
-                this.hero.fsm.transition('Idle');
-                return;
-            }
-
-            this.hero.x += adjust * TILE_SIZE;
-            this.hero.y += TILE_SIZE / 2;
-
-            this.hero.direction = Direction.Down;
-
-        }
-
-        onUpdate() {
-
-
-
-
-            if (this.hero.getTile() == '.') {
-                this.hero.fsm.transition('Idle');
-                return;
-            }
-
-            switch (this.hero.frame) {
-                case 0:
-                case 1:
-                case 4:
-                case 5:
-                    this.hero.y += TILE_SIZE / 2;
-                    break;
-
-
-            }
-
-           
-
 
         }
 
         onLeave() {
-            this.hero.direction = Direction.Right;
+
+            this.hero.y += TILE_SIZE;
+            var move = this.hero.direction == Direction.Left ? -TILE_SIZE : TILE_SIZE;
+            this.hero.x += move;
         }
 
     }
+
     export class DownLadder implements FSM.IState {
 
         private hero: Hero;
@@ -572,7 +401,6 @@ namespace Barbarian.HeroStates {
         }
 
     }
-
 
     export class UpLadder implements FSM.IState {
 
@@ -652,6 +480,7 @@ namespace Barbarian.HeroStates {
     export class Attack implements FSM.IState {
 
         private hero: Hero;
+        private animDone = false;
 
         constructor(hero: Hero) {
             this.hero = hero;
@@ -659,20 +488,20 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             if (this.hero.weapon === Weapon.Bow)
-                this.hero.animNum = Animations.ShootArrow;
+                this.hero.setAnimation(Animations.ShootArrow);
             else
-                this.hero.animNum = this.hero.game.rnd.integerInRange(Animations.Attack1, Animations.Attack6);
-            this.hero.frame = 0;
+                this.hero.setAnimation(this.hero.game.rnd.integerInRange(Animations.Attack1, Animations.Attack6));
+
+            this.animDone = false;
         }
 
         onUpdate() {
-            
-           
-
       
-            if (this.hero.frame == 0) {
+            if (this.hero.frame == 0 && this.animDone == true) {
                 this.hero.fsm.transition('Idle');
 
+            } else {
+                this.animDone = true;
             }
         }
 
@@ -686,15 +515,19 @@ namespace Barbarian.HeroStates {
     export class TripFall implements FSM.IState {
 
         private hero: Hero;
+        private animDone: boolean = false;
 
         constructor(hero: Hero) {
             this.hero = hero;
         }
 
         onEnter() {
-            this.hero.animNum = Animations.TripFall;
-            this.hero.frame = 0;
+            this.hero.setAnimation(Animations.TripFall);
+           
             this.hero.x += TILE_SIZE;
+            this.animDone = false;
+
+            this.hero.direction == Direction.Down;
         }
 
         onUpdate() {
@@ -717,11 +550,13 @@ namespace Barbarian.HeroStates {
 
 
             }
-            if (this.hero.frame == 0) {
+            if (this.hero.frame == 0 && this.animDone) {
                 this.hero.fsm.transition('Fall');
 
 
 
+            } else {
+                this.animDone = true;
             }
         }
 
@@ -741,8 +576,8 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-            this.hero.animNum = Animations.Falling;
-            this.hero.frame = 0;
+            this.hero.setAnimation(Animations.Falling);
+            this.hero.direction = Direction.Down;
 
             this.hero.y += TILE_SIZE;
         }
@@ -768,6 +603,52 @@ namespace Barbarian.HeroStates {
 
         onLeave() {
             this.hero.y -= TILE_SIZE;
+            this.hero.direction = Direction.Right;
+
+        }
+
+    }
+
+    export class Die implements FSM.IState {
+
+        private hero: Hero;
+        private animDone: boolean;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.setAnimation(Animations.HitGround);
+            this.hero.direction = Direction.Down;
+
+            this.hero.y += TILE_SIZE;
+            this.animDone = false;
+        }
+
+        onUpdate() {
+
+
+
+
+
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.frame = 3;
+            } else {
+                this.animDone = true;
+            }
+
+
+
+
+
+
+
+        }
+
+        onLeave() {
+            //this.hero.y -= TILE_SIZE;
+            this.hero.direction = Direction.Right;
 
         }
 

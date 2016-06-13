@@ -62,7 +62,7 @@
     <Content Include="assets\miscspr.png" />
     <Content Include="css\app.css" />
     <Content Include="index.html" />
-    <Content Include="js\barbutils.js" />
+    <Content Include="js\barb.js" />
     <Content Include="js\lib\phaser.js" />
     <Content Include="js\lib\phaser.min.js" />
     <Content Include="web.config" />
@@ -161,7 +161,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    <TypeScriptOutFile>js/barbutils.js</TypeScriptOutFile>
+    <TypeScriptOutFile>js/barb.js</TypeScriptOutFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>

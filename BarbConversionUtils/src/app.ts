@@ -2,6 +2,7 @@
 
     export const SCALE = 2;
     export const TILE_SIZE = 16;
+    export const TILE_SHIFT = 4; // 2^4 is 16
 
     export class Game extends Phaser.Game {
 
