@@ -59,6 +59,7 @@
         changeFrameRate: any;
 
         tile: string;
+       
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -96,7 +97,7 @@
             // Test
             var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
             this.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
-
+            this.hero.tileMap = new TileMap(this.hero);
             // draw hud
             var hud = this.make.image(0, 320, 'hud');
             this.stage.addChild(hud);
