@@ -321,7 +321,7 @@
             
             this.game.debug.text(this.game.roomNum.toString(), 20, 20);
            
-            this.game.debug.text(this.hero.getTile(), 20, 40);
+            this.game.debug.text(this.hero.tileMap.getTile(), 20, 40);
            
 
 

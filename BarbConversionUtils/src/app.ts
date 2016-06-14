@@ -6,7 +6,7 @@
 
     export class Game extends Phaser.Game {
 
-        roomNum: number = 2;
+        roomNum: number = 0;
 
         constructor() {
             super(640, 400, Phaser.CANVAS, 'game', null);

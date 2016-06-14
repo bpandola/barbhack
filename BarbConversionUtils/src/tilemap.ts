@@ -2,12 +2,19 @@
 
     export enum TileMapLocation {
         LadderTop,
-        LadderBottom
+        LadderBottom,
+        StairsTop,
+        StairsBottom,
+        StairsUp,
+        StairsUpOptional,
+        StairsDown,
+        StairsDownOptional
     }
 
     export interface TileMapEntity {
         game: Barbarian.Game;
         getTileMapPosition(adjustX?: number, adjustY?: number): Phaser.Point;
+        moveRelative(numTilesX: number, numTilesY: number): void;
     }
 
     export class TileMap {
@@ -34,11 +41,24 @@
             return tile;
         }
 
+        // Strings are pipe-delimited to ensure no false positives (e.g. %A%G would hit %A using the % from G...).
         isEntityAt(location: TileMapLocation): boolean {
-
+            
             var searchString: string;
 
             switch (location) {
+                case TileMapLocation.StairsTop:
+                    return 'H$|B$|E&'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                case TileMapLocation.StairsBottom:
+                    return 'A%|G%|D(|J('.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                case TileMapLocation.StairsUp:
+                    return '%A|%G'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                case TileMapLocation.StairsDown:
+                    return '$H|$B'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                case TileMapLocation.StairsDownOptional:
+                    return '&E|'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                case TileMapLocation.StairsUpOptional:
+                    return '(J|(D'.indexOf(this.getTile(-1) + this.getTile()) != -1;
                 case TileMapLocation.LadderBottom:
                     searchString = '-+.';
                     break;
@@ -55,19 +75,33 @@
             if (position.x == -1 || position.y == -1)
                 return false;
 
-            var tileMapRow: string = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum].layout[position.y].rowData
+            var tileMapRow: string = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum].layout[position.y].rowData;
 
-            var index = tileMapRow.indexOf(searchString);
+            var index: number = 0;
+            // Need to loop through all matches because sometimes there are multiple ladders on the same row.
+            while (tileMapRow.indexOf(searchString, index) != -1) {
+                
+                index = tileMapRow.indexOf(searchString, index);
+                if (position.x >= index && position.x <= index + searchString.length - 1)
+                    return true;
+                else
+                    index++;
+            }
 
-            if (index == -1)
-                return false;
+            return false;
+        }
 
-            if (position.x >= index && position.x <= index + searchString.length - 1)
-                return true;
-            else
-                return false;
+        positionOnLadder() {
+            var tile = this.getTile();
 
+            var adjustX = 0;
 
+            if (tile == '-' || tile == '*')
+                adjustX = 1;
+            else if (tile == '.' || tile == ',')
+                adjustX = -1;
+
+            this.entity.moveRelative(adjustX, 0);      
         }
 
     }
