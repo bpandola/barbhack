@@ -39,21 +39,12 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-           
             this.hero.fsm.transition('Idle');
         }
 
-        onUpdate() {
+        onUpdate() {}
 
-            
-
-
-        }
-
-        onLeave() {
-
-
-        }
+        onLeave() {}
 
     }
 
@@ -66,33 +57,77 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-
             this.hero.setAnimation(Animations.Walk);
-
-            //if (this.hero.direction == Direction.Right)
-            //    this.hero.x += TILE_SIZE;
-            //else
-            //    this.hero.x -= TILE_SIZE;
-            //this.hero.checkMovement();
         }
 
         onUpdate() {
-           
-           
-           
-            if (this.hero.direction == Direction.Right)
-                this.hero.x += TILE_SIZE;
-            else
-                this.hero.x -= TILE_SIZE;
+            this.hero.moveRelative(1, 0);
+            this.hero.checkMovement();
+        }
+
+        onLeave() {
+        }
+
+    }
+
+    export class Jump implements FSM.IState {
+
+        private hero: Hero;
+        private animDone: boolean = false;
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            this.hero.setAnimation(Animations.Jump);
+            this.animDone = false;
+        }
+
+        onUpdate() {
+            
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.fsm.transition('Idle');
+                return;
+            }
+
+            switch (this.hero.frame) {
+                case 0:
+                    this.animDone = true;
+                   
+                    this.hero.moveRelative(2, 0);
+                    break;
+                case 2:
+                    this.hero.moveRelative(2, -1);
+                    break;
+                case 3:
+                    this.hero.moveRelative(2, -1);
+                    break;
+                case 4:
+                    this.hero.moveRelative(2, -1);
+                    break;
+                case 5:
+                    this.hero.moveRelative(2, 1);
+                    break;
+                case 6:
+                    this.hero.moveRelative(2, 1);
+                    break;
+                case 7:
+                    this.hero.moveRelative(2, 1);
+                    break;
+                case 8:
+                    this.hero.moveRelative(1, 0);
+                    break;
+                case 9:
+                    this.hero.moveRelative(1, 0);
+                    break;
+                    
+            }
 
             this.hero.checkMovement();
         }
 
-       
-
         onLeave() {
-
-
         }
 
     }
@@ -107,23 +142,19 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.Run);
-            
-            if (this.hero.direction == Direction.Right)
-                this.hero.x += TILE_SIZE<<1;
-            else
-                this.hero.x -= TILE_SIZE<<1;
-            this.hero.checkMovement();
+          
         }
 
         onUpdate() {
-            
-           
-            if (this.hero.direction == Direction.Right)
-                this.hero.x += TILE_SIZE<<1;
-            else
-                this.hero.x -= TILE_SIZE<<1;
 
-            this.hero.checkMovement();
+            // Move two tiles, but check movement incrementally to make sure we don't pass over something
+            this.hero.moveRelative(1, 0);
+            
+            if (this.hero.checkMovement()) {
+                // incrementally move was clear, so move a second tile
+                this.hero.moveRelative(1, 0);
+                this.hero.checkMovement();
+            }
         }
 
         onLeave() {
@@ -151,7 +182,7 @@ namespace Barbarian.HeroStates {
 
        
 
-            var adjust = this.hero.direction == Direction.Right ? 1 : -1;
+            var adjust = this.hero.facing == Direction.Right ? 1 : -1;
 
             if (this.animDone == true) {
                 
@@ -181,10 +212,12 @@ namespace Barbarian.HeroStates {
 
         onLeave() {
            
-            if (this.hero.direction == Direction.Left)
-                this.hero.direction = Direction.Right;
-            else
-                this.hero.direction = Direction.Left;
+            if (this.hero.facing == Direction.Left) {
+                this.hero.direction = this.hero.facing = Direction.Right;
+            }
+            else {
+                this.hero.direction = this.hero.facing = Direction.Left;
+            }
         }
 
     }
@@ -343,11 +376,11 @@ namespace Barbarian.HeroStates {
             var adjust = 0;
 
             if (tile == '*')
-                this.hero.direction == Direction.Right ? adjust = 1 : adjust = 2;
+                this.hero.facing == Direction.Right ? adjust = 1 : adjust = 2;
             else if (tile == ',')
-                this.hero.direction == Direction.Right ? adjust = -1 : adjust = 0;
+                this.hero.facing == Direction.Right ? adjust = -1 : adjust = 0;
             else if (tile == '+')
-                this.hero.direction == Direction.Right ? adjust = 0 : adjust = 1;
+                this.hero.facing == Direction.Right ? adjust = 0 : adjust = 1;
             else {
                 this.hero.fsm.transition('Idle');
                 return;
@@ -357,6 +390,8 @@ namespace Barbarian.HeroStates {
             this.hero.y += TILE_SIZE / 2;
 
             this.hero.direction = Direction.Down;
+            // Ladder animation only supports facing right...
+            this.hero.facing = Direction.Right;
            
         }
 
@@ -421,11 +456,11 @@ namespace Barbarian.HeroStates {
             var adjust = 0;
 
             if (tile == '-')
-                this.hero.direction == Direction.Right ? adjust = 1 : adjust = 2;
+                this.hero.facing == Direction.Right ? adjust = 1 : adjust = 2;
             else if (tile == '.')
-                this.hero.direction == Direction.Right ? adjust = -1 : adjust = 0;
+                this.hero.facing == Direction.Right ? adjust = -1 : adjust = 0;
             else if (tile == '+')
-                this.hero.direction == Direction.Right ? adjust = 0 : adjust = 1;
+                this.hero.facing == Direction.Right ? adjust = 0 : adjust = 1;
             else {
                 this.hero.fsm.transition('Idle');
                 return;
@@ -435,6 +470,8 @@ namespace Barbarian.HeroStates {
             //this.hero.x += this.hero.direction == Direction.Right ? adjust * TILE_SIZE : -adjust * TILE_SIZE;
             //this.hero.y -= TILE_SIZE / 2;
             this.hero.direction = Direction.Up;
+            // Ladder animation only supports facing right...
+            this.hero.facing = Direction.Right;
         }
 
         onUpdate() {
@@ -524,7 +561,8 @@ namespace Barbarian.HeroStates {
         onEnter() {
             this.hero.setAnimation(Animations.TripFall);
            
-            this.hero.x += TILE_SIZE;
+            //this.hero.x += TILE_SIZE;
+            this.hero.moveRelative(1, 0);
             this.animDone = false;
 
             this.hero.direction == Direction.Down;
@@ -537,15 +575,20 @@ namespace Barbarian.HeroStates {
        
             switch (this.hero.frame) {
                 case 1:
-                    this.hero.x += TILE_SIZE;
+                    //this.hero.x += TILE_SIZE;
+                    this.hero.moveRelative(1, 0);
                     break;
                 case 2:
-                    this.hero.x += TILE_SIZE;
+                    //this.hero.x += TILE_SIZE;
+                    this.hero.moveRelative(1, 0);
                     break;
                 case 3:
-                    this.hero.x += TILE_SIZE * 2;
+                    //this.hero.x += TILE_SIZE * 2;
+                    this.hero.moveRelative(2, 0);
                     break;
-                case 4: this.hero.y += TILE_SIZE;
+                case 4:
+                    //this.hero.y += TILE_SIZE;
+                    this.hero.moveRelative(0, 1);
                     break;
 
 

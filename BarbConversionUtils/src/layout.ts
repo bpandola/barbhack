@@ -55,8 +55,6 @@
         game: Barbarian.Game;
         roomsJSON: any;
         hero: Barbarian.Hero;
-        //tmpHero: Phaser.Group = null;
-        //box: Phaser.Sprite;
         keys: Phaser.CursorKeys;
         changeFrameRate: any;
 
@@ -91,22 +89,9 @@
             //this.game.forceSingleUpdate = true;
             this.drawRoom(Direction.Right);
 
-            //this.drawHero();
-
-            //this.keys = this.input.keyboard.createCursorKeys();
+            
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
-            //var key;
-            //key = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            //key.onDown.add(() => { this.nextRoom(0); }, this);
-            //key = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            //key.onDown.add(() => { this.nextRoom(1); }, this);
-            //key = this.input.keyboard.addKey(Phaser.Keyboard.UP);
-            //key.onDown.add(() => { this.nextRoom(2); }, this);
-            //key = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-            //key.onDown.add(() => { this.nextRoom(3); }, this);
-
-            //var timer = this.game.time.events.add(100, this.moveHero, this);
-            //timer.loop = true;
+           
 
             // Test
             var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
@@ -292,40 +277,11 @@
 
         
         preRender() {
-            //this.hero.visible = false;
+           
         }
-        //getTile(x, y) {
-
-        //    if (x < 0 || x >= 40 || y < 0 || y >= 20)
-        //        return '?';
-        //    var tile = this.roomsJSON[this.game.roomNum].layout[y-1].rowData;
-        //    tile = tile.substring(x-1, x);
-        //    return tile;
-        //}
+       
         handleMovement() {
-            //if (this.keys.right.isDown) {
-            //    this.box.x += 4;
-            //}
-
-            //var tileX = (this.box.x >> 4);
-            //var tileY = (this.box.y >> 4)-1;
-
-            //var tile = this.getTile(tileX, tileY);
-            //if (tile === '!') {
-            //    // if previous was A or C and above is C or B, then step up...
-            //    var previousX = this.getTile(tileX - 1, tileY);
-            //    if (previousX == 'A' || previousX == 'C') {
-            //        var upY = this.getTile(tileX, tileY - 1)
-            //        if (upY == 'C' || upY == 'B') {
-            //            this.box.y -= 16;
-            //        }
-            //    }
-            //}
-
-            //var tile = this.getTile(this.hero.tilePos.x, this.hero.tilePos.y);
-            //if (tile === '3' && this.hero.fsm.getCurrentStateName != 'HitWall')
-            //    this.hero.fsm.transition('HitWall');
-            //this.tile = tile;
+           
 
             if (this.hero.x >= this.world.width + TILE_SIZE && this.hero.direction == Direction.Right) {
                 this.nextRoom(Direction.Right);
@@ -351,63 +307,32 @@
 
 
             if (this.changeFrameRate.fast.isDown) {
-                Hero.ANIMATION_INTERVAL -= 5;
+                Hero.FIXED_TIMESTEP -= 5;
             }
             else if (this.changeFrameRate.slow.isDown) {
-                Hero.ANIMATION_INTERVAL += 5;
+                Hero.FIXED_TIMESTEP += 5;
             }
-            //var frameNum = this.hero.animations.currentFrame.index;
-           
-
-            //if (this.tmpHero != null)
-            //    this.tmpHero.destroy(true);
-
-            //var tmpGroup: Phaser.Group = this.add.group();
-            //tmpGroup.x = this.hero.x;
-            //tmpGroup.y = this.hero.y;
-            //var anims = this.cache.getJSON('hero');
-
-            //for (var part of anims[43].frames[frameNum].parts) {
-            //    var weapon = part.flags >> 4;
-            //    if (part.flags < 5 || weapon == 2) {
-            //        //var spr: Phaser.Sprite =  this.hero.create(part.x+(i*100), part.y, 'hero', part.index);
-            //        //var spr: Phaser.Sprite = this.add.sprite(part.x + (i * 100)+50, part.y + 100, 'hero', part.index);
-            //        var spr: Phaser.Sprite = tmpGroup.create(part.x, part.y, 'hero', part.index);
-
-            //         //The bottom of his shoes don't show unless I substract 2... 1*SCALE
-            //        spr.x += spr.width / 2;
-            //        spr.y += spr.height / 2;
-            //        spr.anchor.setTo(0.5);
-            //        var xScale = part.flags & 1 ? -1 : 1;
-            //        var yScale = part.flags & 2 ? -1 : 1;
-
-            //        spr.scale.setTo(xScale, yScale);
-
-
-            //    }
-            //}
-
-            //this.tmpHero = tmpGroup;
+          
             //var bounds = this.tmpHero.getLocalBounds();
         }
 
         render() {
             
-            //this.game.debug.text(this.game.roomNum.toString(), 20, 20);
+            this.game.debug.text(this.game.roomNum.toString(), 20, 20);
            
-            //this.game.debug.text(this.hero.getTile(/*this.hero.tilePos.x, this.hero.tilePos.y*/), 20, 40);
+            this.game.debug.text(this.hero.getTile(), 20, 40);
            
 
 
-            //// Draw Gridlines
-            //for (var i = 0; i < 40; i++)
-            //    for (var j = 0; j < 20; j++)
-            //        this.game.debug.rectangle(new Phaser.Rectangle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE), null, false);
+            // Draw Gridlines
+            for (var i = 0; i < 40; i++)
+                for (var j = 0; j < 20; j++)
+                    this.game.debug.rectangle(new Phaser.Rectangle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE), null, false);
 
-            //var dumbAdjust = this.hero.direction == Direction.Right ? -TILE_SIZE : 0;
-            //this.game.debug.rectangle(new Phaser.Rectangle(this.hero.x+dumbAdjust, this.hero.y-TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
+            var dumbAdjust = this.hero.direction == Direction.Right ? -TILE_SIZE : 0;
+            this.game.debug.rectangle(new Phaser.Rectangle(this.hero.x+dumbAdjust, this.hero.y-TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
 
-            //this.game.debug.pixel(this.hero.x, this.hero.y, 'rgba(0,255,255,1)');
+            this.game.debug.pixel(this.hero.x, this.hero.y, 'rgba(0,255,255,1)');
         }
 
     }
