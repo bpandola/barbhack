@@ -32,6 +32,7 @@
     }
 
     export enum Direction {
+        None = -1,
         Left,
         Right,
         Up,
@@ -53,6 +54,7 @@
         facing: Direction;  // left or right
         game: Barbarian.Game;
         tileMap: TileMap;
+        onDied: Phaser.Signal = new Phaser.Signal();
 
         timeStep: number = 0;
 

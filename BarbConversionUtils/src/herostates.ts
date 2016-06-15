@@ -484,33 +484,18 @@ namespace Barbarian.HeroStates {
         onEnter() {
             this.hero.setAnimation(Animations.Falling);
             this.hero.direction = Direction.Down;
-
-            this.hero.y += TILE_SIZE;
+            this.hero.moveRelative(0, 1);
         }
 
         onUpdate() {
-
-
-
-       
-            
-            this.hero.y += TILE_SIZE;
-
-            this.hero.checkMovement();
-                  
-
-
-            
-
-
-
-            
+            this.hero.moveRelative(0, 1);
+            this.hero.checkMovement();            
         }
 
         onLeave() {
-            this.hero.y -= TILE_SIZE;
-            this.hero.direction = Direction.Right;
-
+            this.hero.moveRelative(0, -1);
+            // Set direction to whichever way hero was facing before fall.
+            this.hero.direction = this.hero.facing;
         }
 
     }
@@ -527,35 +512,22 @@ namespace Barbarian.HeroStates {
         onEnter() {
             this.hero.setAnimation(Animations.HitGround);
             this.hero.direction = Direction.Down;
-
-            this.hero.y += TILE_SIZE;
+            this.hero.moveRelative(0, 1);
             this.animDone = false;
         }
 
         onUpdate() {
-
-
-
-
-
             if (this.hero.frame == 0 && this.animDone) {
                 this.hero.frame = 3;
+                this.hero.onDied.dispatch();
             } else {
                 this.animDone = true;
             }
-
-
-
-
-
-
-
         }
 
         onLeave() {
-            //this.hero.y -= TILE_SIZE;
-            this.hero.direction = Direction.Right;
-
+            // Set direction to whichever way hero was facing before fall.
+            this.hero.direction = this.hero.facing;
         }
 
     }

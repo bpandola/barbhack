@@ -54,7 +54,7 @@
 
         game: Barbarian.Game;
         roomsJSON: any;
-        hero: Barbarian.Hero;
+        //hero: Barbarian.Hero;
         keys: Phaser.CursorKeys;
         changeFrameRate: any;
 
@@ -96,8 +96,9 @@
 
             // Test
             var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
-            this.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
-            this.hero.tileMap = new TileMap(this.hero);
+            this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
+            this.game.hero.tileMap = new TileMap(this.game.hero);
+            this.game.hero.onDied.add(this.heroDied, this);
             // draw hud
             var hud = this.make.image(0, 320, 'hud');
             this.stage.addChild(hud);
@@ -142,6 +143,22 @@
 
         }
 
+        heroDied() {
+
+            var newRoom: number = this.game.roomNum;
+            var startPos: any = this.roomsJSON[newRoom].startPos;
+            while (startPos.tileX == 0 || startPos.tileY == 0) {
+                newRoom--;
+                startPos = this.roomsJSON[newRoom].startPos;
+            }
+            this.game.hero.x = startPos.tileX << TILE_SHIFT;
+            this.game.hero.y = startPos.tileY << TILE_SHIFT;  
+            this.game.hero.fsm.transition('Idle');
+           this.game.roomNum = newRoom;
+           this.drawRoom(Direction.None);
+           this.world.add(this.game.hero);
+        }
+
         nextRoom(direction: Direction) {
 
             var newRoom: number;
@@ -165,9 +182,9 @@
             if (newRoom !== -1) {
                 this.game.roomNum = newRoom;
                 this.drawRoom(direction);
-                this.world.add(this.hero);
+                this.world.add(this.game.hero);
                 //this.world.add(this.box);
-                //this.hero.x = 8;
+                //this.game.hero.x = 8;
             }
 
             
@@ -216,7 +233,8 @@
             // add enemies to room
             for (var enemy of this.roomsJSON[this.game.roomNum].enemies) {
                 if (enemy.id !== 0) {
-                    this.drawEnemy(enemy, direction);
+                    //this.drawEnemy(enemy, direction);
+                    this.world.add(new Enemy(this.game, enemy, direction));
                 }
             }
 
@@ -284,22 +302,22 @@
         handleMovement() {
            
 
-            if (this.hero.x >= this.world.width + TILE_SIZE && this.hero.direction == Direction.Right) {
+            if (this.game.hero.x >= this.world.width + TILE_SIZE && this.game.hero.direction == Direction.Right) {
                 this.nextRoom(Direction.Right);
-                this.hero.x = 0;
-                this.hero.tilePos.x = 0;
-            } else if (this.hero.x <= -16 && this.hero.direction == Direction.Left) {
+                this.game.hero.x = 0;
+                this.game.hero.tilePos.x = 0;
+            } else if (this.game.hero.x <= -16 && this.game.hero.direction == Direction.Left) {
                 this.nextRoom(Direction.Left);
-                this.hero.x = 640;
-                this.hero.tilePos.x = 39;
-            } else if (this.hero.y <= 0 && this.hero.direction == Direction.Up) {
+                this.game.hero.x = 640;
+                this.game.hero.tilePos.x = 39;
+            } else if (this.game.hero.y <= 0 && this.game.hero.direction == Direction.Up) {
                 this.nextRoom(Direction.Up);
-                this.hero.y = 320;
-                this.hero.tilePos.y = 19;
-            } else if (this.hero.y >= this.world.height/* && this.hero.direction == Direction.Down*/) {
+                this.game.hero.y = 320;
+                this.game.hero.tilePos.y = 19;
+            } else if (this.game.hero.y >= this.world.height/* && this.game.hero.direction == Direction.Down*/) {
                 this.nextRoom(Direction.Down);
-                this.hero.y = TILE_SIZE;
-                this.hero.tilePos.y = 1;
+                this.game.hero.y = TILE_SIZE;
+                this.game.hero.tilePos.y = 1;
             }
            
         }
@@ -321,7 +339,7 @@
             
             this.game.debug.text(this.game.roomNum.toString(), 20, 20);
            
-            this.game.debug.text(this.hero.tileMap.getTile(), 20, 40);
+            this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
            
 
 
@@ -330,10 +348,10 @@
                 for (var j = 0; j < 20; j++)
                     this.game.debug.rectangle(new Phaser.Rectangle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE), null, false);
 
-            var dumbAdjust = this.hero.direction == Direction.Right ? -TILE_SIZE : 0;
-            this.game.debug.rectangle(new Phaser.Rectangle(this.hero.x+dumbAdjust, this.hero.y-TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
+            var dumbAdjust = this.game.hero.direction == Direction.Right ? -TILE_SIZE : 0;
+            this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x+dumbAdjust, this.game.hero.y-TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
 
-            this.game.debug.pixel(this.hero.x, this.hero.y, 'rgba(0,255,255,1)');
+            this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
         }
 
     }

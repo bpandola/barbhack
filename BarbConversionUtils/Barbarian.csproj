@@ -70,6 +70,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\boot.ts" />
+    <TypeScriptCompile Include="src\enemy.ts" />
     <TypeScriptCompile Include="src\fsm.ts" />
     <TypeScriptCompile Include="src\hero.ts" />
     <TypeScriptCompile Include="src\herostates.ts" />
