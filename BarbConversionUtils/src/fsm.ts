@@ -1,5 +1,7 @@
 ﻿namespace Barbarian.StateMachine {
 
+    export const WILDCARD: string = '*';
+
     export interface IState {
         onEnter();
         onUpdate();
@@ -21,7 +23,6 @@
         add(key: string, state: IState, validFromStates: string[]) {
 
             this.states[key] = state;
-            //this.currentState = this.states[key];
             this.validFromStates[key] = validFromStates;
         }
 
@@ -53,7 +54,7 @@
             var isValid = false;
             if (newState != this.currentStateName) {
                 for (var state of this.validFromStates[newState]) {
-                    if (state == this.currentStateName || state == '*')
+                    if (state == this.currentStateName || state == WILDCARD)
                         isValid = true;
                 }
             }

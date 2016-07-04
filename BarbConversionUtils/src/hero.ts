@@ -1,4 +1,5 @@
-﻿namespace Barbarian {
+﻿
+namespace Barbarian {
 
     export enum Animations {
         Walk,
@@ -41,7 +42,7 @@
 
     export class Hero extends Phaser.Group {
 
-        static FIXED_TIMESTEP: number = 60; //170;
+        static FIXED_TIMESTEP: number = 120; //170;
         
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -68,14 +69,14 @@
 
             this.animData = this.game.cache.getJSON('hero');
 
-            this.weapon = Weapon.Bow;
+            this.weapon = Weapon.Sword;
             this.direction = Direction.Right;
             this.facing = Direction.Right;
 
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR });
-
+            this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
-            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this),['*']);
+            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
             this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run']);
             this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle']);
             this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk','Run']);
@@ -86,11 +87,11 @@
             this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['Idle','Walk']);
             this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run']);
             this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk','Run']);
-            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), ['*']);
-            this.fsm.add('Die', new Barbarian.HeroStates.Die(this), ['*']);
+            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [StateMachine.WILDCARD]);
+            this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
             this.fsm.transition('Idle');
 
-            this.drawHero();
+            this.render();
         }
 
         // Translates x/y coords, facing, and directiion into the TileMap coordinate.
@@ -238,12 +239,11 @@
                 this.fsm.getCurrentState().onUpdate();
             }
 
-            this.drawHero();
+            this.render();
                 
         }
 
-        drawHero() {
-
+        render() {
             // Start from scratch every time.
             this.removeChildren();
 
@@ -258,12 +258,12 @@
                     spr.x += spr.width / 2;
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);
+
                     var xScale = part.flags & 1 ? -1 : 1;
                     var yScale = part.flags & 2 ? -1 : 1;
 
-                    // Flip horizontally again if hero is facing left.
+                    // Flip the part horizontally again if Hero is facing left.
                     xScale = this.facing == Direction.Left ? -xScale : xScale
-                    //yScale = this.direction == Direction.Right ? yScale : -yScale
                     spr.scale.setTo(xScale, yScale);
                 }
             }

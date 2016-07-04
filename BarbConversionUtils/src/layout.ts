@@ -54,12 +54,7 @@
 
         game: Barbarian.Game;
         roomsJSON: any;
-        //hero: Barbarian.Hero;
-        keys: Phaser.CursorKeys;
-        changeFrameRate: any;
-
-        tile: string;
-       
+        changeFrameRate: any;       
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -77,8 +72,6 @@
                 var key:string = EnemyKeys[i];
                 this.load.atlasJSONArray(key, 'assets/enemies/'+key+'.png', 'assets/enemies/'+key+'.json');
             }
-            
-
         }
 
         create() {
@@ -86,14 +79,10 @@
             this.roomsJSON = this.cache.getJSON('rooms');
 
             this.stage.smoothed = false;
-            //this.game.renderer.renderSession.roundPixels = true;
-            //this.game.forceSingleUpdate = true;
             this.drawRoom(Direction.Right);
 
-            
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
            
-
             // Test
             var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
             this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
@@ -152,11 +141,11 @@
                 startPos = this.roomsJSON[newRoom].startPos;
             }
             this.game.hero.x = startPos.tileX << TILE_SHIFT;
-            this.game.hero.y = startPos.tileY << TILE_SHIFT;  
+            this.game.hero.y = startPos.tileY << TILE_SHIFT;
             this.game.hero.fsm.transition('Idle');
-           this.game.roomNum = newRoom;
-           this.drawRoom(Direction.None);
-           this.world.add(this.game.hero);
+            this.game.roomNum = newRoom;
+            this.drawRoom(Direction.None);
+            this.world.add(this.game.hero);
         }
 
         nextRoom(direction: Direction) {
@@ -176,15 +165,12 @@
                 case Direction.Down:
                     newRoom = this.roomsJSON[this.game.roomNum].map.down;
                     break;
-
             }
 
             if (newRoom !== -1) {
                 this.game.roomNum = newRoom;
                 this.drawRoom(direction);
                 this.world.add(this.game.hero);
-                //this.world.add(this.box);
-                //this.game.hero.x = 8;
             }
 
             
@@ -223,13 +209,11 @@
             }
             // add background to world
             background.addToWorld(0, 0);
-
             // add effects to room
             for (var effect of this.roomsJSON[this.game.roomNum].effects) {
 
                 this.createEffect(effect.x, effect.y, effect.name);
             }
-
             // add enemies to room
             for (var enemy of this.roomsJSON[this.game.roomNum].enemies) {
                 if (enemy.id !== 0) {
@@ -237,7 +221,6 @@
                     this.world.add(new Enemy(this.game, enemy, direction));
                 }
             }
-
             // add static items
             // TODO: add these so they're always on top
             for (var item of this.roomsJSON[this.game.roomNum].items) {
@@ -257,51 +240,10 @@
                 spr.y -= spr.height - 2;
                
             }
-
-            
-        }
-
-        drawEnemy(enemy: any, direction: Direction) {
-            var animData = this.game.cache.getJSON('enemies');
-            
-            var sprGrp: Phaser.Group = this.add.group();
-            sprGrp.x = enemy.xOff[direction+1];
-            sprGrp.y = enemy.yOff;
-
-            var rotate = enemy.flags[direction + 1];
-
-            for (var part of animData[enemy.id].animations[0].frames[0].parts) {
-                
-                    var x = rotate ? part.rx : part.x;
-                    var y = rotate ? part.ry : part.y;
-
-                    var spr: Phaser.Sprite = sprGrp.create(x, y, EnemyKeys[enemy.id], part.index);
-
-                    spr.x += spr.width / 2;
-                    spr.y += spr.height / 2;
-                    spr.anchor.setTo(0.5);
-                    var xScale = part.flags & 1 ? -1 : 1;
-                    var yScale = part.flags & 2 ? -1 : 1;
-
-                    xScale =rotate ? -xScale : xScale
-                    //yScale = this.direction == Direction.Right ? yScale : -yScale
-                    spr.scale.setTo(xScale, yScale);
-
-
-            }
-
-           
-            
-        }
-
-        
-        preRender() {
-           
         }
        
         handleMovement() {
            
-
             if (this.game.hero.x >= this.world.width + TILE_SIZE && this.game.hero.direction == Direction.Right) {
                 this.nextRoom(Direction.Right);
                 this.game.hero.x = 0;
@@ -321,14 +263,16 @@
             }
            
         }
+
         update() {
             this.handleMovement();
 
-
             if (this.changeFrameRate.fast.isDown) {
+                console.log('faster');
                 Hero.FIXED_TIMESTEP -= 5;
             }
             else if (this.changeFrameRate.slow.isDown) {
+                console.log('slower');
                 Hero.FIXED_TIMESTEP += 5;
             }
           
@@ -336,22 +280,25 @@
         }
 
         render() {
-            
-            this.game.debug.text(this.game.roomNum.toString(), 20, 20);
-           
-            this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
-           
+
+            if (this.game.debugOn) {
+                this.game.debug.text(this.game.roomNum.toString(), 20, 20);
+
+                this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
+                // Draw Gridlines
+                for (var i = 0; i < 40; i++)
+                    for (var j = 0; j < 20; j++)
+                        this.game.debug.rectangle(new Phaser.Rectangle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE), null, false);
+
+                var dumbAdjust = this.game.hero.direction == Direction.Right ? -TILE_SIZE : 0;
+                this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
+
+                this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
 
 
-            // Draw Gridlines
-            for (var i = 0; i < 40; i++)
-                for (var j = 0; j < 20; j++)
-                    this.game.debug.rectangle(new Phaser.Rectangle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE), null, false);
-
-            var dumbAdjust = this.game.hero.direction == Direction.Right ? -TILE_SIZE : 0;
-            this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x+dumbAdjust, this.game.hero.y-TILE_SIZE, TILE_SIZE, TILE_SIZE), "green", true);
-
-            this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
+                var bounds = this.game.hero.getBounds();
+                this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+            }
         }
 
     }

@@ -8,6 +8,7 @@
 
         roomNum: number = 0;
         hero: Hero;
+        debugOn: boolean = false;
 
         constructor() {
             super(640, 400, Phaser.CANVAS, 'game', null);
@@ -16,7 +17,6 @@
             this.state.add('Layout', new Barbarian.Layout());
 
             this.state.start('Boot',true,true,'Layout');  // pass in the state to start after boot
-
         }
 
     }
