@@ -93,6 +93,12 @@
                         this.rotate = 0;
                     else
                         this.rotate = 1;
+
+                    if (this.x < this.dataBlob.xMin)
+                        this.x = this.dataBlob.xMin;
+                    if (this.x > this.dataBlob.xMax)
+                        this.x = this.dataBlob.xMax;
+
                     
                 }
 
@@ -103,7 +109,6 @@
             }
 
             
-           
             this.drawEnemy();
 
         }
@@ -111,9 +116,6 @@
         drawEnemy() {
             // Start from scratch every time.
             this.removeChildren();
-            
-
-           
 
             for (var part of this.animData[this.animNum].frames[this.frame].parts) {
 
@@ -131,14 +133,8 @@
                 xScale = this.rotate ? -xScale : xScale
                 //yScale = this.direction == Direction.Right ? yScale : -yScale
                 spr.scale.setTo(xScale, yScale);
-
-                
-
-                
-                }
-
-
             }
+        }
 
     }
 
