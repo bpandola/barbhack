@@ -42,6 +42,10 @@
             this.hero.timeStep = 0;
         }
 
+        update() {
+            this.getCurrentState().onUpdate();
+        }
+
         getCurrentState(): IState {
             return this.currentState;
         }
