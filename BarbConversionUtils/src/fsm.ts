@@ -27,8 +27,14 @@
             this.validFromStates[key] = validFromStates;
         }
 
-        transition(newState: string, immediately:boolean = false) {
-            if (this.currentState != null && !this.isValidFrom(newState))
+        transition(newState: string, immediately: boolean = false) {
+            // HACK! - If pending state is Idle, allow it to be overridden
+            // by a new (valid) pending state.  This allows things like
+            // immediately walking/running after going up stairs without
+            // the single frame blip of the intermediate Idle animation.
+            if (this.pendingState === 'Idle' && this.isValidFromPending(newState)) {
+                this.pendingState = newState;
+            } else if (this.currentState != null && !this.isValidFrom(newState))
                 return;
 
             // Set this new state to be our pending state, but it won't
@@ -71,6 +77,17 @@
             if (newState != this.currentStateName) {
                 for (var state of this.validFromStates[newState]) {
                     if (state == this.currentStateName || state == WILDCARD)
+                        isValid = true;
+                }
+            }
+            return isValid;
+        }
+
+        isValidFromPending(newState: string): boolean {
+            var isValid = false;
+            if (newState != this.pendingState) {
+                for (var state of this.validFromStates[newState]) {
+                    if (state == this.pendingState || state == WILDCARD)
                         isValid = true;
                 }
             }
