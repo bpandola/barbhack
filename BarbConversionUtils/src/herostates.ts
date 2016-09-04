@@ -2,6 +2,19 @@
 
 namespace Barbarian.HeroStates {
 
+    export class HeroBaseState implements FSM.IState {
+        protected hero: Hero;
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() { }
+
+        onUpdate() { }
+
+        onLeave() { }
+    }
+
     export class Idle implements FSM.IState {
 
         private hero: Hero;
@@ -78,27 +91,15 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class Run implements FSM.IState {
-
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
+    export class Run extends HeroBaseState {
 
         onEnter() {
             this.hero.setAnimation(Animations.Run);
-
         }
 
         onUpdate() {
-
-            if (!this.hero.keys.shift.isDown) {
-                this.hero.fsm.transition('Walk');
-                return;
-            }
-
-            // Move two tiles, but check movement incrementally to make sure we don't pass over something.
+            // Move two tiles, but check movement incrementally  
+            // to make sure we don't pass over something.
             this.hero.moveRelative(1, 0);
 
             if (this.hero.checkMovement()) {
@@ -107,29 +108,15 @@ namespace Barbarian.HeroStates {
                 this.hero.checkMovement();
             }
         }
-
-        onLeave() {
-
-
-        }
-
     }
 
-    export class ChangeDirection implements FSM.IState {
-
-        private hero: Hero;
-        private animDone = false;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
+    export class ChangeDirection extends HeroBaseState {
 
         onEnter() {
             this.hero.setAnimation(Animations.ChangeDirection);
         }
 
         onUpdate() {
-
             switch (this.hero.frame) {
                 case 0:
                     this.hero.moveRelative(1, 0);
@@ -158,24 +145,15 @@ namespace Barbarian.HeroStates {
                 this.hero.direction = this.hero.facing = Direction.Left;
             }
         }
-
     }
 
-    export class HitWall implements FSM.IState {
-
-        private hero: Hero;
-        private animDone = false;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
+    export class HitWall extends HeroBaseState {
 
         onEnter() {
             this.hero.setAnimation(Animations.HitWall);
         }
 
         onUpdate() {
-
             switch (this.hero.frame) {
                 case 0:
                     this.hero.moveRelative(1, 0);
@@ -192,11 +170,6 @@ namespace Barbarian.HeroStates {
                     this.hero.fsm.transition('Idle');
             }
         }
-
-        onLeave() {
-
-        }
-
     }
 
     export class Jump implements FSM.IState {
