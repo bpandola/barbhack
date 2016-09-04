@@ -147,23 +147,14 @@ namespace Barbarian.HeroStates {
 
     export class Jump extends HeroBaseState {
 
-        private animDone: boolean = false;
-
         onEnter() {
             this.hero.setAnimation(Animations.Jump);
-            this.animDone = false;
         }
 
         onUpdate() {
             
-            if (this.hero.frame == 0 && this.animDone) {
-                this.hero.fsm.transition('Idle');
-                return;
-            }
-
             switch (this.hero.frame) {
                 case 0:
-                    this.animDone = true;
                     this.hero.moveRelative(2, 0);
                     break;
                 case 2:
@@ -186,16 +177,67 @@ namespace Barbarian.HeroStates {
                     break;
                 case 8:
                     this.hero.moveRelative(1, 0);
-                    break;
-                case 9:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                    
+                    this.hero.fsm.transition('Idle');
+                    break;                    
             }
 
             this.hero.checkMovement();
         }
 
+        onLeave() {
+            // There's a tenth animation frame, but the DOS game doesn't
+            // use it.  It just pushes the Hero one more tile forward
+            // and transitions to the Idle1 animation.
+            this.hero.moveRelative(1, 0);
+        }
+
+    }
+
+    export class FrontFlip extends HeroBaseState {
+
+        onEnter() {
+            this.hero.setAnimation(Animations.FrontFlip);
+        }
+
+        onUpdate() {
+
+            switch (this.hero.frame) {
+                case 0:
+                    this.hero.moveRelative(0, 0);
+                    break;
+                case 1:
+                    this.hero.moveRelative(0, 0);
+                    break;
+                case 2:
+                    this.hero.moveRelative(1, -1);
+                    break;
+                case 3:
+                    this.hero.moveRelative(2, -1);
+                    break;
+                case 4:
+                    this.hero.moveRelative(2, -1);
+                    break;
+                case 5:
+                    this.hero.moveRelative(2, 0);
+                    break;
+                case 6:
+                    this.hero.moveRelative(2, 1);
+                    break;
+                case 7:
+                    this.hero.moveRelative(2, 1);
+                    break;
+                case 8:
+                    this.hero.moveRelative(1, 1);
+                    break;
+                case 9:
+                    this.hero.moveRelative(0, 0);
+                    break;
+                case 10:
+                    this.hero.fsm.transition('Idle');
+                    break;
+            }
+        }
+        
     }
 
     export class TakeStairs extends HeroBaseState {
@@ -263,18 +305,18 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
+            if ((this.hero.direction == Direction.Down && this.downMovementFrames.indexOf(this.hero.frame) != -1) ||
+                (this.hero.direction == Direction.Up && this.upMovementFrames.indexOf(this.hero.frame) != -1)) {
 
+                this.hero.moveRelative(0, 0.5);
+            }
             if ((this.hero.direction == Direction.Down && this.hero.tileMap.isEntityAt(TileMapLocation.LadderBottom)) ||
                 (this.hero.direction == Direction.Up && this.hero.tileMap.isEntityAt(TileMapLocation.LadderTop))) {
                 this.hero.fsm.transition('Idle');
                 return;
             }
 
-            if ((this.hero.direction == Direction.Down && this.downMovementFrames.indexOf(this.hero.frame) != -1) ||
-                (this.hero.direction == Direction.Up && this.upMovementFrames.indexOf(this.hero.frame) != -1)) {
-
-                this.hero.moveRelative(0, 0.5);
-            }
+            
            
         }
 
@@ -283,6 +325,7 @@ namespace Barbarian.HeroStates {
             if (this.hero.direction == Direction.Up) {
                 this.hero.moveRelative(0,0.5);
             }
+            // Like the DOS version, you always come off a ladder facing right.
             this.hero.direction = Direction.Right;
         }
 
