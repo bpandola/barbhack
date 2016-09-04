@@ -126,22 +126,9 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.ChangeDirection);
-            this.animDone = false;
         }
 
         onUpdate() {
-
-
-
-            var adjust = this.hero.facing == Direction.Right ? 1 : -1;
-
-            if (this.animDone == true) {
-
-                // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                //this.hero.x -= (3 * adjust * TILE_SIZE);
-                this.hero.fsm.transition('Idle');
-                return;
-            }
 
             switch (this.hero.frame) {
                 case 0:
@@ -157,7 +144,6 @@ namespace Barbarian.HeroStates {
                     this.hero.moveRelative(1, 0);
                     break;
                 case 4:
-                    this.animDone = true;
                     this.hero.fsm.transition('Idle');
                     break;
             }
