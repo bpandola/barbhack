@@ -172,43 +172,28 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.HitWall);
-            this.animDone = false;
         }
 
         onUpdate() {
 
-
-
-            var adjust = this.hero.direction == Direction.Left ? 1 : -1;
-
-            if (this.hero.frame == 0 && this.animDone == true) {
-                this.hero.fsm.transition('Idle');
-                return;
-            }
-
             switch (this.hero.frame) {
-
+                case 0:
+                    this.hero.moveRelative(1, 0);
                 case 1:
-                    this.hero.x += (TILE_SIZE * adjust);
+                    this.hero.moveRelative(-1, 0);
                     break;
                 case 2:
-                    this.hero.x += (TILE_SIZE * adjust);
+                    this.hero.moveRelative(-1, 0);
                     break;
                 case 3:
-                    this.hero.x -= (TILE_SIZE * adjust);
-
-
+                    this.hero.moveRelative(1, 0);
                     break;
-                case 0:
-                    // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                    if (this.animDone == false)
-                        this.animDone = true;
-                    break;
+                case 8:
+                    this.hero.fsm.transition('Idle');
             }
         }
 
         onLeave() {
-
 
         }
 
