@@ -20,9 +20,12 @@ namespace Barbarian {
         Attack6,
         ShootArrow = 22,
         HitWall = 24,
+        FallToGround = 28,
+        FallToGroundFaceFirst = 31,
         HitGround = 34,
         Falling = 36,
         TripFall = 37,
+        FrontFlip = 39,
         Idle = 43
     }
 
@@ -42,7 +45,7 @@ namespace Barbarian {
 
     export class Hero extends Phaser.Group {
 
-        static FIXED_TIMESTEP: number = 120; //170;
+        static FIXED_TIMESTEP: number = FIXED_TIMESTEP; //170;
         
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -88,13 +91,15 @@ namespace Barbarian {
             this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run']);
             this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk','Run']);
             this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [StateMachine.WILDCARD]);
+            this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [StateMachine.WILDCARD]);
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
+            this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.transition('Idle');
 
             this.render();
         }
 
-        // Translates x/y coords, facing, and directiion into the TileMap coordinate.
+        // Translates x/y coords, facing, and direction into the TileMap coordinate.
         getTileMapPosition(adjustX?: number, adjustY?: number): Phaser.Point {
             if (adjustX == null) { adjustX = 0 }
             if (adjustY == null) { adjustY = 0 }
@@ -138,7 +143,7 @@ namespace Barbarian {
             switch (this.tileMap.getTile()) {
 
                 case '3':
-                    this.fsm.transition('HitWall');
+                    this.fsm.transition('HitWall', true);
                     return false;
                 case '/':
                     if (this.direction != Direction.Down) {
@@ -149,7 +154,7 @@ namespace Barbarian {
                 case '5':
                 case '!':
                     if (this.direction == Direction.Down) {
-                        this.fsm.transition('Die');
+                        this.fsm.transition('FallDeath');
                         return false;
                     }
             }
@@ -189,6 +194,8 @@ namespace Barbarian {
                 this.frame = 0;
         }
 
+        getState
+
         update() {
             
             if (this.keys.attack.isDown) {
@@ -196,7 +203,11 @@ namespace Barbarian {
             }
 
             if (this.keys.jump.isDown) {
-                this.fsm.transition('Jump');
+                if (this.keys.shift.isDown) {
+                    this.fsm.transition('FrontFlip');
+                } else {
+                    this.fsm.transition('Jump');
+                }
             }
             if (this.facing == Direction.Right) {
                 if (this.keys.right.isDown) {
@@ -231,16 +242,31 @@ namespace Barbarian {
             if (!this.keys.left.isDown && !this.keys.right.isDown) {
                 this.fsm.transition('Stop');
             }
-
+            console.log(this.fsm.getCurrentStateName);
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= Hero.FIXED_TIMESTEP) {
                 this.timeStep = this.timeStep % Hero.FIXED_TIMESTEP; // save remainder
+                
                 this.animate();
-                this.fsm.getCurrentState().onUpdate();
+                this.fsm.update();
             }
 
             this.render();
                 
+        }
+
+        getBodyBounds() {
+
+            var bounds: Phaser.Rectangle;
+
+            if (this.facing == Direction.Right) 
+                bounds = new Phaser.Rectangle(this.x - 32, this.y - 80, 32, 80);
+            else
+                bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);
+
+            return bounds;
+
+
         }
 
         render() {

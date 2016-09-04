@@ -13,6 +13,7 @@
         private states: { id: string, value: IState }[] = [];
         private validFromStates: { id: string, value: string[] }[] = [];
         private currentState: IState = null;
+        private pendingState: string = null;
         private currentStateName: string;
         private hero: Barbarian.Hero;
 
@@ -26,24 +27,35 @@
             this.validFromStates[key] = validFromStates;
         }
 
-        transition(newState: string) {
+        transition(newState: string, immediately:boolean = false) {
             if (this.currentState != null && !this.isValidFrom(newState))
                 return;
 
-            if (this.currentState)
-                this.currentState.onLeave();
-
-            this.currentState = this.states[newState];
-            this.currentStateName = newState;
-            this.currentState.onEnter();
-            this.currentState.onUpdate();
-
-            // HACK?
-            this.hero.timeStep = 0;
+            // Set this new state to be our pending state, but it won't
+            // be called until the update fires (once per FIXED_TIMESTEP).
+            if (this.pendingState == null)
+                this.pendingState = newState;
+            // If we don't have a current state, we need to transition
+            // immediately.
+            if (this.currentState == null || immediately == true)
+                this.update();
         }
 
         update() {
-            this.getCurrentState().onUpdate();
+            if (this.pendingState) {
+                if (this.currentState)
+                    this.currentState.onLeave();
+
+                this.currentState = this.states[this.pendingState];
+                this.currentStateName = this.pendingState;
+                this.pendingState = null;
+                this.currentState.onEnter();
+
+                
+                
+            }
+            if (this.currentState)
+                this.currentState.onUpdate();
         }
 
         getCurrentState(): IState {

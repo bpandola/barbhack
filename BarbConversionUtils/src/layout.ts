@@ -9,52 +9,14 @@
 
     }
 
-    export enum EnemyKeys {
-        nll,
-        axe,
-        thr,
-        pop,
-        dog,
-        hop,
-        rep,
-        aro,
-        met,
-        ren,
-        ver,
-        bad,
-        roc,
-        ape,
-        scy,
-        rhi,
-        mn1,
-        mn2,
-        mn3,
-        mn4,
-        mn5,
-        mn6,
-        mn7,
-        mor,
-        oc1,
-        oc2,
-        nt1,
-        nt2,
-        nt3,
-        ac1,
-        ac2,
-        ac3,
-        blk,
-        spk,
-        stn,
-        dra,
-        rot,
-        vsp
-    }
+    
 
     export class Layout extends Phaser.State {
 
         game: Barbarian.Game;
         roomsJSON: any;
         changeFrameRate: any;       
+        enemies: Phaser.Group[];
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -69,7 +31,7 @@
 
             // Loop to load enemies
             for (var i = 0; i < 38; i++) {
-                var key:string = EnemyKeys[i];
+                var key:string = Enemies.EnemyKeys[i];
                 this.load.atlasJSONArray(key, 'assets/enemies/'+key+'.png', 'assets/enemies/'+key+'.json');
             }
         }
@@ -134,18 +96,22 @@
 
         heroDied() {
 
-            var newRoom: number = this.game.roomNum;
-            var startPos: any = this.roomsJSON[newRoom].startPos;
-            while (startPos.tileX == 0 || startPos.tileY == 0) {
-                newRoom--;
-                startPos = this.roomsJSON[newRoom].startPos;
-            }
-            this.game.hero.x = startPos.tileX << TILE_SHIFT;
-            this.game.hero.y = startPos.tileY << TILE_SHIFT;
-            this.game.hero.fsm.transition('Idle');
-            this.game.roomNum = newRoom;
-            this.drawRoom(Direction.None);
-            this.world.add(this.game.hero);
+            this.game.time.events.add(Phaser.Timer.SECOND/2, () => {
+                var newRoom: number = this.game.roomNum;
+                var startPos: any = this.roomsJSON[newRoom].startPos;
+                while (startPos.tileX == 0 || startPos.tileY == 0) {
+                    newRoom--;
+                    startPos = this.roomsJSON[newRoom].startPos;
+                }
+                this.game.hero.x = startPos.tileX << TILE_SHIFT;
+                this.game.hero.y = startPos.tileY << TILE_SHIFT;
+                this.game.hero.fsm.transition('Idle', true);
+                this.game.roomNum = newRoom;
+                this.drawRoom(Direction.None);
+                this.world.add(this.game.hero);
+                // This is required or hero will stutter step after death.
+                this.game.time.reset();
+            }, this);
         }
 
         nextRoom(direction: Direction) {
@@ -215,11 +181,11 @@
                 this.createEffect(effect.x, effect.y, effect.name);
             }
             // add enemies to room
+            this.enemies = [];
             for (var enemy of this.roomsJSON[this.game.roomNum].enemies) {
-                if (enemy.id !== 0) {
-                    //this.drawEnemy(enemy, direction);
-                    this.world.add(new Enemy(this.game, enemy, direction));
-                }
+                var createdEnemy = Enemies.Enemy.createEnemy(this.game, enemy, direction);
+                this.world.add(createdEnemy);
+                this.enemies.push(createdEnemy);
             }
             // add static items
             // TODO: add these so they're always on top
@@ -256,7 +222,7 @@
                 this.nextRoom(Direction.Up);
                 this.game.hero.y = 320;
                 this.game.hero.tilePos.y = 19;
-            } else if (this.game.hero.y >= this.world.height/* && this.game.hero.direction == Direction.Down*/) {
+            } else if (this.game.hero.y >= this.world.height - (TILE_SIZE*1.5)/* && this.game.hero.direction == Direction.Down*/) {
                 this.nextRoom(Direction.Down);
                 this.game.hero.y = TILE_SIZE;
                 this.game.hero.tilePos.y = 1;
@@ -280,7 +246,7 @@
         }
 
         render() {
-
+            //this.game.debug.text(this.game.hero.frame.toString(), 20, 20);
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.roomNum.toString(), 20, 20);
 
@@ -296,8 +262,15 @@
                 this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
 
 
-                var bounds = this.game.hero.getBounds();
+                var bounds: any = this.game.hero.getBodyBounds();
                 this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+
+                for (var enemy of this.enemies) {
+                    if (enemy != null) {
+                        bounds = enemy.getBounds();
+                        this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+                    }
+                }
             }
         }
 

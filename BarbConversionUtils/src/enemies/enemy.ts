@@ -1,6 +1,48 @@
-﻿namespace Barbarian {
-   
-    export interface EnemyStruct {
+﻿namespace Barbarian.Enemies {
+
+    export enum EnemyKeys {
+        nll,
+        axe,
+        thr,
+        pop,
+        dog,
+        hop,
+        rep,
+        aro,
+        met,
+        ren,
+        ver,
+        bad,
+        roc,
+        ape,
+        scy,
+        rhi,
+        mn1,
+        mn2,
+        mn3,
+        mn4,
+        mn5,
+        mn6,
+        mn7,
+        mor,
+        oc1,
+        oc2,
+        nt1,
+        nt2,
+        nt3,
+        ac1,
+        ac2,
+        ac3,
+        blk,
+        spk,
+        stn,
+        dra,
+        rot,
+        vsp
+    }
+
+    // Encapsulates Enemy JSON Blob
+    export interface EnemyJSON {
         id: number;
         yOff: number;
         xMin: number;
@@ -11,7 +53,7 @@
 
     export class Enemy extends Phaser.Group {
 
-        static FIXED_TIMESTEP: number = 120;
+        static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
 
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -20,10 +62,10 @@
         direction: Direction;
         game: Barbarian.Game;
         timeStep: number = 0;
-        dataBlob: EnemyStruct;
+        dataBlob: EnemyJSON;
         rotate: number;
 
-        constructor(game: Barbarian.Game, dataBlob: EnemyStruct, direction: Direction) {
+        constructor(game: Barbarian.Game, dataBlob: EnemyJSON, direction: Direction) {
             super(game);
 
             this.dataBlob = dataBlob;
@@ -44,9 +86,31 @@
             this.drawEnemy();
         }
 
-        
+        /**
+        * Factory Method for Enemy Creation
+        *  
+        * @param game A reference to the currently running game.
+        * @param data A structure defining the enemy metadata.
+        * @param direction The direction the player entered the current room, which determines enemy placement/facing direction.
+        * @return The newly-created Enemy object.
+        */
+        public static createEnemy(game: Barbarian.Game, data: EnemyJSON, direction: Direction): Enemy {
+            switch (data.id) {
+                case EnemyKeys.rot:
+                    return new Rotate(game, data, direction);
+                case EnemyKeys.scy:
+                    return new Scythe(game, data, direction);
+                case EnemyKeys.blk:
+                    return new Block(game, data, direction);
+                default:
+                    return new Enemy(game, data, direction);
+            }
+        }
 
         animate() {
+
+            if (this.animData.length === 0)
+                return;
 
             var numFrames = this.animData[this.animNum].frames.length;
 
@@ -80,7 +144,7 @@
                             }
                             this.animNum = 1;
                         } else if (Math.abs(delta) > 0 && Math.abs(delta) <= TILE_SIZE * 2) {
-                            this.animNum = 2;
+                            //this.animNum = 2;
                         } else {
                             this.animNum = 0;
                         }
@@ -114,6 +178,11 @@
         }
 
         drawEnemy() {
+
+            // TODO: Have a proper NLLSPR asset file so I don't have to do this check.
+            if (this.dataBlob.id === EnemyKeys.nll)
+                return;
+
             // Start from scratch every time.
             this.removeChildren();
 
@@ -137,5 +206,7 @@
         }
 
     }
+
+    
 
 }

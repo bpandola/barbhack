@@ -8,11 +8,13 @@ var Barbarian;
     Barbarian.SCALE = 2;
     Barbarian.TILE_SIZE = 16;
     Barbarian.TILE_SHIFT = 4;
+    Barbarian.FIXED_TIMESTEP = 1000;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
             _super.call(this, 640, 400, Phaser.CANVAS, 'game', null);
             this.roomNum = 0;
+            this.debugOn = true;
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Layout', new Barbarian.Layout());
             this.state.start('Boot', true, true, 'Layout');
@@ -48,91 +50,314 @@ var Barbarian;
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {
-    var Enemy = (function (_super) {
-        __extends(Enemy, _super);
-        function Enemy(game, dataBlob, direction) {
-            _super.call(this, game);
-            this.tilePos = new Phaser.Point();
-            this.timeStep = 0;
-            this.dataBlob = dataBlob;
-            this.x = dataBlob.xOff[direction + 1];
-            this.y = dataBlob.yOff;
-            this.animData = this.game.cache.getJSON('enemies')[dataBlob.id].animations;
-            this.animNum = 0;
-            this.frame = 0;
-            this.direction = direction;
-            this.rotate = this.dataBlob.flags[this.direction + 1];
-            this.drawEnemy();
-        }
-        Enemy.prototype.animate = function () {
-            var numFrames = this.animData[this.animNum].frames.length;
-            this.frame++;
-            if (this.frame >= numFrames)
+    var Enemies;
+    (function (Enemies) {
+        (function (EnemyKeys) {
+            EnemyKeys[EnemyKeys["nll"] = 0] = "nll";
+            EnemyKeys[EnemyKeys["axe"] = 1] = "axe";
+            EnemyKeys[EnemyKeys["thr"] = 2] = "thr";
+            EnemyKeys[EnemyKeys["pop"] = 3] = "pop";
+            EnemyKeys[EnemyKeys["dog"] = 4] = "dog";
+            EnemyKeys[EnemyKeys["hop"] = 5] = "hop";
+            EnemyKeys[EnemyKeys["rep"] = 6] = "rep";
+            EnemyKeys[EnemyKeys["aro"] = 7] = "aro";
+            EnemyKeys[EnemyKeys["met"] = 8] = "met";
+            EnemyKeys[EnemyKeys["ren"] = 9] = "ren";
+            EnemyKeys[EnemyKeys["ver"] = 10] = "ver";
+            EnemyKeys[EnemyKeys["bad"] = 11] = "bad";
+            EnemyKeys[EnemyKeys["roc"] = 12] = "roc";
+            EnemyKeys[EnemyKeys["ape"] = 13] = "ape";
+            EnemyKeys[EnemyKeys["scy"] = 14] = "scy";
+            EnemyKeys[EnemyKeys["rhi"] = 15] = "rhi";
+            EnemyKeys[EnemyKeys["mn1"] = 16] = "mn1";
+            EnemyKeys[EnemyKeys["mn2"] = 17] = "mn2";
+            EnemyKeys[EnemyKeys["mn3"] = 18] = "mn3";
+            EnemyKeys[EnemyKeys["mn4"] = 19] = "mn4";
+            EnemyKeys[EnemyKeys["mn5"] = 20] = "mn5";
+            EnemyKeys[EnemyKeys["mn6"] = 21] = "mn6";
+            EnemyKeys[EnemyKeys["mn7"] = 22] = "mn7";
+            EnemyKeys[EnemyKeys["mor"] = 23] = "mor";
+            EnemyKeys[EnemyKeys["oc1"] = 24] = "oc1";
+            EnemyKeys[EnemyKeys["oc2"] = 25] = "oc2";
+            EnemyKeys[EnemyKeys["nt1"] = 26] = "nt1";
+            EnemyKeys[EnemyKeys["nt2"] = 27] = "nt2";
+            EnemyKeys[EnemyKeys["nt3"] = 28] = "nt3";
+            EnemyKeys[EnemyKeys["ac1"] = 29] = "ac1";
+            EnemyKeys[EnemyKeys["ac2"] = 30] = "ac2";
+            EnemyKeys[EnemyKeys["ac3"] = 31] = "ac3";
+            EnemyKeys[EnemyKeys["blk"] = 32] = "blk";
+            EnemyKeys[EnemyKeys["spk"] = 33] = "spk";
+            EnemyKeys[EnemyKeys["stn"] = 34] = "stn";
+            EnemyKeys[EnemyKeys["dra"] = 35] = "dra";
+            EnemyKeys[EnemyKeys["rot"] = 36] = "rot";
+            EnemyKeys[EnemyKeys["vsp"] = 37] = "vsp";
+        })(Enemies.EnemyKeys || (Enemies.EnemyKeys = {}));
+        var EnemyKeys = Enemies.EnemyKeys;
+        var Enemy = (function (_super) {
+            __extends(Enemy, _super);
+            function Enemy(game, dataBlob, direction) {
+                _super.call(this, game);
+                this.tilePos = new Phaser.Point();
+                this.timeStep = 0;
+                this.dataBlob = dataBlob;
+                this.x = dataBlob.xOff[direction + 1];
+                this.y = dataBlob.yOff;
+                this.animData = this.game.cache.getJSON('enemies')[dataBlob.id].animations;
+                this.animNum = 0;
                 this.frame = 0;
-        };
-        Enemy.prototype.update = function () {
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Barbarian.Hero.FIXED_TIMESTEP;
-                this.animate();
-                if (this.dataBlob.xMin > 0 && this.dataBlob.xMax > 0) {
-                    this.x += Barbarian.TILE_SIZE;
-                    if (this.x > this.dataBlob.xMax)
-                        this.x = this.dataBlob.xMin;
-                    if (this.x < this.game.hero.x)
-                        this.rotate = 0;
-                    else
-                        this.rotate = 1;
+                this.direction = direction;
+                this.rotate = this.dataBlob.flags[this.direction + 1];
+                this.timeStep = Enemy.FIXED_TIMESTEP;
+                this.drawEnemy();
+            }
+            Enemy.createEnemy = function (game, data, direction) {
+                switch (data.id) {
+                    case EnemyKeys.rot:
+                        return new Enemies.Rotate(game, data, direction);
+                    case EnemyKeys.scy:
+                        return new Enemies.Scythe(game, data, direction);
+                    case EnemyKeys.blk:
+                        return new Enemies.Block(game, data, direction);
+                    default:
+                        return new Enemy(game, data, direction);
                 }
+            };
+            Enemy.prototype.animate = function () {
+                if (this.animData.length === 0)
+                    return;
+                var numFrames = this.animData[this.animNum].frames.length;
+                this.frame++;
+                if (this.frame >= numFrames)
+                    this.frame = 0;
+            };
+            Enemy.prototype.update = function () {
+                this.timeStep += this.game.time.elapsedMS;
+                if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
+                    this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP;
+                    if (this.dataBlob.xMin > 0 && this.dataBlob.xMax > 0) {
+                        if (this.game.hero.y == this.y) {
+                            var delta = this.game.hero.x - this.x;
+                            if (Math.abs(delta) < 320 && Math.abs(delta) > Barbarian.TILE_SIZE * 2) {
+                                if (delta < 0) {
+                                    this.x -= Barbarian.TILE_SIZE;
+                                }
+                                else {
+                                    this.x += Barbarian.TILE_SIZE;
+                                }
+                                this.animNum = 1;
+                            }
+                            else if (Math.abs(delta) > 0 && Math.abs(delta) <= Barbarian.TILE_SIZE * 2) {
+                            }
+                            else {
+                                this.animNum = 0;
+                            }
+                        }
+                        else {
+                            this.animNum = 0;
+                        }
+                        if (this.x < this.game.hero.x)
+                            this.rotate = 0;
+                        else
+                            this.rotate = 1;
+                        if (this.x < this.dataBlob.xMin)
+                            this.x = this.dataBlob.xMin;
+                        if (this.x > this.dataBlob.xMax)
+                            this.x = this.dataBlob.xMax;
+                    }
+                    if (this.dataBlob.id == EnemyKeys.thr)
+                        this.animNum = 1;
+                    this.animate();
+                }
+                this.drawEnemy();
+            };
+            Enemy.prototype.drawEnemy = function () {
+                if (this.dataBlob.id === EnemyKeys.nll)
+                    return;
+                this.removeChildren();
+                for (var _i = 0, _a = this.animData[this.animNum].frames[this.frame].parts; _i < _a.length; _i++) {
+                    var part = _a[_i];
+                    var x = this.rotate ? part.rx : part.x;
+                    var y = this.rotate ? part.ry : part.y;
+                    var spr = this.create(x, y, EnemyKeys[this.dataBlob.id], part.index);
+                    spr.x += spr.width / 2;
+                    spr.y += spr.height / 2;
+                    spr.anchor.setTo(0.5);
+                    var xScale = part.flags & 1 ? -1 : 1;
+                    var yScale = part.flags & 2 ? -1 : 1;
+                    xScale = this.rotate ? -xScale : xScale;
+                    spr.scale.setTo(xScale, yScale);
+                }
+            };
+            Enemy.FIXED_TIMESTEP = Barbarian.FIXED_TIMESTEP;
+            return Enemy;
+        }(Phaser.Group));
+        Enemies.Enemy = Enemy;
+    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Enemies;
+    (function (Enemies) {
+        var Block = (function (_super) {
+            __extends(Block, _super);
+            function Block() {
+                _super.apply(this, arguments);
             }
-            this.drawEnemy();
-        };
-        Enemy.prototype.drawEnemy = function () {
-            this.removeChildren();
-            for (var _i = 0, _a = this.animData[this.animNum].frames[this.frame].parts; _i < _a.length; _i++) {
-                var part = _a[_i];
-                var x = this.rotate ? part.rx : part.x;
-                var y = this.rotate ? part.ry : part.y;
-                var spr = this.create(x, y, Barbarian.EnemyKeys[this.dataBlob.id], part.index);
-                spr.x += spr.width / 2;
-                spr.y += spr.height / 2;
-                spr.anchor.setTo(0.5);
-                var xScale = part.flags & 1 ? -1 : 1;
-                var yScale = part.flags & 2 ? -1 : 1;
-                xScale = this.rotate ? -xScale : xScale;
-                spr.scale.setTo(xScale, yScale);
+            Block.prototype.update = function () {
+                this.timeStep += this.game.time.elapsedMS;
+                if (this.timeStep >= Enemies.Enemy.FIXED_TIMESTEP) {
+                    this.timeStep = this.timeStep % Enemies.Enemy.FIXED_TIMESTEP;
+                    if ((this.animNum == 1 && this.frame === 5) || this.animNum == 2) {
+                        this.y = 208;
+                        this.animNum = 2;
+                        this.frame = 0;
+                    }
+                    else if (this.animNum == 0) {
+                        if (this.game.hero.x > Block.BLK_FALL_LEFT && this.game.hero.x < Block.BLK_FALL_RIGHT) {
+                            this.animNum = 1;
+                            this.frame = 0;
+                        }
+                    }
+                    else {
+                        this.animate();
+                        if (this.animNum == 1) {
+                            this.y += 2 * Barbarian.TILE_SIZE;
+                            if (this.frame >= 4) {
+                                if (this.game.hero.x > Block.BLK_HIT_LEFT && this.game.hero.x < Block.BLK_HIT_RIGHT) {
+                                    this.game.hero.fsm.transition('Die');
+                                }
+                            }
+                        }
+                    }
+                }
+                this.drawEnemy();
+            };
+            Block.BLK_FALL_LEFT = 0xB0 * Barbarian.SCALE;
+            Block.BLK_FALL_RIGHT = 0x100 * Barbarian.SCALE;
+            Block.BLK_HIT_LEFT = 0xC0 * Barbarian.SCALE;
+            Block.BLK_HIT_RIGHT = 0xF8 * Barbarian.SCALE;
+            return Block;
+        }(Enemies.Enemy));
+        Enemies.Block = Block;
+    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Enemies;
+    (function (Enemies) {
+        var Rotate = (function (_super) {
+            __extends(Rotate, _super);
+            function Rotate() {
+                _super.apply(this, arguments);
             }
-        };
-        Enemy.FIXED_TIMESTEP = 170;
-        return Enemy;
-    }(Phaser.Group));
-    Barbarian.Enemy = Enemy;
+            Rotate.prototype.getBodyBounds = function () {
+                var bounds = new Phaser.Rectangle(0, 0, 0, 0);
+                for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                    var part = _a[_i];
+                    var partCast = part;
+                    if (partCast.frame === 7 || partCast.frame === 6) {
+                        var pbounds = part.getBounds();
+                        bounds = new Phaser.Rectangle(pbounds.x, pbounds.y, pbounds.width, pbounds.height);
+                    }
+                }
+                return bounds;
+            };
+            Rotate.prototype.update = function () {
+                this.timeStep += this.game.time.elapsedMS;
+                if (this.timeStep >= Enemies.Enemy.FIXED_TIMESTEP) {
+                    this.timeStep = this.timeStep % Enemies.Enemy.FIXED_TIMESTEP;
+                    var heroBounds = this.game.hero.getBodyBounds();
+                    var thisBounds = this.getBounds();
+                    if (Phaser.Rectangle.intersects(heroBounds, thisBounds)) {
+                        this.game.hero.fsm.transition('FallDeath');
+                    }
+                    this.animate();
+                }
+                this.drawEnemy();
+            };
+            return Rotate;
+        }(Enemies.Enemy));
+        Enemies.Rotate = Rotate;
+    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Enemies;
+    (function (Enemies) {
+        var Scythe = (function (_super) {
+            __extends(Scythe, _super);
+            function Scythe() {
+                _super.apply(this, arguments);
+            }
+            Scythe.prototype.update = function () {
+                this.timeStep += this.game.time.elapsedMS;
+                if (this.timeStep >= Enemies.Enemy.FIXED_TIMESTEP) {
+                    this.timeStep = this.timeStep % Enemies.Enemy.FIXED_TIMESTEP;
+                    if ((this.animNum == 1 && this.frame === 2) || this.animNum == 2) {
+                        this.animNum = 2;
+                        this.frame = 0;
+                    }
+                    else if (this.animNum == 0) {
+                        if (this.game.hero.x - this.x < Scythe.TRIGGER_DISTANCE) {
+                            this.animNum = 1;
+                            this.frame = 0;
+                        }
+                    }
+                    else {
+                        this.animate();
+                        if (this.animNum == 1) {
+                            if (this.game.hero.x - this.x < Scythe.HIT_DISTANCE) {
+                                this.game.hero.fsm.transition('TripFall');
+                            }
+                        }
+                    }
+                }
+                this.drawEnemy();
+            };
+            Scythe.TRIGGER_DISTANCE = 0x20 * Barbarian.SCALE;
+            Scythe.HIT_DISTANCE = 0x10 * Barbarian.SCALE;
+            return Scythe;
+        }(Enemies.Enemy));
+        Enemies.Scythe = Scythe;
+    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {
     var StateMachine;
     (function (StateMachine_1) {
+        StateMachine_1.WILDCARD = '*';
         var StateMachine = (function () {
             function StateMachine(hero) {
                 this.states = [];
                 this.validFromStates = [];
                 this.currentState = null;
+                this.pendingState = null;
                 this.hero = hero;
             }
             StateMachine.prototype.add = function (key, state, validFromStates) {
                 this.states[key] = state;
                 this.validFromStates[key] = validFromStates;
             };
-            StateMachine.prototype.transition = function (newState) {
+            StateMachine.prototype.transition = function (newState, immediately) {
+                if (immediately === void 0) { immediately = false; }
                 if (this.currentState != null && !this.isValidFrom(newState))
                     return;
+                if (this.pendingState == null)
+                    this.pendingState = newState;
+                if (this.currentState == null || immediately == true)
+                    this.update();
+            };
+            StateMachine.prototype.update = function () {
+                if (this.pendingState) {
+                    if (this.currentState)
+                        this.currentState.onLeave();
+                    this.currentState = this.states[this.pendingState];
+                    this.currentStateName = this.pendingState;
+                    this.pendingState = null;
+                    this.currentState.onEnter();
+                }
                 if (this.currentState)
-                    this.currentState.onLeave();
-                this.currentState = this.states[newState];
-                this.currentStateName = newState;
-                this.currentState.onEnter();
-                this.currentState.onUpdate();
-                this.hero.timeStep = 0;
+                    this.currentState.onUpdate();
             };
             StateMachine.prototype.getCurrentState = function () {
                 return this.currentState;
@@ -149,7 +374,7 @@ var Barbarian;
                 if (newState != this.currentStateName) {
                     for (var _i = 0, _a = this.validFromStates[newState]; _i < _a.length; _i++) {
                         var state = _a[_i];
-                        if (state == this.currentStateName || state == '*')
+                        if (state == this.currentStateName || state == StateMachine_1.WILDCARD)
                             isValid = true;
                     }
                 }
@@ -181,9 +406,12 @@ var Barbarian;
         Animations[Animations["Attack6"] = 19] = "Attack6";
         Animations[Animations["ShootArrow"] = 22] = "ShootArrow";
         Animations[Animations["HitWall"] = 24] = "HitWall";
+        Animations[Animations["FallToGround"] = 28] = "FallToGround";
+        Animations[Animations["FallToGroundFaceFirst"] = 31] = "FallToGroundFaceFirst";
         Animations[Animations["HitGround"] = 34] = "HitGround";
         Animations[Animations["Falling"] = 36] = "Falling";
         Animations[Animations["TripFall"] = 37] = "TripFall";
+        Animations[Animations["FrontFlip"] = 39] = "FrontFlip";
         Animations[Animations["Idle"] = 43] = "Idle";
     })(Barbarian.Animations || (Barbarian.Animations = {}));
     var Animations = Barbarian.Animations;
@@ -212,12 +440,13 @@ var Barbarian;
             this.x = tileX << Barbarian.TILE_SHIFT;
             this.y = tileY << Barbarian.TILE_SHIFT;
             this.animData = this.game.cache.getJSON('hero');
-            this.weapon = Weapon.Bow;
+            this.weapon = Weapon.Sword;
             this.direction = Direction.Right;
             this.facing = Direction.Right;
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR });
+            this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
-            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), ['*']);
+            this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [Barbarian.StateMachine.WILDCARD]);
             this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle', 'Run']);
             this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle']);
             this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk', 'Run']);
@@ -228,10 +457,12 @@ var Barbarian;
             this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['Idle', 'Walk']);
             this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle', 'Walk', 'Run']);
             this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk', 'Run']);
-            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), ['*']);
-            this.fsm.add('Die', new Barbarian.HeroStates.Die(this), ['*']);
+            this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [Barbarian.StateMachine.WILDCARD]);
+            this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [Barbarian.StateMachine.WILDCARD]);
+            this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [Barbarian.StateMachine.WILDCARD]);
+            this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.transition('Idle');
-            this.drawHero();
+            this.render();
         }
         Hero.prototype.getTileMapPosition = function (adjustX, adjustY) {
             if (adjustX == null) {
@@ -265,7 +496,7 @@ var Barbarian;
         Hero.prototype.checkMovement = function () {
             switch (this.tileMap.getTile()) {
                 case '3':
-                    this.fsm.transition('HitWall');
+                    this.fsm.transition('HitWall', true);
                     return false;
                 case '/':
                     if (this.direction != Direction.Down) {
@@ -276,7 +507,7 @@ var Barbarian;
                 case '5':
                 case '!':
                     if (this.direction == Direction.Down) {
-                        this.fsm.transition('Die');
+                        this.fsm.transition('FallDeath');
                         return false;
                     }
             }
@@ -317,7 +548,12 @@ var Barbarian;
                 this.fsm.transition('Attack');
             }
             if (this.keys.jump.isDown) {
-                this.fsm.transition('Jump');
+                if (this.keys.shift.isDown) {
+                    this.fsm.transition('FrontFlip');
+                }
+                else {
+                    this.fsm.transition('Jump');
+                }
             }
             if (this.facing == Direction.Right) {
                 if (this.keys.right.isDown) {
@@ -356,15 +592,24 @@ var Barbarian;
             if (!this.keys.left.isDown && !this.keys.right.isDown) {
                 this.fsm.transition('Stop');
             }
+            console.log(this.fsm.getCurrentStateName);
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= Hero.FIXED_TIMESTEP) {
                 this.timeStep = this.timeStep % Hero.FIXED_TIMESTEP;
                 this.animate();
-                this.fsm.getCurrentState().onUpdate();
+                this.fsm.update();
             }
-            this.drawHero();
+            this.render();
         };
-        Hero.prototype.drawHero = function () {
+        Hero.prototype.getBodyBounds = function () {
+            var bounds;
+            if (this.facing == Direction.Right)
+                bounds = new Phaser.Rectangle(this.x - 32, this.y - 80, 32, 80);
+            else
+                bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);
+            return bounds;
+        };
+        Hero.prototype.render = function () {
             this.removeChildren();
             for (var _i = 0, _a = this.animData[this.animNum].frames[this.frame].parts; _i < _a.length; _i++) {
                 var part = _a[_i];
@@ -383,50 +628,65 @@ var Barbarian;
                 }
             }
         };
-        Hero.FIXED_TIMESTEP = 60;
+        Hero.FIXED_TIMESTEP = Barbarian.FIXED_TIMESTEP;
         return Hero;
     }(Phaser.Group));
     Barbarian.Hero = Hero;
 })(Barbarian || (Barbarian = {}));
 var FSM = Barbarian.StateMachine;
-var Hero = Barbarian.Hero;
 var Barbarian;
 (function (Barbarian) {
     var HeroStates;
     (function (HeroStates) {
-        var Idle = (function () {
-            function Idle(hero) {
-                this.idleAnims = [Barbarian.Animations.Idle, Barbarian.Animations.Idle, Barbarian.Animations.Idle, Barbarian.Animations.Idle1, Barbarian.Animations.Idle1, Barbarian.Animations.Idle2, Barbarian.Animations.Idle];
+        var HeroBaseState = (function () {
+            function HeroBaseState(hero) {
                 this.hero = hero;
+            }
+            HeroBaseState.prototype.onEnter = function () { };
+            HeroBaseState.prototype.onUpdate = function () { };
+            HeroBaseState.prototype.onLeave = function () { };
+            return HeroBaseState;
+        }());
+        HeroStates.HeroBaseState = HeroBaseState;
+        var Idle = (function (_super) {
+            __extends(Idle, _super);
+            function Idle() {
+                _super.apply(this, arguments);
+                this.idleAnims = [Barbarian.Animations.Idle, Barbarian.Animations.Idle, Barbarian.Animations.Idle, Barbarian.Animations.Idle1, Barbarian.Animations.Idle1, Barbarian.Animations.Idle2, Barbarian.Animations.Idle];
             }
             Idle.prototype.onEnter = function () {
-                this.hero.setAnimation(Barbarian.Animations.Idle);
+                this.hero.setAnimation(Barbarian.Animations.Idle1);
+                this.hasLooped = false;
             };
             Idle.prototype.onUpdate = function () {
-                if (this.hero.frame == 0) {
+                if (this.hero.frame == 0 && this.hasLooped == true) {
                     var newAnim = this.hero.game.rnd.weightedPick(this.idleAnims);
                     this.hero.setAnimation(newAnim);
+                    this.hasLooped = false;
+                }
+                else {
+                    this.hasLooped = true;
                 }
             };
-            Idle.prototype.onLeave = function () { };
             return Idle;
-        }());
+        }(HeroBaseState));
         HeroStates.Idle = Idle;
-        var Stop = (function () {
-            function Stop(hero) {
-                this.hero = hero;
+        var Stop = (function (_super) {
+            __extends(Stop, _super);
+            function Stop() {
+                _super.apply(this, arguments);
             }
             Stop.prototype.onEnter = function () {
-                this.hero.fsm.transition('Idle');
+                this.hero.setAnimation(Barbarian.Animations.Idle);
+                this.hero.fsm.transition('Idle', true);
             };
-            Stop.prototype.onUpdate = function () { };
-            Stop.prototype.onLeave = function () { };
             return Stop;
-        }());
+        }(HeroBaseState));
         HeroStates.Stop = Stop;
-        var Walk = (function () {
-            function Walk(hero) {
-                this.hero = hero;
+        var Walk = (function (_super) {
+            __extends(Walk, _super);
+            function Walk() {
+                _super.apply(this, arguments);
             }
             Walk.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.Walk);
@@ -435,67 +695,56 @@ var Barbarian;
                 this.hero.moveRelative(1, 0);
                 this.hero.checkMovement();
             };
-            Walk.prototype.onLeave = function () {
-            };
             return Walk;
-        }());
+        }(HeroBaseState));
         HeroStates.Walk = Walk;
-        var Run = (function () {
-            function Run(hero) {
-                this.hero = hero;
+        var Run = (function (_super) {
+            __extends(Run, _super);
+            function Run() {
+                _super.apply(this, arguments);
             }
             Run.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.Run);
             };
             Run.prototype.onUpdate = function () {
-                if (!this.hero.keys.shift.isDown) {
-                    this.hero.fsm.transition('Walk');
-                    return;
-                }
                 this.hero.moveRelative(1, 0);
                 if (this.hero.checkMovement()) {
                     this.hero.moveRelative(1, 0);
                     this.hero.checkMovement();
                 }
             };
-            Run.prototype.onLeave = function () {
-            };
             return Run;
-        }());
+        }(HeroBaseState));
         HeroStates.Run = Run;
-        var ChangeDirection = (function () {
-            function ChangeDirection(hero) {
-                this.animDone = false;
-                this.hero = hero;
+        var ChangeDirection = (function (_super) {
+            __extends(ChangeDirection, _super);
+            function ChangeDirection() {
+                _super.apply(this, arguments);
             }
             ChangeDirection.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.ChangeDirection);
-                this.animDone = false;
             };
             ChangeDirection.prototype.onUpdate = function () {
-                var adjust = this.hero.facing == Barbarian.Direction.Right ? 1 : -1;
-                if (this.animDone == true) {
-                    this.hero.x -= (3 * adjust * Barbarian.TILE_SIZE);
-                    this.hero.fsm.transition('Idle');
-                    return;
-                }
                 switch (this.hero.frame) {
+                    case 0:
+                        this.hero.moveRelative(1, 0);
+                        break;
                     case 1:
-                        this.hero.x += (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(-1, 0);
                         break;
                     case 2:
-                        this.hero.x -= (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(1, 0);
                         break;
                     case 3:
-                        this.hero.x += (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(1, 0);
                         break;
                     case 4:
-                        this.hero.x += (Barbarian.TILE_SIZE * adjust);
-                        this.animDone = true;
+                        this.hero.fsm.transition('Idle');
                         break;
                 }
             };
             ChangeDirection.prototype.onLeave = function () {
+                this.hero.moveRelative(-3, 0);
                 if (this.hero.facing == Barbarian.Direction.Left) {
                     this.hero.direction = this.hero.facing = Barbarian.Direction.Right;
                 }
@@ -504,61 +753,47 @@ var Barbarian;
                 }
             };
             return ChangeDirection;
-        }());
+        }(HeroBaseState));
         HeroStates.ChangeDirection = ChangeDirection;
-        var HitWall = (function () {
-            function HitWall(hero) {
-                this.animDone = false;
-                this.hero = hero;
+        var HitWall = (function (_super) {
+            __extends(HitWall, _super);
+            function HitWall() {
+                _super.apply(this, arguments);
             }
             HitWall.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.HitWall);
-                this.animDone = false;
             };
             HitWall.prototype.onUpdate = function () {
-                var adjust = this.hero.direction == Barbarian.Direction.Left ? 1 : -1;
-                if (this.hero.frame == 0 && this.animDone == true) {
-                    this.hero.fsm.transition('Idle');
-                    return;
-                }
                 switch (this.hero.frame) {
+                    case 0:
+                        this.hero.moveRelative(1, 0);
                     case 1:
-                        this.hero.x += (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(-1, 0);
                         break;
                     case 2:
-                        this.hero.x += (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(-1, 0);
                         break;
                     case 3:
-                        this.hero.x -= (Barbarian.TILE_SIZE * adjust);
+                        this.hero.moveRelative(1, 0);
                         break;
-                    case 0:
-                        if (this.animDone == false)
-                            this.animDone = true;
-                        break;
+                    case 8:
+                        this.hero.fsm.transition('Idle');
                 }
             };
-            HitWall.prototype.onLeave = function () {
-            };
             return HitWall;
-        }());
+        }(HeroBaseState));
         HeroStates.HitWall = HitWall;
-        var Jump = (function () {
-            function Jump(hero) {
-                this.animDone = false;
-                this.hero = hero;
+        var Jump = (function (_super) {
+            __extends(Jump, _super);
+            function Jump() {
+                _super.apply(this, arguments);
             }
             Jump.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.Jump);
-                this.animDone = false;
             };
             Jump.prototype.onUpdate = function () {
-                if (this.hero.frame == 0 && this.animDone) {
-                    this.hero.fsm.transition('Idle');
-                    return;
-                }
                 switch (this.hero.frame) {
                     case 0:
-                        this.animDone = true;
                         this.hero.moveRelative(2, 0);
                         break;
                     case 2:
@@ -581,21 +816,69 @@ var Barbarian;
                         break;
                     case 8:
                         this.hero.moveRelative(1, 0);
-                        break;
-                    case 9:
-                        this.hero.moveRelative(1, 0);
+                        this.hero.fsm.transition('Idle');
                         break;
                 }
                 this.hero.checkMovement();
             };
             Jump.prototype.onLeave = function () {
+                this.hero.moveRelative(1, 0);
             };
             return Jump;
-        }());
+        }(HeroBaseState));
         HeroStates.Jump = Jump;
-        var TakeStairs = (function () {
-            function TakeStairs(hero) {
-                this.hero = hero;
+        var FrontFlip = (function (_super) {
+            __extends(FrontFlip, _super);
+            function FrontFlip() {
+                _super.apply(this, arguments);
+            }
+            FrontFlip.prototype.onEnter = function () {
+                this.hero.setAnimation(Barbarian.Animations.FrontFlip);
+            };
+            FrontFlip.prototype.onUpdate = function () {
+                switch (this.hero.frame) {
+                    case 0:
+                        this.hero.moveRelative(0, 0);
+                        break;
+                    case 1:
+                        this.hero.moveRelative(0, 0);
+                        break;
+                    case 2:
+                        this.hero.moveRelative(1, -1);
+                        break;
+                    case 3:
+                        this.hero.moveRelative(2, -1);
+                        break;
+                    case 4:
+                        this.hero.moveRelative(2, -1);
+                        break;
+                    case 5:
+                        this.hero.moveRelative(2, 0);
+                        break;
+                    case 6:
+                        this.hero.moveRelative(2, 1);
+                        break;
+                    case 7:
+                        this.hero.moveRelative(2, 1);
+                        break;
+                    case 8:
+                        this.hero.moveRelative(1, 1);
+                        break;
+                    case 9:
+                        this.hero.moveRelative(0, 0);
+                        break;
+                    case 10:
+                        this.hero.fsm.transition('Idle');
+                        break;
+                }
+            };
+            return FrontFlip;
+        }(HeroBaseState));
+        HeroStates.FrontFlip = FrontFlip;
+        var TakeStairs = (function (_super) {
+            __extends(TakeStairs, _super);
+            function TakeStairs() {
+                _super.apply(this, arguments);
             }
             TakeStairs.prototype.onEnter = function () {
                 if (this.hero.direction == Barbarian.Direction.Up) {
@@ -620,21 +903,26 @@ var Barbarian;
                 }
             };
             TakeStairs.prototype.onLeave = function () {
-                if (this.hero.direction == Barbarian.Direction.Down)
+                if (this.hero.direction == Barbarian.Direction.Up) {
+                    this.hero.moveRelative(1, 1);
+                }
+                else if (this.hero.direction == Barbarian.Direction.Down) {
                     this.hero.moveRelative(1, 0);
+                }
                 if (this.hero.facing == Barbarian.Direction.Right)
                     this.hero.direction = Barbarian.Direction.Right;
                 else
                     this.hero.direction = Barbarian.Direction.Left;
             };
             return TakeStairs;
-        }());
+        }(HeroBaseState));
         HeroStates.TakeStairs = TakeStairs;
-        var UseLadder = (function () {
-            function UseLadder(hero) {
+        var UseLadder = (function (_super) {
+            __extends(UseLadder, _super);
+            function UseLadder() {
+                _super.apply(this, arguments);
                 this.downMovementFrames = [0, 1, 4, 5];
                 this.upMovementFrames = [2, 3, 6, 7];
-                this.hero = hero;
             }
             UseLadder.prototype.onEnter = function () {
                 if (this.hero.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderTop)) {
@@ -655,14 +943,14 @@ var Barbarian;
                 this.hero.tileMap.positionOnLadder();
             };
             UseLadder.prototype.onUpdate = function () {
+                if ((this.hero.direction == Barbarian.Direction.Down && this.downMovementFrames.indexOf(this.hero.frame) != -1) ||
+                    (this.hero.direction == Barbarian.Direction.Up && this.upMovementFrames.indexOf(this.hero.frame) != -1)) {
+                    this.hero.moveRelative(0, 0.5);
+                }
                 if ((this.hero.direction == Barbarian.Direction.Down && this.hero.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderBottom)) ||
                     (this.hero.direction == Barbarian.Direction.Up && this.hero.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderTop))) {
                     this.hero.fsm.transition('Idle');
                     return;
-                }
-                if ((this.hero.direction == Barbarian.Direction.Down && this.downMovementFrames.indexOf(this.hero.frame) != -1) ||
-                    (this.hero.direction == Barbarian.Direction.Up && this.upMovementFrames.indexOf(this.hero.frame) != -1)) {
-                    this.hero.moveRelative(0, 0.5);
                 }
             };
             UseLadder.prototype.onLeave = function () {
@@ -672,12 +960,13 @@ var Barbarian;
                 this.hero.direction = Barbarian.Direction.Right;
             };
             return UseLadder;
-        }());
+        }(HeroBaseState));
         HeroStates.UseLadder = UseLadder;
-        var Attack = (function () {
-            function Attack(hero) {
+        var Attack = (function (_super) {
+            __extends(Attack, _super);
+            function Attack() {
+                _super.apply(this, arguments);
                 this.animDone = false;
-                this.hero = hero;
             }
             Attack.prototype.onEnter = function () {
                 if (this.hero.weapon === Barbarian.Weapon.Bow)
@@ -694,15 +983,14 @@ var Barbarian;
                     this.animDone = true;
                 }
             };
-            Attack.prototype.onLeave = function () {
-            };
             return Attack;
-        }());
+        }(HeroBaseState));
         HeroStates.Attack = Attack;
-        var TripFall = (function () {
-            function TripFall(hero) {
+        var TripFall = (function (_super) {
+            __extends(TripFall, _super);
+            function TripFall() {
+                _super.apply(this, arguments);
                 this.animDone = false;
-                this.hero = hero;
             }
             TripFall.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.TripFall);
@@ -719,10 +1007,9 @@ var Barbarian;
                         this.hero.moveRelative(1, 0);
                         break;
                     case 3:
-                        this.hero.moveRelative(2, 0);
+                        this.hero.moveRelative(0, 1);
                         break;
                     case 4:
-                        this.hero.moveRelative(0, 1);
                         break;
                 }
                 if (this.hero.frame == 0 && this.animDone) {
@@ -735,16 +1022,20 @@ var Barbarian;
             TripFall.prototype.onLeave = function () {
             };
             return TripFall;
-        }());
+        }(HeroBaseState));
         HeroStates.TripFall = TripFall;
-        var Fall = (function () {
-            function Fall(hero) {
-                this.hero = hero;
+        var Fall = (function (_super) {
+            __extends(Fall, _super);
+            function Fall() {
+                _super.apply(this, arguments);
             }
             Fall.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.Falling);
                 this.hero.direction = Barbarian.Direction.Down;
-                this.hero.moveRelative(0, 1);
+                if (this.hero.checkMovement()) {
+                    this.hero.moveRelative(0, 1);
+                    this.hero.checkMovement();
+                }
             };
             Fall.prototype.onUpdate = function () {
                 this.hero.moveRelative(0, 1);
@@ -755,21 +1046,50 @@ var Barbarian;
                 this.hero.direction = this.hero.facing;
             };
             return Fall;
-        }());
+        }(HeroBaseState));
         HeroStates.Fall = Fall;
-        var Die = (function () {
-            function Die(hero) {
-                this.hero = hero;
+        var FallDeath = (function (_super) {
+            __extends(FallDeath, _super);
+            function FallDeath() {
+                _super.apply(this, arguments);
             }
-            Die.prototype.onEnter = function () {
+            FallDeath.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.HitGround);
                 this.hero.direction = Barbarian.Direction.Down;
-                this.hero.moveRelative(0, 1);
+                this.animDone = false;
+                if (this.hero.checkMovement()) {
+                    this.hero.moveRelative(0, 1);
+                }
+            };
+            FallDeath.prototype.onUpdate = function () {
+                if (this.hero.frame == 0 && this.animDone) {
+                    this.hero.frame = 3;
+                    this.hero.onDied.dispatch();
+                }
+                else {
+                    this.animDone = true;
+                }
+            };
+            FallDeath.prototype.onLeave = function () {
+                this.hero.direction = this.hero.facing;
+            };
+            return FallDeath;
+        }(HeroBaseState));
+        HeroStates.FallDeath = FallDeath;
+        var Die = (function (_super) {
+            __extends(Die, _super);
+            function Die() {
+                _super.apply(this, arguments);
+                this.deathAnims = [Barbarian.Animations.FallToGround, Barbarian.Animations.FallToGroundFaceFirst];
+            }
+            Die.prototype.onEnter = function () {
+                var anim = this.hero.game.rnd.pick(this.deathAnims);
+                this.hero.setAnimation(anim);
                 this.animDone = false;
             };
             Die.prototype.onUpdate = function () {
                 if (this.hero.frame == 0 && this.animDone) {
-                    this.hero.frame = 3;
+                    this.hero.frame = this.hero.animData[this.hero.animNum].frames.length - 1;
                     this.hero.onDied.dispatch();
                 }
                 else {
@@ -780,53 +1100,12 @@ var Barbarian;
                 this.hero.direction = this.hero.facing;
             };
             return Die;
-        }());
+        }(HeroBaseState));
         HeroStates.Die = Die;
     })(HeroStates = Barbarian.HeroStates || (Barbarian.HeroStates = {}));
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {
-    (function (EnemyKeys) {
-        EnemyKeys[EnemyKeys["nll"] = 0] = "nll";
-        EnemyKeys[EnemyKeys["axe"] = 1] = "axe";
-        EnemyKeys[EnemyKeys["thr"] = 2] = "thr";
-        EnemyKeys[EnemyKeys["pop"] = 3] = "pop";
-        EnemyKeys[EnemyKeys["dog"] = 4] = "dog";
-        EnemyKeys[EnemyKeys["hop"] = 5] = "hop";
-        EnemyKeys[EnemyKeys["rep"] = 6] = "rep";
-        EnemyKeys[EnemyKeys["aro"] = 7] = "aro";
-        EnemyKeys[EnemyKeys["met"] = 8] = "met";
-        EnemyKeys[EnemyKeys["ren"] = 9] = "ren";
-        EnemyKeys[EnemyKeys["ver"] = 10] = "ver";
-        EnemyKeys[EnemyKeys["bad"] = 11] = "bad";
-        EnemyKeys[EnemyKeys["roc"] = 12] = "roc";
-        EnemyKeys[EnemyKeys["ape"] = 13] = "ape";
-        EnemyKeys[EnemyKeys["scy"] = 14] = "scy";
-        EnemyKeys[EnemyKeys["rhi"] = 15] = "rhi";
-        EnemyKeys[EnemyKeys["mn1"] = 16] = "mn1";
-        EnemyKeys[EnemyKeys["mn2"] = 17] = "mn2";
-        EnemyKeys[EnemyKeys["mn3"] = 18] = "mn3";
-        EnemyKeys[EnemyKeys["mn4"] = 19] = "mn4";
-        EnemyKeys[EnemyKeys["mn5"] = 20] = "mn5";
-        EnemyKeys[EnemyKeys["mn6"] = 21] = "mn6";
-        EnemyKeys[EnemyKeys["mn7"] = 22] = "mn7";
-        EnemyKeys[EnemyKeys["mor"] = 23] = "mor";
-        EnemyKeys[EnemyKeys["oc1"] = 24] = "oc1";
-        EnemyKeys[EnemyKeys["oc2"] = 25] = "oc2";
-        EnemyKeys[EnemyKeys["nt1"] = 26] = "nt1";
-        EnemyKeys[EnemyKeys["nt2"] = 27] = "nt2";
-        EnemyKeys[EnemyKeys["nt3"] = 28] = "nt3";
-        EnemyKeys[EnemyKeys["ac1"] = 29] = "ac1";
-        EnemyKeys[EnemyKeys["ac2"] = 30] = "ac2";
-        EnemyKeys[EnemyKeys["ac3"] = 31] = "ac3";
-        EnemyKeys[EnemyKeys["blk"] = 32] = "blk";
-        EnemyKeys[EnemyKeys["spk"] = 33] = "spk";
-        EnemyKeys[EnemyKeys["stn"] = 34] = "stn";
-        EnemyKeys[EnemyKeys["dra"] = 35] = "dra";
-        EnemyKeys[EnemyKeys["rot"] = 36] = "rot";
-        EnemyKeys[EnemyKeys["vsp"] = 37] = "vsp";
-    })(Barbarian.EnemyKeys || (Barbarian.EnemyKeys = {}));
-    var EnemyKeys = Barbarian.EnemyKeys;
     var Layout = (function (_super) {
         __extends(Layout, _super);
         function Layout() {
@@ -841,7 +1120,7 @@ var Barbarian;
             this.load.image('hud', 'assets/hud.png');
             this.load.json('enemies', 'assets/enemyanims.json');
             for (var i = 0; i < 38; i++) {
-                var key = EnemyKeys[i];
+                var key = Barbarian.Enemies.EnemyKeys[i];
                 this.load.atlasJSONArray(key, 'assets/enemies/' + key + '.png', 'assets/enemies/' + key + '.json');
             }
         };
@@ -890,18 +1169,22 @@ var Barbarian;
             }
         };
         Layout.prototype.heroDied = function () {
-            var newRoom = this.game.roomNum;
-            var startPos = this.roomsJSON[newRoom].startPos;
-            while (startPos.tileX == 0 || startPos.tileY == 0) {
-                newRoom--;
-                startPos = this.roomsJSON[newRoom].startPos;
-            }
-            this.game.hero.x = startPos.tileX << Barbarian.TILE_SHIFT;
-            this.game.hero.y = startPos.tileY << Barbarian.TILE_SHIFT;
-            this.game.hero.fsm.transition('Idle');
-            this.game.roomNum = newRoom;
-            this.drawRoom(Barbarian.Direction.None);
-            this.world.add(this.game.hero);
+            var _this = this;
+            this.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
+                var newRoom = _this.game.roomNum;
+                var startPos = _this.roomsJSON[newRoom].startPos;
+                while (startPos.tileX == 0 || startPos.tileY == 0) {
+                    newRoom--;
+                    startPos = _this.roomsJSON[newRoom].startPos;
+                }
+                _this.game.hero.x = startPos.tileX << Barbarian.TILE_SHIFT;
+                _this.game.hero.y = startPos.tileY << Barbarian.TILE_SHIFT;
+                _this.game.hero.fsm.transition('Idle', true);
+                _this.game.roomNum = newRoom;
+                _this.drawRoom(Barbarian.Direction.None);
+                _this.world.add(_this.game.hero);
+                _this.game.time.reset();
+            }, this);
         };
         Layout.prototype.nextRoom = function (direction) {
             var newRoom;
@@ -951,11 +1234,12 @@ var Barbarian;
                 var effect = _c[_b];
                 this.createEffect(effect.x, effect.y, effect.name);
             }
+            this.enemies = [];
             for (var _d = 0, _e = this.roomsJSON[this.game.roomNum].enemies; _d < _e.length; _d++) {
                 var enemy = _e[_d];
-                if (enemy.id !== 0) {
-                    this.world.add(new Barbarian.Enemy(this.game, enemy, direction));
-                }
+                var createdEnemy = Barbarian.Enemies.Enemy.createEnemy(this.game, enemy, direction);
+                this.world.add(createdEnemy);
+                this.enemies.push(createdEnemy);
             }
             for (var _f = 0, _g = this.roomsJSON[this.game.roomNum].items; _f < _g.length; _f++) {
                 var item = _g[_f];
@@ -971,28 +1255,6 @@ var Barbarian;
                 spr.x -= spr.width / 2;
                 spr.y -= spr.height - 2;
             }
-        };
-        Layout.prototype.drawEnemy = function (enemy, direction) {
-            var animData = this.game.cache.getJSON('enemies');
-            var sprGrp = this.add.group();
-            sprGrp.x = enemy.xOff[direction + 1];
-            sprGrp.y = enemy.yOff;
-            var rotate = enemy.flags[direction + 1];
-            for (var _i = 0, _a = animData[enemy.id].animations[0].frames[0].parts; _i < _a.length; _i++) {
-                var part = _a[_i];
-                var x = rotate ? part.rx : part.x;
-                var y = rotate ? part.ry : part.y;
-                var spr = sprGrp.create(x, y, EnemyKeys[enemy.id], part.index);
-                spr.x += spr.width / 2;
-                spr.y += spr.height / 2;
-                spr.anchor.setTo(0.5);
-                var xScale = part.flags & 1 ? -1 : 1;
-                var yScale = part.flags & 2 ? -1 : 1;
-                xScale = rotate ? -xScale : xScale;
-                spr.scale.setTo(xScale, yScale);
-            }
-        };
-        Layout.prototype.preRender = function () {
         };
         Layout.prototype.handleMovement = function () {
             if (this.game.hero.x >= this.world.width + Barbarian.TILE_SIZE && this.game.hero.direction == Barbarian.Direction.Right) {
@@ -1010,7 +1272,7 @@ var Barbarian;
                 this.game.hero.y = 320;
                 this.game.hero.tilePos.y = 19;
             }
-            else if (this.game.hero.y >= this.world.height) {
+            else if (this.game.hero.y >= this.world.height - (Barbarian.TILE_SIZE * 1.5)) {
                 this.nextRoom(Barbarian.Direction.Down);
                 this.game.hero.y = Barbarian.TILE_SIZE;
                 this.game.hero.tilePos.y = 1;
@@ -1019,21 +1281,34 @@ var Barbarian;
         Layout.prototype.update = function () {
             this.handleMovement();
             if (this.changeFrameRate.fast.isDown) {
+                console.log('faster');
                 Barbarian.Hero.FIXED_TIMESTEP -= 5;
             }
             else if (this.changeFrameRate.slow.isDown) {
+                console.log('slower');
                 Barbarian.Hero.FIXED_TIMESTEP += 5;
             }
         };
         Layout.prototype.render = function () {
-            this.game.debug.text(this.game.roomNum.toString(), 20, 20);
-            this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
-            for (var i = 0; i < 40; i++)
-                for (var j = 0; j < 20; j++)
-                    this.game.debug.rectangle(new Phaser.Rectangle(i * Barbarian.TILE_SIZE, j * Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), null, false);
-            var dumbAdjust = this.game.hero.direction == Barbarian.Direction.Right ? -Barbarian.TILE_SIZE : 0;
-            this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), "green", true);
-            this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
+            if (this.game.debugOn) {
+                this.game.debug.text(this.game.roomNum.toString(), 20, 20);
+                this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
+                for (var i = 0; i < 40; i++)
+                    for (var j = 0; j < 20; j++)
+                        this.game.debug.rectangle(new Phaser.Rectangle(i * Barbarian.TILE_SIZE, j * Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), null, false);
+                var dumbAdjust = this.game.hero.direction == Barbarian.Direction.Right ? -Barbarian.TILE_SIZE : 0;
+                this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), "green", true);
+                this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
+                var bounds = this.game.hero.getBodyBounds();
+                this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+                for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
+                    var enemy = _a[_i];
+                    if (enemy != null) {
+                        bounds = enemy.getBounds();
+                        this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+                    }
+                }
+            }
         };
         return Layout;
     }(Phaser.State));
@@ -1075,7 +1350,7 @@ var Barbarian;
             var searchString;
             switch (location) {
                 case TileMapLocation.StairsTop:
-                    return 'H$|B$|E&'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                    return 'H$|B$|E&'.indexOf(this.getTile(0, -1) + this.getTile(1, -1)) != -1;
                 case TileMapLocation.StairsBottom:
                     return 'A%|G%|D(|J('.indexOf(this.getTile(-1) + this.getTile()) != -1;
                 case TileMapLocation.StairsUp:

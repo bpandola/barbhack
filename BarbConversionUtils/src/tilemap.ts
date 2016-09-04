@@ -48,7 +48,7 @@
 
             switch (location) {
                 case TileMapLocation.StairsTop:
-                    return 'H$|B$|E&'.indexOf(this.getTile(-1) + this.getTile()) != -1;
+                    return 'H$|B$|E&'.indexOf(this.getTile(0,-1) + this.getTile(1,-1)) != -1;
                 case TileMapLocation.StairsBottom:
                     return 'A%|G%|D(|J('.indexOf(this.getTile(-1) + this.getTile()) != -1;
                 case TileMapLocation.StairsUp:
