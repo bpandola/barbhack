@@ -242,7 +242,7 @@ namespace Barbarian {
             if (!this.keys.left.isDown && !this.keys.right.isDown) {
                 this.fsm.transition('Stop');
             }
-            console.log(this.fsm.getCurrentStateName);
+            
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= Hero.FIXED_TIMESTEP) {
                 this.timeStep = this.timeStep % Hero.FIXED_TIMESTEP; // save remainder

@@ -41,6 +41,7 @@
             this.roomsJSON = this.cache.getJSON('rooms');
 
             this.stage.smoothed = false;
+            this.game.renderer.renderSession.roundPixels = false;
             this.drawRoom(Direction.Right);
 
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
@@ -63,8 +64,9 @@
 
             switch (name) {
                 case 'bat':
+                    effect.scale.setTo(-1, 1);
                     effect.animations.add(name, [33, 34], 4, true, true);
-                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ x: this.world.width }, 6000, Phaser.Easing.Linear.None, true, 1000);
+                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ x: -40 }, 10000, Phaser.Easing.Linear.None, true, 1000);
                     break;
                 case 'torch1':
                     effect.animations.add(name, [9, 7, 8], 6, true, true);
