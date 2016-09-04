@@ -19,8 +19,16 @@ namespace Barbarian.HeroStates {
     export class Idle extends HeroBaseState {
 
         private hasLooped: boolean;
-        // These are weighted so Idle will play the most, followed by Idle1 and Idle2 less frequently.
-        private idleAnims: number[] = [Animations.Idle, Animations.Idle, Animations.Idle, Animations.Idle1, Animations.Idle1, Animations.Idle2, Animations.Idle];
+        // These are weighted so Idle will play the most, 
+        // followed by Idle1 and Idle2 less frequently.
+        private idleAnims: number[] = [
+            Animations.Idle,
+            Animations.Idle,
+            Animations.Idle,
+            Animations.Idle1,
+            Animations.Idle1,
+            Animations.Idle2,
+            Animations.Idle];
 
         onEnter() {
             // TODO:  Base our start state on the animation we're transitioning from.
@@ -104,7 +112,11 @@ namespace Barbarian.HeroStates {
                     this.hero.moveRelative(1, 0);
                     break;
                 case 4:
-                    this.hero.fsm.transition('Idle');
+                    // Need to transition immediately to Idle so OnLeave gets called
+                    // to set the Hero's direction properly.  If we don't do this,
+                    // holding down an arrow key will cause the Hero to just reverse
+                    // direction over and over without walking out of the state.
+                    this.hero.fsm.transition('Idle', true);
                     break;
             }
         }
