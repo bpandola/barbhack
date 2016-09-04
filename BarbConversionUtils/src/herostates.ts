@@ -1,12 +1,12 @@
 ﻿import FSM = Barbarian.StateMachine;
-import Hero = Barbarian.Hero;
 
 namespace Barbarian.HeroStates {
 
     export class Idle implements FSM.IState {
 
         private hero: Hero;
-        // These are weighted so Idle will play the most, followed by Idle1 and Idle less frequently.
+        private hasLooped: boolean;
+        // These are weighted so Idle will play the most, followed by Idle1 and Idle2 less frequently.
         private idleAnims: number[] = [Animations.Idle, Animations.Idle, Animations.Idle, Animations.Idle1, Animations.Idle1, Animations.Idle2, Animations.Idle];
 
         constructor(hero: Hero) {
@@ -14,13 +14,21 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
-            this.hero.setAnimation(Animations.Idle);
+            // TODO:  Base are start state on the animation we're transitioning from.
+            // In the DOS game, Idle1 is used after taking stairs, changing direction, etc.
+            this.hero.setAnimation(Animations.Idle1);
+           
+
+            this.hasLooped = false;
         }
 
         onUpdate() {
-            if (this.hero.frame == 0) {
+            if (this.hero.frame == 0 && this.hasLooped == true) {
                 var newAnim = this.hero.game.rnd.weightedPick(this.idleAnims)
                 this.hero.setAnimation(newAnim);
+                this.hasLooped = false;
+            } else {
+                this.hasLooped = true;
             }
            
         }
@@ -38,6 +46,7 @@ namespace Barbarian.HeroStates {
         }
 
         onEnter() {
+            this.hero.setAnimation(Animations.Idle);
             this.hero.fsm.transition('Idle');
         }
 
@@ -129,31 +138,33 @@ namespace Barbarian.HeroStates {
             if (this.animDone == true) {
 
                 // If we hit this we've come to the end and looped back to the first frame, so we're done.
-                this.hero.x -= (3 * adjust * TILE_SIZE);
+                //this.hero.x -= (3 * adjust * TILE_SIZE);
                 this.hero.fsm.transition('Idle');
                 return;
             }
 
             switch (this.hero.frame) {
+                case 0:
+                    this.hero.moveRelative(1, 0);
+                    break;
                 case 1:
-                    this.hero.x += (TILE_SIZE * adjust);
+                    this.hero.moveRelative(-1, 0);
                     break;
                 case 2:
-                    this.hero.x -= (TILE_SIZE * adjust);
+                    this.hero.moveRelative(1, 0);
                     break;
                 case 3:
-                    this.hero.x += (TILE_SIZE * adjust);
+                    this.hero.moveRelative(1, 0);
                     break;
                 case 4:
-                    this.hero.x += (TILE_SIZE * adjust);
                     this.animDone = true;
+                    this.hero.fsm.transition('Idle');
                     break;
-
             }
         }
 
         onLeave() {
-
+            this.hero.moveRelative(-3, 0);
             if (this.hero.facing == Direction.Left) {
                 this.hero.direction = this.hero.facing = Direction.Right;
             }
@@ -309,9 +320,11 @@ namespace Barbarian.HeroStates {
         }
 
         onLeave() {
-            if (this.hero.direction == Direction.Down)
+            if (this.hero.direction == Direction.Up) {
+                this.hero.moveRelative(1, 1);
+            } else if (this.hero.direction == Direction.Down) {
                 this.hero.moveRelative(1, 0);
-
+            }
             if (this.hero.facing == Direction.Right)
                 this.hero.direction = Direction.Right;
             else
@@ -447,11 +460,12 @@ namespace Barbarian.HeroStates {
                     break;
                 case 3:
                     //this.hero.x += TILE_SIZE * 2;
-                    this.hero.moveRelative(2, 0);
+                    //this.hero.moveRelative(2, 0);
+                    this.hero.moveRelative(0, 1);
                     break;
                 case 4:
                     //this.hero.y += TILE_SIZE;
-                    this.hero.moveRelative(0, 1);
+                    //this.hero.moveRelative(0, 1);
                     break;
 
 
@@ -484,7 +498,12 @@ namespace Barbarian.HeroStates {
         onEnter() {
             this.hero.setAnimation(Animations.Falling);
             this.hero.direction = Direction.Down;
-            this.hero.moveRelative(0, 1);
+            // We have to check movement before and after in case we came from another
+            // and/or trip and fell close to the ground (and don't need to fall).
+            if (this.hero.checkMovement()) {
+                this.hero.moveRelative(0, 1);
+                this.hero.checkMovement();
+            }
         }
 
         onUpdate() {
@@ -500,7 +519,7 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class Die implements FSM.IState {
+    export class FallDeath implements FSM.IState {
 
         private hero: Hero;
         private animDone: boolean;
@@ -512,13 +531,52 @@ namespace Barbarian.HeroStates {
         onEnter() {
             this.hero.setAnimation(Animations.HitGround);
             this.hero.direction = Direction.Down;
-            this.hero.moveRelative(0, 1);
             this.animDone = false;
+            // We have to check movement before and after in case we came from another
+            // and/or trip and fell close to the ground (and don't need to fall).
+            if (this.hero.checkMovement()) {
+                this.hero.moveRelative(0, 1);
+            }
+           
+            
         }
 
         onUpdate() {
             if (this.hero.frame == 0 && this.animDone) {
                 this.hero.frame = 3;
+                this.hero.onDied.dispatch();
+            } else {
+                this.animDone = true;
+            }
+        }
+
+        onLeave() {
+            // Set direction to whichever way hero was facing before fall.
+            this.hero.direction = this.hero.facing;
+        }
+
+    }
+
+    export class Die implements FSM.IState {
+
+        private hero: Hero;
+        private animDone: boolean;
+        private deathAnims: number[] = [Animations.FallToGround, Animations.FallToGroundFaceFirst];
+
+
+        constructor(hero: Hero) {
+            this.hero = hero;
+        }
+
+        onEnter() {
+            var anim = this.hero.game.rnd.pick(this.deathAnims)
+            this.hero.setAnimation(anim);
+            this.animDone = false;
+        }
+
+        onUpdate() {
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.frame = this.hero.animData[this.hero.animNum].frames.length-1;
                 this.hero.onDied.dispatch();
             } else {
                 this.animDone = true;
