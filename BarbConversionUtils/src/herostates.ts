@@ -15,23 +15,17 @@ namespace Barbarian.HeroStates {
         onLeave() { }
     }
 
-    export class Idle implements FSM.IState {
+    export class Idle extends HeroBaseState {
 
-        private hero: Hero;
         private hasLooped: boolean;
         // These are weighted so Idle will play the most, followed by Idle1 and Idle2 less frequently.
         private idleAnims: number[] = [Animations.Idle, Animations.Idle, Animations.Idle, Animations.Idle1, Animations.Idle1, Animations.Idle2, Animations.Idle];
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             // TODO:  Base are start state on the animation we're transitioning from.
             // In the DOS game, Idle1 is used after taking stairs, changing direction, etc.
             this.hero.setAnimation(Animations.Idle1);
            
-
             this.hasLooped = false;
         }
 
@@ -46,38 +40,20 @@ namespace Barbarian.HeroStates {
            
         }
 
-        onLeave() {}
-
     }
 
-    export class Stop implements FSM.IState {
-
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
+    export class Stop extends HeroBaseState {
 
         onEnter() {
             this.hero.setAnimation(Animations.Idle);
             this.hero.fsm.transition('Idle');
         }
 
-        onUpdate() {}
-
-        onLeave() {}
-
     }
 
-    export class Walk implements FSM.IState {
+    export class Walk extends HeroBaseState {
 
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
-
-        onEnter() {
+       onEnter() {
             this.hero.setAnimation(Animations.Walk);
         }
 
@@ -85,10 +61,6 @@ namespace Barbarian.HeroStates {
             this.hero.moveRelative(1, 0);
             this.hero.checkMovement();
         }
-
-        onLeave() {
-        }
-
     }
 
     export class Run extends HeroBaseState {
@@ -172,14 +144,9 @@ namespace Barbarian.HeroStates {
         }
     }
 
-    export class Jump implements FSM.IState {
+    export class Jump extends HeroBaseState {
 
-        private hero: Hero;
         private animDone: boolean = false;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             this.hero.setAnimation(Animations.Jump);
@@ -228,20 +195,11 @@ namespace Barbarian.HeroStates {
             this.hero.checkMovement();
         }
 
-        onLeave() {
-        }
-
     }
 
-    export class TakeStairs implements FSM.IState {
+    export class TakeStairs extends HeroBaseState {
 
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
-
-        onEnter() {
+       onEnter() {
             if (this.hero.direction == Direction.Up) {
                 this.hero.setAnimation(Animations.UpStairs);
             } else {
@@ -277,15 +235,10 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class UseLadder implements FSM.IState {
+    export class UseLadder extends HeroBaseState {
 
-        private hero: Hero;
         private downMovementFrames: number[] = [0,1,4,5];
         private upMovementFrames: number[] = [2,3,6,7];
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
 
@@ -334,14 +287,10 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class Attack implements FSM.IState {
+    export class Attack extends HeroBaseState {
 
-        private hero: Hero;
+       
         private animDone = false;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             if (this.hero.weapon === Weapon.Bow)
@@ -361,22 +310,11 @@ namespace Barbarian.HeroStates {
                 this.animDone = true;
             }
         }
-
-        onLeave() {
-
-
-        }
-
     }
 
-    export class TripFall implements FSM.IState {
+    export class TripFall extends HeroBaseState {
 
-        private hero: Hero;
         private animDone: boolean = false;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             this.hero.setAnimation(Animations.TripFall);
@@ -431,13 +369,7 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class Fall implements FSM.IState {
-
-        private hero: Hero;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
+    export class Fall extends HeroBaseState {
 
         onEnter() {
             this.hero.setAnimation(Animations.Falling);
@@ -463,14 +395,9 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class FallDeath implements FSM.IState {
+    export class FallDeath extends HeroBaseState {
 
-        private hero: Hero;
         private animDone: boolean;
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             this.hero.setAnimation(Animations.HitGround);
@@ -501,16 +428,10 @@ namespace Barbarian.HeroStates {
 
     }
 
-    export class Die implements FSM.IState {
+    export class Die extends HeroBaseState {
 
-        private hero: Hero;
         private animDone: boolean;
         private deathAnims: number[] = [Animations.FallToGround, Animations.FallToGroundFaceFirst];
-
-
-        constructor(hero: Hero) {
-            this.hero = hero;
-        }
 
         onEnter() {
             var anim = this.hero.game.rnd.pick(this.deathAnims)
