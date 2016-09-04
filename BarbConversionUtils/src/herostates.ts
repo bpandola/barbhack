@@ -4,6 +4,7 @@ namespace Barbarian.HeroStates {
 
     export class HeroBaseState implements FSM.IState {
         protected hero: Hero;
+
         constructor(hero: Hero) {
             this.hero = hero;
         }
@@ -22,7 +23,7 @@ namespace Barbarian.HeroStates {
         private idleAnims: number[] = [Animations.Idle, Animations.Idle, Animations.Idle, Animations.Idle1, Animations.Idle1, Animations.Idle2, Animations.Idle];
 
         onEnter() {
-            // TODO:  Base are start state on the animation we're transitioning from.
+            // TODO:  Base our start state on the animation we're transitioning from.
             // In the DOS game, Idle1 is used after taking stairs, changing direction, etc.
             this.hero.setAnimation(Animations.Idle1);
            
@@ -46,7 +47,7 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.Idle);
-            this.hero.fsm.transition('Idle');
+            this.hero.fsm.transition('Idle', true);
         }
 
     }
