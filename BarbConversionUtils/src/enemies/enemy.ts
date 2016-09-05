@@ -102,6 +102,8 @@
                     return new Scythe(game, data, direction);
                 case EnemyKeys.blk:
                     return new Block(game, data, direction);
+                case EnemyKeys.spk:
+                    return new Spikes(game, data, direction);
                 default:
                     return new Enemy(game, data, direction);
             }
