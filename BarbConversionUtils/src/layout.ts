@@ -191,6 +191,7 @@
             }
             // add static items
             // TODO: add these so they're always on top
+            // maybe save these in a list per room and then to a .bringToTop() after hero is added?
             for (var item of this.roomsJSON[this.game.roomNum].items) {
 
                 var spr: Phaser.Sprite;
