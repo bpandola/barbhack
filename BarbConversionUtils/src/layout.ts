@@ -16,7 +16,7 @@
         game: Barbarian.Game;
         roomsJSON: any;
         changeFrameRate: any;       
-        enemies: Phaser.Group[];
+        enemies: Barbarian.Enemies.Enemy[];
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -66,7 +66,7 @@
                 case 'bat':
                     effect.scale.setTo(-1, 1);
                     effect.animations.add(name, [33, 34], 4, true, true);
-                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ x: -40 }, 10000, Phaser.Easing.Linear.None, true, 1000);
+                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ x: -40 }, 10000, Phaser.Easing.Linear.None, true, 500);
                     break;
                 case 'torch1':
                     effect.animations.add(name, [9, 7, 8], 6, true, true);
@@ -245,10 +245,39 @@
             }
           
             //var bounds = this.tmpHero.getLocalBounds();
+
+            // Basic killing test
+            if (this.game.hero.fsm.getCurrentStateName === 'Attack') {
+                for (var enemy of this.enemies) {
+                    if (enemy.isKillable && this.game.hero.frame != 0) {
+                        var sword_indices = [133, 134, 135, 136, 137];
+                        for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
+                            if (sword_indices.indexOf(<number>spr.frame) != -1) {
+                                var bounds = spr.getBounds();
+                                var rect: Phaser.Rectangle = new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+                                if (enemy.x <= rect.right && enemy.x >= rect.left && enemy.y == this.game.hero.y) {
+                                    
+                                    this.world.add(new Ghost(this.game, enemy));
+                                    enemy.destroy();
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
         }
 
         render() {
             //this.game.debug.text(this.game.hero.frame.toString(), 20, 20);
+
+            // Test sword bounding box
+            var sword_indices = [133, 134, 135, 136, 137];
+            for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
+                if (sword_indices.indexOf(<number>spr.frame) != -1) {
+                    this.game.debug.spriteBounds(spr);
+                }
+            }
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.roomNum.toString(), 20, 20);
 
