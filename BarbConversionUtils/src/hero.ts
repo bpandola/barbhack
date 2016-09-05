@@ -26,6 +26,7 @@ namespace Barbarian {
         Falling = 36,
         TripFall = 37,
         FrontFlip = 39,
+        PickUp = 42,
         Idle = 43
     }
 
@@ -94,6 +95,7 @@ namespace Barbarian {
             this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [StateMachine.WILDCARD]);
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
+            this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
             this.fsm.transition('Idle');
 
             this.render();
@@ -232,6 +234,8 @@ namespace Barbarian {
             if (this.keys.down.isDown) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
+                } else {
+                    this.fsm.transition('PickUp');
                 }
             } else if (this.keys.up.isDown) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderBottom)) {

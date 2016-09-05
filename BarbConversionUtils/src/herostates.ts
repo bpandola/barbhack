@@ -368,6 +368,21 @@ namespace Barbarian.HeroStates {
         }
     }
 
+    export class PickUp extends HeroBaseState {
+        private animDone = false;
+        onEnter() {
+            this.hero.setAnimation(Animations.PickUp);
+            this.animDone = false;
+        }
+        onUpdate() {
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.fsm.transition('Idle');
+            } else {
+                this.animDone = true;
+            }
+        }        
+    }
+
     export class TripFall extends HeroBaseState {
 
         private animDone: boolean = false;
