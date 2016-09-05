@@ -280,13 +280,7 @@
         render() {
             //this.game.debug.text(this.game.hero.frame.toString(), 20, 20);
 
-            // Test sword bounding box
-            var sword_indices = [133, 134, 135, 136, 137];
-            for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
-                if (sword_indices.indexOf(<number>spr.frame) != -1) {
-                    this.game.debug.spriteBounds(spr);
-                }
-            }
+            
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.roomNum.toString(), 20, 20);
 
@@ -304,6 +298,14 @@
 
                 var bounds: any = this.game.hero.getBodyBounds();
                 this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+
+                // Test sword bounding box
+                var sword_indices = [133, 134, 135, 136, 137];
+                for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
+                    if (sword_indices.indexOf(<number>spr.frame) != -1) {
+                        this.game.debug.spriteBounds(spr, 'red', false);
+                    }
+                }
 
                 for (var enemy of this.enemies) {
                     if (enemy != null) {
