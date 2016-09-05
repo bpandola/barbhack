@@ -75,6 +75,7 @@
     <TypeScriptCompile Include="src\enemies\enemy.ts" />
     <TypeScriptCompile Include="src\enemies\scy.ts" />
     <TypeScriptCompile Include="src\fsm.ts" />
+    <TypeScriptCompile Include="src\ghost.ts" />
     <TypeScriptCompile Include="src\hero.ts" />
     <TypeScriptCompile Include="src\herostates.ts" />
     <TypeScriptCompile Include="src\layout.ts" />
