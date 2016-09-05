@@ -2,7 +2,7 @@
 
     export class Ghost extends Phaser.Sprite {
 
-        static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
+        static FIXED_TIMESTEP: number = FIXED_TIMESTEP*1.3;
 
         timeStep: number = 0;
 
