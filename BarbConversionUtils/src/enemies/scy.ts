@@ -24,6 +24,9 @@ namespace Barbarian.Enemies {
                     if (this.animNum == 1) {
 
                         if (this.game.hero.x - this.x < Scythe.HIT_DISTANCE) {
+                            // HACK! - This is here because TripFall states assumes
+                            // coming from walk/run state and moves Hero back one.
+                            this.game.hero.moveRelative(1, 0);
                             this.game.hero.fsm.transition('TripFall');
                         }
 
