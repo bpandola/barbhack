@@ -80,6 +80,7 @@
     <TypeScriptCompile Include="src\hero.ts" />
     <TypeScriptCompile Include="src\herostates.ts" />
     <TypeScriptCompile Include="src\layout.ts" />
+    <TypeScriptCompile Include="src\level.ts" />
     <TypeScriptCompile Include="src\tilemap.ts" />
     <TypeScriptCompile Include="src\_ref\p2.d.ts" />
     <TypeScriptCompile Include="src\_ref\phaser.comments.d.ts" />
