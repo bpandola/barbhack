@@ -110,7 +110,15 @@
         }
 
         get isKillable(): boolean {
-            return this.dataBlob.xMin > 0 && this.dataBlob.xMax > 0 && this.children.length > 0;
+            return this.dataBlob.xMin > 0
+                && this.dataBlob.xMax > 0
+                && this.children.length > 0
+                && this.alive;
+        }
+
+        kill() {
+            this.game.world.add(new Ghost(this.game, this));
+            this.destroy();
         }
 
         animate() {
