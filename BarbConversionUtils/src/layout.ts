@@ -17,8 +17,6 @@
         roomsJSON: any;
         changeFrameRate: any;       
         enemies: Barbarian.Enemies.Enemy[];
-        //items: Phaser.Sprite[];
-        //level: Level;
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -145,9 +143,6 @@
                 this.drawRoom(direction);
                 this.world.add(this.game.hero);
                 // Bring static items to the top
-                //this.items.forEach(i => {
-                //    i.bringToTop();
-                //});
                 this.game.level.getRoomItems(newRoom).forEach(i => {
                     i.bringToTop();
                 });
@@ -202,27 +197,8 @@
                 this.enemies.push(createdEnemy);
             }
             // add static items
-            // TODO: add these so they're always on top
-            // maybe save these in a list per room and then to a .bringToTop() after hero is added?
-            //this.items = [];
-            for (var item of this.game.level.getRoomItems(this.game.roomNum)/*this.roomsJSON[this.game.roomNum].items*/) {
-                this.world.add(item);
-                //var spr: Phaser.Sprite;
-                //var imageId;
-
-                //if (item.id == 1)
-                //    imageId = 5;
-                //else if (item.id == 2)
-                //    imageId = 4;
-                //else
-                //    imageId = 2;
-
-                //spr = this.add.sprite(item.x, item.y, 'misc', imageId);
-                //spr.x -= spr.width / 2;
-                //spr.y -= spr.height - 2;
-
-                //this.items.push(spr);
-               
+            for (var item of this.game.level.getRoomItems(this.game.roomNum)) {
+                this.world.add(item);               
             }
         }
        
