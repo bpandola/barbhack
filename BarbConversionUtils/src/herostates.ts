@@ -61,7 +61,7 @@ namespace Barbarian.HeroStates {
     }
 
     export class Walk extends HeroBaseState {
-
+        
        onEnter() {
             this.hero.setAnimation(Animations.Walk);
         }
@@ -69,7 +69,9 @@ namespace Barbarian.HeroStates {
         onUpdate() {
             this.hero.moveRelative(1, 0);
             this.hero.checkMovement();
-        }
+                
+       }
+
     }
 
     export class Run extends HeroBaseState {
@@ -429,52 +431,49 @@ namespace Barbarian.HeroStates {
     }
     export class TripFall extends HeroBaseState {
 
-        private animDone: boolean = false;
+        private animDone: boolean;
 
         onEnter() {
             this.hero.setAnimation(Animations.TripFall);
            
-            //this.hero.x += TILE_SIZE;
-            this.hero.moveRelative(1, 0);
             this.animDone = false;
 
-            this.hero.direction == Direction.Down;
+            this.hero.direction = Direction.Down;
+
+            // HACK: Need to get this out of here...this is needed right 
+            // now because walk and run checkMovement() after moving forward...
+            this.hero.moveRelative(-1, 0);
         }
 
         onUpdate() {
 
+            
 
-
-       
             switch (this.hero.frame) {
+                case 0:
+                    this.hero.moveRelative(2, 0);
+                    break;
                 case 1:
-                    //this.hero.x += TILE_SIZE;
                     this.hero.moveRelative(1, 0);
                     break;
                 case 2:
-                    //this.hero.x += TILE_SIZE;
-                    this.hero.moveRelative(1, 0);
+                    this.hero.moveRelative(1, 1);
                     break;
                 case 3:
-                    //this.hero.x += TILE_SIZE * 2;
-                    //this.hero.moveRelative(2, 0);
-                    this.hero.moveRelative(0, 1);
+                    this.hero.moveRelative(2, 1);
                     break;
                 case 4:
-                    //this.hero.y += TILE_SIZE;
-                    //this.hero.moveRelative(0, 1);
+                    this.hero.moveRelative(0, 1);
+                    this.animDone = true;
                     break;
-
-
             }
-            if (this.hero.frame == 0 && this.animDone) {
+
+            if (!this.hero.checkMovement())
+                return;
+            if (this.animDone) {
                 this.hero.fsm.transition('Fall');
-
-
-
-            } else {
-                this.animDone = true;
             }
+            
         }
 
         onLeave() {

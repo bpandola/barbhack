@@ -122,7 +122,7 @@ namespace Barbarian {
             this.direction = Direction.Right;
             this.facing = Direction.Right;
 
-            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE });
+            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F });
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
@@ -212,14 +212,14 @@ namespace Barbarian {
                     return false;
                 case '/':
                     if (this.direction != Direction.Down) {
-                        this.fsm.transition('TripFall');
+                        this.fsm.transition('TripFall', true);
                         return false;
                     }
                     break;
                 case '5':
                 case '!':
                     if (this.direction == Direction.Down) {
-                        this.fsm.transition('FallDeath');
+                        this.fsm.transition('FallDeath', true);
                         return false;
                     }
             }
