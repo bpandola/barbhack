@@ -4,13 +4,13 @@
     export const TILE_SIZE = 16;
     export const TILE_SHIFT = 4; // 2^4 is 16
 
-    export const FIXED_TIMESTEP = 120;
+    export const FIXED_TIMESTEP = 140;
 
     export class Game extends Phaser.Game {
 
-        roomNum: number = 0x10;
+        roomNum: number = 0x00;
         hero: Hero;
-        debugOn: boolean = true;
+        debugOn: boolean = false;
         level: Level;
 
         constructor() {
