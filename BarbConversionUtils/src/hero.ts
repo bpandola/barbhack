@@ -20,6 +20,7 @@ namespace Barbarian {
         Attack5,
         Attack6,
         ShootArrow = 22,
+        WaitForArrow = 23,
         HitWall = 24,
         FallToGround = 28,
         FallToGroundFaceFirst = 31,
