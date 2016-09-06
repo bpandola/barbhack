@@ -346,24 +346,50 @@ namespace Barbarian.HeroStates {
     export class Attack extends HeroBaseState {
 
        
-        private animDone = false;
+        private animDone;
+        private arrow;
+        private waitForArrow;
 
         onEnter() {
-            if (this.hero.weapon === Weapon.Bow)
+            if (this.hero.inventory.activeWeapon === Weapon.Bow && this.hero.inventory.numArrows) {
                 this.hero.setAnimation(Animations.ShootArrow);
+                
+            }
             else
                 this.hero.setAnimation(this.hero.game.rnd.integerInRange(Animations.Attack1, Animations.Attack6));
 
             this.animDone = false;
+            this.arrow = null;
+            this.waitForArrow = false;
         }
 
         onUpdate() {
-      
-            if (this.hero.frame == 0 && this.animDone == true) {
-                this.hero.fsm.transition('Idle');
-
-            } else {
+            //if (this.hero.animNum == Animations.ShootArrow && this.hero.frame == 0 && this.animDone == true) {
+            //    if (this.arrow != null && !this.arrow.alive)
+            //        this.hero.fsm.transition('Idle');
+            //    else {
+            //        this.hero.frame = 0;
+            //        return;
+            //    }
+            //}
+            // BAD HACK
+            if (this.animDone && !this.waitForArrow) {
+                if (this.hero.animNum == Animations.ShootArrow) {
+                    this.hero.setAnimation(Animations.Idle);
+                    this.arrow = new Arrow(this.hero);
+                    this.hero.inventory.numArrows--;
+                    this.waitForArrow = true;
+                } else {
+                    this.hero.fsm.transition('Idle');
+                }
+            } else if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length - 1) {
                 this.animDone = true;
+            }
+
+            if (this.waitForArrow) {
+                if (!this.arrow || !this.arrow.alive) {
+                    this.hero.fsm.transition('Idle');
+                }
             }
         }
     }
@@ -380,9 +406,27 @@ namespace Barbarian.HeroStates {
             } else {
                 this.animDone = true;
             }
+            if (this.hero.frame == 3) {
+                var itemType = this.hero.game.level.pickUpItem(this.hero);
+                this.hero.inventory.addItem(itemType);
+            }
         }        
     }
 
+    export class SwitchWeapon extends HeroBaseState {
+        private animDone = false;
+        onEnter() {
+            this.hero.setAnimation(Animations.SwitchWeapon);
+            this.animDone = false;
+        }
+        onUpdate() {
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.fsm.transition('Idle');
+            } else {
+                this.animDone = true;
+            }
+        }
+    }
     export class TripFall extends HeroBaseState {
 
         private animDone: boolean = false;

@@ -10,6 +10,7 @@ namespace Barbarian {
         UpStairs = 7,
         DownStairs = 8,
         Jump = 9,
+        SwitchWeapon = 10,
         Idle1 = 12,
         Idle2 = 13,
         Attack1,
@@ -44,6 +45,49 @@ namespace Barbarian {
         Down
     }
 
+    export class Inventory {
+        numArrows: number;
+        activeWeapon: Weapon;
+        private availableWeapons: boolean[] = [];
+
+        constructor() {
+            this.numArrows = 10;
+            this.availableWeapons[Weapon.Bow] = true;
+            this.availableWeapons[Weapon.Shield] = false;
+            // Start with sword.
+            this.availableWeapons[Weapon.Sword] = true;
+            this.activeWeapon = Weapon.Sword;
+        }
+
+        addItem(itemType: ItemType) {
+            switch (itemType) {
+                case ItemType.Arrow:
+                    this.numArrows++;
+                    break;
+                case ItemType.Bow:
+                    this.availableWeapons[Weapon.Bow] = true;
+                    break;
+                case ItemType.Shield:
+                    this.availableWeapons[Weapon.Shield] = true;
+                    break;
+                case ItemType.Sword:
+                    this.availableWeapons[Weapon.Sword] = true;
+                    break;
+            }
+        }
+
+        switchWeapon(weapon: Weapon): boolean {
+            if (!this.availableWeapons[weapon] || weapon == this.activeWeapon)
+                return false;
+
+            this.activeWeapon = weapon;
+            return true;
+        }
+
+
+
+    }
+
     export class Hero extends Phaser.Group {
 
         static FIXED_TIMESTEP: number = FIXED_TIMESTEP; //170;
@@ -52,7 +96,7 @@ namespace Barbarian {
         public animNum: number;
         frame: number;
         animData: any;
-        weapon: Weapon;
+        //weapon: Weapon;
         keys: any;
         fsm: Barbarian.StateMachine.StateMachine;
         direction: Direction;
@@ -60,7 +104,7 @@ namespace Barbarian {
         game: Barbarian.Game;
         tileMap: TileMap;
         onDied: Phaser.Signal = new Phaser.Signal();
-
+        inventory: Inventory;
         timeStep: number = 0;
 
         constructor(game: Barbarian.Game, tileX: number, tileY: number) {
@@ -73,11 +117,11 @@ namespace Barbarian {
 
             this.animData = this.game.cache.getJSON('hero');
 
-            this.weapon = Weapon.Sword;
+            this.inventory = new Inventory();
             this.direction = Direction.Right;
             this.facing = Direction.Right;
 
-            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR });
+            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE });
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
@@ -96,6 +140,7 @@ namespace Barbarian {
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
+            this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
             this.fsm.transition('Idle');
 
             this.render();
@@ -127,6 +172,23 @@ namespace Barbarian {
             this.frame = 0;
         }
 
+        get isAttackingWithSword(): boolean {
+            // Ignore first frame of attack.  Seems to give more realistic results.
+            return this.fsm.getCurrentStateName === 'Attack'
+                && this.inventory.activeWeapon === Weapon.Sword
+                && this.frame != 0;
+        }
+
+        getSwordBounds(): Phaser.Rectangle {
+            var sword_indices = [133, 134, 135, 136, 137];
+            for (var spr of <Phaser.Sprite[]>this.children) {
+                if (sword_indices.indexOf(<number>spr.frame) != -1) {
+                    return new Phaser.Rectangle().copyFrom(spr.getBounds());
+                }
+            }
+            return new Phaser.Rectangle();  // Empty
+
+        }
         // arguments can be decimals, e.g. 0.5 for a half-tile movement.
         moveRelative(numTilesX: number, numTilesY: number): void {
 
@@ -199,7 +261,20 @@ namespace Barbarian {
         getState
 
         update() {
-            
+            // If switchWeapon succeeds, we need to transition
+            // immediately to avoid having the new weapon display
+            // before the switch animation starts.
+            if (this.keys.sword.isDown) {
+                if (this.inventory.switchWeapon(Weapon.Sword))
+                    this.fsm.transition('SwitchWeapon', true);
+            } else if (this.keys.bow.isDown) {
+                if (this.inventory.switchWeapon(Weapon.Bow))
+                    this.fsm.transition('SwitchWeapon', true);
+            } else if (this.keys.shield.isDown) {
+                if (this.inventory.switchWeapon(Weapon.Shield))
+                    this.fsm.transition('SwitchWeapon', true);
+            }
+
             if (this.keys.attack.isDown) {
                 this.fsm.transition('Attack');              
             }
@@ -235,6 +310,7 @@ namespace Barbarian {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
                 } else {
+                    // TODO: Add if on top of item...
                     this.fsm.transition('PickUp');
                 }
             } else if (this.keys.up.isDown) {
@@ -279,7 +355,7 @@ namespace Barbarian {
 
             for (var part of this.animData[this.animNum].frames[this.frame].parts) {
                 var weapon = part.flags >> 4;
-                if (part.flags < 5 || weapon == this.weapon) {
+                if (part.flags < 5 || weapon == this.inventory.activeWeapon) {
                     var x = this.facing == Direction.Left ? part.rx : part.x;
                     var y = this.facing == Direction.Left ? part.ry : part.y;
 
