@@ -17,7 +17,8 @@
         roomsJSON: any;
         changeFrameRate: any;       
         enemies: Barbarian.Enemies.Enemy[];
-        items: Phaser.Sprite[];
+        //items: Phaser.Sprite[];
+        //level: Level;
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -40,6 +41,7 @@
         create() {
 
             this.roomsJSON = this.cache.getJSON('rooms');
+            this.game.level = new Level(this.game, this.roomsJSON);
 
             this.stage.smoothed = false;
             this.game.renderer.renderSession.roundPixels = false;
@@ -55,6 +57,8 @@
             // draw hud
             var hud = this.make.image(0, 320, 'hud');
             this.stage.addChild(hud);
+
+            
            
             
         }
@@ -86,7 +90,7 @@
                     break;
                 case 'blood_drip':
                     effect.frame = 16;
-                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ y: 320 }, 1500, Phaser.Easing.Exponential.In, true);
+                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ y: 320 }, 800, Phaser.Easing.Exponential.In, true);
                     tween.repeat(-1, 1000);
                     break;
             }
@@ -141,7 +145,10 @@
                 this.drawRoom(direction);
                 this.world.add(this.game.hero);
                 // Bring static items to the top
-                this.items.forEach(i => {
+                //this.items.forEach(i => {
+                //    i.bringToTop();
+                //});
+                this.game.level.getRoomItems(newRoom).forEach(i => {
                     i.bringToTop();
                 });
             }
@@ -197,24 +204,24 @@
             // add static items
             // TODO: add these so they're always on top
             // maybe save these in a list per room and then to a .bringToTop() after hero is added?
-            this.items = [];
-            for (var item of this.roomsJSON[this.game.roomNum].items) {
+            //this.items = [];
+            for (var item of this.game.level.getRoomItems(this.game.roomNum)/*this.roomsJSON[this.game.roomNum].items*/) {
+                this.world.add(item);
+                //var spr: Phaser.Sprite;
+                //var imageId;
 
-                var spr: Phaser.Sprite;
-                var imageId;
+                //if (item.id == 1)
+                //    imageId = 5;
+                //else if (item.id == 2)
+                //    imageId = 4;
+                //else
+                //    imageId = 2;
 
-                if (item.id == 1)
-                    imageId = 5;
-                else if (item.id == 2)
-                    imageId = 4;
-                else
-                    imageId = 2;
+                //spr = this.add.sprite(item.x, item.y, 'misc', imageId);
+                //spr.x -= spr.width / 2;
+                //spr.y -= spr.height - 2;
 
-                spr = this.add.sprite(item.x, item.y, 'misc', imageId);
-                spr.x -= spr.width / 2;
-                spr.y -= spr.height - 2;
-
-                this.items.push(spr);
+                //this.items.push(spr);
                
             }
         }
@@ -241,6 +248,7 @@
            
         }
 
+        
         update() {
             this.handleMovement();
 
@@ -252,29 +260,33 @@
                 console.log('slower');
                 Hero.FIXED_TIMESTEP += 5;
             }
-          
-            //var bounds = this.tmpHero.getLocalBounds();
 
-            // Basic killing test
-            if (this.game.hero.fsm.getCurrentStateName === 'Attack') {
-                for (var enemy of this.enemies) {
-                    if (enemy.isKillable && this.game.hero.frame != 0) {
-                        var sword_indices = [133, 134, 135, 136, 137];
-                        for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
-                            if (sword_indices.indexOf(<number>spr.frame) != -1) {
-                                var bounds = spr.getBounds();
-                                var rect: Phaser.Rectangle = new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-                                if (enemy.x <= rect.right && enemy.x >= rect.left && enemy.y == this.game.hero.y) {
-                                    
-                                    this.world.add(new Ghost(this.game, enemy));
-                                    enemy.destroy();
-                                }
-                            }
-                        }
+            // Basic sword killing test
+            if (this.game.hero.isAttackingWithSword) {
+                for (var enemy of this.enemies.filter((e) => { return e.isKillable })) {
+                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds())
+
+                    if (enemyBounds.intersects(this.game.hero.getSwordBounds(), 0)) {
+                        enemy.kill();
                     }
                 }
-
             }
+            // Basic arrow kill test.
+            for (var arrow of <Arrow[]>this.world.children.filter((obj) => { return obj instanceof Arrow && obj.alive; })) {
+                for (var enemy of this.enemies.filter((e) => { return e.isKillable })) {
+                    // Inflate the enemyBounds so it doesn't go over their head without a hit.
+                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds()).inflate(TILE_SIZE / 2, TILE_SIZE * 2);
+                    var arrowBounds = new Phaser.Rectangle().copyFrom(arrow.getBounds());
+
+                    if (enemyBounds.containsRect(arrowBounds)) {
+                        enemy.kill();
+                        arrow.kill();
+                    }
+                }
+            }
+
+            
+            
         }
 
         render() {
@@ -299,13 +311,9 @@
                 var bounds: any = this.game.hero.getBodyBounds();
                 this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
 
-                // Test sword bounding box
-                var sword_indices = [133, 134, 135, 136, 137];
-                for (var spr of <Phaser.Sprite[]>this.game.hero.children) {
-                    if (sword_indices.indexOf(<number>spr.frame) != -1) {
-                        this.game.debug.spriteBounds(spr, 'red', false);
-                    }
-                }
+                // Sword bounding box
+                this.game.debug.rectangle(this.game.hero.getSwordBounds(), 'red', false);
+                
 
                 for (var enemy of this.enemies) {
                     if (enemy != null) {
