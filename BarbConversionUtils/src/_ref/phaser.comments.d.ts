@@ -21066,7 +21066,7 @@ declare module Phaser {
         * @param width The width of the Rectangle. Should always be either zero or a positive value.
         * @param height The height of the Rectangle. Should always be either zero or a positive value.
         */
-        constructor(x: number, y: number, width: number, height: number);
+        constructor(x?: number, y?: number, width?: number, height?: number);
 
 
         /**
