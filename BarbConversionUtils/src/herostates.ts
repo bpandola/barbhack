@@ -416,16 +416,13 @@ namespace Barbarian.HeroStates {
     }
 
     export class SwitchWeapon extends HeroBaseState {
-        private animDone = false;
+        
         onEnter() {
             this.hero.setAnimation(Animations.SwitchWeapon);
-            this.animDone = false;
         }
         onUpdate() {
-            if (this.hero.frame == 0 && this.animDone) {
+            if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length-1) {
                 this.hero.fsm.transition('Idle');
-            } else {
-                this.animDone = true;
             }
         }
     }
