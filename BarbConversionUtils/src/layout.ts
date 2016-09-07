@@ -53,10 +53,24 @@
             this.game.hero.tileMap = new TileMap(this.game.hero);
             this.game.hero.onDied.add(this.heroDied, this);
             // draw hud
-            var hud = this.make.image(0, 320, 'hud');
+            var hud = this.make.sprite(0, 320, 'hud');
             this.stage.addChild(hud);
 
-            
+
+            // Button Test
+            hud.inputEnabled = true;
+            hud.input.enableDrag();
+            hud.input.allowVerticalDrag = false;
+            hud.input.enableSnap(160, 80);
+            hud.events.onInputDown.add((sprite, pointer) => {
+                console.log('here');
+
+                if (pointer.x >= 120 && pointer.x < 160) {
+                    this.game.hero.keys.right.isDown = true;
+                } else if (pointer.x >= 160 && pointer.x < 240) {
+                    this.game.hero.keys.right.isDown = false;
+                }
+            }, this);          
            
             
         }
