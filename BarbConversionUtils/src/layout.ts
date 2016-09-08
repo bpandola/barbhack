@@ -17,6 +17,7 @@
         roomsJSON: any;
         changeFrameRate: any;       
         enemies: Barbarian.Enemies.Enemy[];
+        background: Phaser.BitmapData;
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
@@ -43,6 +44,9 @@
 
             this.stage.smoothed = false;
             this.game.renderer.renderSession.roundPixels = false;
+
+            // Use one background and constantly overwrite so no GC.
+            this.background = this.add.bitmapData(640, 320);
             this.drawRoom(Direction.Right);
 
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
@@ -70,7 +74,9 @@
                 } else if (pointer.x >= 160 && pointer.x < 240) {
                     this.game.hero.keys.right.isDown = false;
                 }
-            }, this);          
+            }, this);
+
+            
            
             
         }
@@ -169,7 +175,8 @@
             // clear world
             this.world.removeAll();
             // create bitmap to hold room background
-            var background = this.add.bitmapData(640, 320);
+            //var background = this.add.bitmapData(640, 320);
+            this.background.clear();
             // loop through area data to create background
             for (var o of this.roomsJSON[this.game.roomNum].area) {
 
@@ -188,16 +195,16 @@
 
                     spr.scale.setTo(xScale, yScale);
 
-                    background.draw(spr, spr.x, spr.y);
+                    this.background.draw(spr, spr.x, spr.y);
                 }
                 else {
                     // black out area of background with height of a single tile and width of tile * obj.unkonwn
-                    background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
+                    this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
                 }
 
             }
             // add background to world
-            background.addToWorld(0, 0);
+            this.background.addToWorld(0, 0);
             // add effects to room
             for (var effect of this.roomsJSON[this.game.roomNum].effects) {
 
