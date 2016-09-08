@@ -10,7 +10,7 @@
 
         constructor(game: Barbarian.Game, enemy: Barbarian.Enemies.Enemy) {
             super(game, enemy.x, enemy.y - TILE_SIZE, 'misc', 20);
-            var xAnchor = enemy.rotate ? 0 : 1;
+            var xAnchor = enemy.facing == Direction.Left ? 0 : 1;
             this.anchor.setTo(xAnchor, 1);
             this.frameNum = 1;
         }
