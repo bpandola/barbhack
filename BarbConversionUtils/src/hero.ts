@@ -89,7 +89,7 @@ namespace Barbarian {
 
     }
 
-    export class Hero extends Phaser.Group {
+    export class Hero extends Entity {
 
         static FIXED_TIMESTEP: number = FIXED_TIMESTEP; //170;
         
@@ -101,7 +101,7 @@ namespace Barbarian {
         keys: any;
         fsm: Barbarian.StateMachine.StateMachine;
         direction: Direction;
-        facing: Direction;  // left or right
+        //facing: Direction;  // left or right
         game: Barbarian.Game;
         tileMap: TileMap;
         onDied: Phaser.Signal = new Phaser.Signal();
@@ -109,7 +109,7 @@ namespace Barbarian {
         timeStep: number = 0;
 
         constructor(game: Barbarian.Game, tileX: number, tileY: number) {
-            super(game);
+            super(game, 'hero');
 
             this.tilePos.setTo(tileX, tileY);
 
@@ -173,6 +173,11 @@ namespace Barbarian {
             this.frame = 0;
         }
 
+        get currentParts() {
+            var parts: { flags: number }[] = this.animData[this.animNum].frames[this.frame].parts;
+            return parts.filter((part) => { return part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon; });
+        }
+
         get isAttackingWithSword(): boolean {
             // Ignore first frame of attack.  Seems to give more realistic results.
             return this.fsm.getCurrentStateName === 'Attack'
@@ -182,7 +187,7 @@ namespace Barbarian {
 
         getSwordBounds(): Phaser.Rectangle {
             var sword_indices = [133, 134, 135, 136, 137];
-            for (var spr of <Phaser.Sprite[]>this.children) {
+            for (var spr of <Phaser.Sprite[]>this.children.filter((child) => { return child.visible; }) ) {
                 if (sword_indices.indexOf(<number>spr.frame) != -1) {
                     return new Phaser.Rectangle().copyFrom(spr.getBounds());
                 }
@@ -258,8 +263,6 @@ namespace Barbarian {
             if (this.frame >= numFrames)
                 this.frame = 0;
         }
-
-        getState
 
         update() {
             // If switchWeapon succeeds, we need to transition
@@ -344,24 +347,25 @@ namespace Barbarian {
                 bounds = new Phaser.Rectangle(this.x - 32, this.y - 80, 32, 80);
             else
                 bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);
-
+            
             return bounds;
 
 
         }
 
-        render() {
+        renderOld() {
             // Start from scratch every time.
-            this.removeChildren();
+            this.forEach((child) => { child.visible = false; }, this);
 
             for (var part of this.animData[this.animNum].frames[this.frame].parts) {
                 var weapon = part.flags >> 4;
                 if (part.flags < 5 || weapon == this.inventory.activeWeapon) {
-                    var x = this.facing == Direction.Left ? part.rx : part.x;
-                    var y = this.facing == Direction.Left ? part.ry : part.y;
-
-                    var spr: Phaser.Sprite = this.create(x, y, 'hero', part.index);
-
+                    var spr = <Phaser.Sprite>this.getChildAt(part.index);
+                    spr.visible = true;
+                    // Have to reset scale every time...
+                    spr.scale.setTo(1, 1);
+                    spr.x = this.facing == Direction.Left ? part.rx : part.x;
+                    spr.y = this.facing == Direction.Left ? part.ry : part.y;
                     spr.x += spr.width / 2;
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);

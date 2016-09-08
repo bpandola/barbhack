@@ -44,7 +44,7 @@ namespace Barbarian.Enemies {
             }
 
 
-            this.drawEnemy();
+            this.render();
 
         }
 

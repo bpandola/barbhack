@@ -1,4 +1,6 @@
-﻿namespace Barbarian.Enemies {
+﻿/// <reference path="../entity.ts" />
+
+namespace Barbarian.Enemies {
 
     export enum EnemyKeys {
         nll,
@@ -51,7 +53,7 @@
         flags: number[];
     }
 
-    export class Enemy extends Phaser.Group {
+    export class Enemy extends Entity {
 
         static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
 
@@ -63,10 +65,10 @@
         game: Barbarian.Game;
         timeStep: number = 0;
         dataBlob: EnemyJSON;
-        rotate: number;
+        //rotate: number;
 
         constructor(game: Barbarian.Game, dataBlob: EnemyJSON, direction: Direction) {
-            super(game);
+            super(game, EnemyKeys[dataBlob.id]);
 
             this.dataBlob = dataBlob;
             
@@ -78,12 +80,13 @@
             this.frame = 0;
 
             this.direction = direction;
-            this.rotate = this.dataBlob.flags[this.direction + 1];
+            
+            this.facing = this.dataBlob.flags[this.direction + 1] ? Direction.Left : Direction.Right;
 
             // Make sure we update right away
             this.timeStep = Enemy.FIXED_TIMESTEP;
 
-            this.drawEnemy();
+            //this.drawEnemy();
         }
 
         /**
@@ -107,6 +110,13 @@
                 default:
                     return new Enemy(game, data, direction);
             }
+        }
+
+        get currentParts() {
+            // TODO: Fix this for NLLSPR so I don't have to do this check.
+            if (this.dataBlob.id === EnemyKeys.nll)
+                return [];
+            return this.animData[this.animNum].frames[this.frame].parts;
         }
 
         get isKillable(): boolean {
@@ -168,9 +178,9 @@
                     }
 
                     if (this.x < this.game.hero.x)
-                        this.rotate = 0;
+                        this.facing = Direction.Right;
                     else
-                        this.rotate = 1;
+                        this.facing = Direction.Left;
 
                     if (this.x < this.dataBlob.xMin)
                         this.x = this.dataBlob.xMin;
@@ -187,37 +197,11 @@
             }
 
             
-            this.drawEnemy();
+            this.render();
 
         }
 
-        drawEnemy() {
-
-            // TODO: Have a proper NLLSPR asset file so I don't have to do this check.
-            if (this.dataBlob.id === EnemyKeys.nll)
-                return;
-
-            // Start from scratch every time.
-            this.removeChildren();
-
-            for (var part of this.animData[this.animNum].frames[this.frame].parts) {
-
-                var x = this.rotate ? part.rx : part.x;
-                var y = this.rotate ? part.ry : part.y;
-
-                var spr: Phaser.Sprite = this.create(x, y, EnemyKeys[this.dataBlob.id], part.index);
-
-                spr.x += spr.width / 2;
-                spr.y += spr.height / 2;
-                spr.anchor.setTo(0.5);
-                var xScale = part.flags & 1 ? -1 : 1;
-                var yScale = part.flags & 2 ? -1 : 1;
-
-                xScale = this.rotate ? -xScale : xScale
-                //yScale = this.direction == Direction.Right ? yScale : -yScale
-                spr.scale.setTo(xScale, yScale);
-            }
-        }
+        
 
     }
 
