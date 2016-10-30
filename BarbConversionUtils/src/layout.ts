@@ -108,7 +108,7 @@
                     break;
                 case 'blood_drip':
                     effect.frame = 16;
-                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ y: 320 }, 800, Phaser.Easing.Exponential.In, true);
+                    var tween: Phaser.Tween = this.game.add.tween(effect).to({ y: 320 }, 1200, Phaser.Easing.Exponential.In, true);
                     tween.repeat(-1, 1000);
                     break;
             }
