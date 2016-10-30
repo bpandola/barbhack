@@ -284,10 +284,14 @@ namespace Barbarian {
             }
 
             if (this.keys.jump.isDown) {
-                if (this.keys.shift.isDown) {
-                    this.fsm.transition('FrontFlip');
+                if (this.tileMap.isAbleToJump()) {
+                    if (this.keys.shift.isDown) {
+                        this.fsm.transition('FrontFlip');
+                    } else {
+                        this.fsm.transition('Jump');
+                    }
                 } else {
-                    this.fsm.transition('Jump');
+                    this.fsm.transition('Idle');
                 }
             }
             if (this.facing == Direction.Right) {
