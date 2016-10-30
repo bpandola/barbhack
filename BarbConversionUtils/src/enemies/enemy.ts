@@ -114,6 +114,12 @@ namespace Barbarian.Enemies {
                 case EnemyKeys.mn5:
                 case EnemyKeys.mn6:
                 case EnemyKeys.mn7:
+                case EnemyKeys.ape:
+                case EnemyKeys.oc1:
+                case EnemyKeys.oc2:
+                case EnemyKeys.nt1:
+                case EnemyKeys.nt2:
+                case EnemyKeys.nt3:
                     return new Man(game, data, direction);
                 default:
                     return new Enemy(game, data, direction);
