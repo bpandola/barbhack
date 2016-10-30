@@ -2,31 +2,21 @@
 
     export class Ghost extends Phaser.Sprite {
 
-        timeStep: number = 0;
-        frameNums: number[] = [20, 21, 22, 21, 20, 23, 24, 25, 26, 27];
-        frameNum: number;
+        static FRAMES = [20, 21, 22, 21, 20, 23, 24, 25, 26, 27];
 
-        constructor(game: Barbarian.Game, enemy: Barbarian.Enemies.Enemy) {
-            super(game, enemy.x, enemy.y - TILE_SIZE, 'misc', 20);
-            var xAnchor = enemy.facing == Direction.Left ? 0 : 1;
-            this.anchor.setTo(xAnchor, 1);
-            this.frameNum = 1;
-        }
+        private deathAnim: Phaser.Animation;
 
-        update() {
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % FIXED_TIMESTEP;
-
-                if (this.frameNum > 9) {
-                    this.destroy();
-                    return;
-                }
-
-                this.y -= TILE_SIZE;
-                this.frame = this.frameNums[this.frameNum];
-                this.frameNum++
-            }
+        constructor(entity: Entity) {
+            super(entity.game, entity.x, entity.y - TILE_SIZE, 'misc', 20);
+            // Set the x anchor based on which way the enemy was facing.
+            this.anchor.setTo(entity.facing == Direction.Left ? 0 : 1, 1);
+            // Create a Phaser animation that plays at our fixed timestep.
+            this.deathAnim = this.animations.add('rise', Ghost.FRAMES, 1000 / FIXED_TIMESTEP, false, true);
+            // Decrease the y value on each frame, so the ghost rises into the air.
+            this.deathAnim.enableUpdate = true;
+            this.deathAnim.onUpdate.add(() => { this.y -= TILE_SIZE; }, this);
+            this.deathAnim.killOnComplete = true;
+            this.deathAnim.play();
         }
     }
 }

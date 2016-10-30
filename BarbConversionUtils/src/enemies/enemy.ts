@@ -139,18 +139,7 @@ namespace Barbarian.Enemies {
         }
 
         kill() {
-            //this.game.world.add(new Ghost(this.game, this));
-            var ghost: Phaser.Sprite = this.game.add.sprite(this.x, this.y - TILE_SIZE, 'misc');
-            var xAnchor = this.facing == Direction.Left ? 0 : 1;
-            ghost.anchor.setTo(xAnchor, 1);
-            var deathAnim: Phaser.Animation = ghost.animations.add('rise', [20, 21, 22, 21, 20, 23, 24, 25, 26, 27], 1000/FIXED_TIMESTEP, false, true);
-
-            deathAnim.killOnComplete = true;
-            deathAnim.enableUpdate = true;
-            deathAnim.onUpdate.add(() => {
-                ghost.y -= TILE_SIZE;
-            }, this, 0, ghost);
-            ghost.animations.play('rise');
+            this.game.world.add(new Ghost(this));
             this.destroy();
         }
 
