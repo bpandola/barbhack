@@ -3,9 +3,10 @@
     export class Play extends Phaser.State {
 
         game: Barbarian.Game;
-        changeFrameRate: any;       
-        enemies: Barbarian.Enemies.Enemy[];
+
         background: Phaser.BitmapData;
+        enemies: Barbarian.Enemies.Enemy[];
+        changeFrameRate: any;
 
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');

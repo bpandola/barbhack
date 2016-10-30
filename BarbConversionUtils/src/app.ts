@@ -16,7 +16,7 @@
             super(640, 400, Phaser.CANVAS, 'game', null);
 
             this.state.add('Boot', new Barbarian.Boot());
-            this.state.add('Layout', new Barbarian.Play());
+            this.state.add('Play', new Barbarian.Play());
 
             this.state.start('Boot', true, true, 'Play');  // pass in the state to start after boot
         }

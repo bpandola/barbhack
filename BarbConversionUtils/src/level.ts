@@ -52,8 +52,7 @@
 
             this.timeStep = 0;
             this.movement = hero.facing == Direction.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
-            var scale = hero.facing == Direction.Left ? -1 : 1;
-            this.scale.x = scale;
+            this.scale.x = hero.facing == Direction.Left ? -1 : 1;
             this.x += this.movement * 2;
 
             hero.game.world.add(this);
@@ -108,7 +107,7 @@
         getStartPosition() {
             var startPos = this.currentRoom.startPos;
             // Loop until until we get a valid starting position.
-            // This is needed when the hero falls into a pit and needs to be spawned back at the top.
+            // This is needed when the hero falls into a pit and must be spawned back at the top.
             while (startPos.tileX == 0 || startPos.tileY == 0) {
                 this.room--;
                 startPos = this.currentRoom.startPos;
@@ -131,6 +130,9 @@
                     break;
                 case Direction.Down:
                     newRoom = this.currentRoom.map.down;
+                    break;
+                default:
+                    newRoom = -1;
                     break;
             }
 
