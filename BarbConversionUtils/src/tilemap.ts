@@ -15,6 +15,7 @@
         game: Barbarian.Game;
         getTileMapPosition(adjustX?: number, adjustY?: number): Phaser.Point;
         moveRelative(numTilesX: number, numTilesY: number): void;
+        facing: Direction;
     }
 
     export class TileMap {
@@ -39,6 +40,30 @@
                 .substring(position.x, position.x + 1);
 
             return tile;
+        }
+
+        isAbleToJump(): boolean {
+            var position: Phaser.Point = this.entity.getTileMapPosition();
+
+            if (position.x == -1 || position.y == -1)
+                return false;
+
+            // Get one row above entity because '#' is not on same row as entity.
+            var tileMapRow: string = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum].layout[position.y-1].rowData;
+
+            var relativeMovement = this.entity.facing == Direction.Right ? 1 : -1;
+
+            for (var x = 0; x < 10; x++) {
+                if (tileMapRow.charAt(position.x) === '#')
+                    return false;
+
+                position.x += relativeMovement;
+
+                if (position.x < 0 || position.x > 39)
+                    return true;
+            }
+
+            return true;
         }
 
         // Strings are pipe-delimited to ensure no false positives (e.g. %A%G would hit %A using the % from G...).
