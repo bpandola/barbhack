@@ -107,6 +107,14 @@ namespace Barbarian.Enemies {
                     return new Block(game, data, direction);
                 case EnemyKeys.spk:
                     return new Spikes(game, data, direction);
+                case EnemyKeys.mn1:
+                case EnemyKeys.mn2:
+                case EnemyKeys.mn3:
+                case EnemyKeys.mn4:
+                case EnemyKeys.mn5:
+                case EnemyKeys.mn6:
+                case EnemyKeys.mn7:
+                    return new Man(game, data, direction);
                 default:
                     return new Enemy(game, data, direction);
             }

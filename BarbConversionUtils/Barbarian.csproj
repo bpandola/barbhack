@@ -71,6 +71,7 @@
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\boot.ts" />
     <TypeScriptCompile Include="src\enemies\blk.ts" />
+    <TypeScriptCompile Include="src\enemies\man.ts" />
     <TypeScriptCompile Include="src\enemies\rot.ts" />
     <TypeScriptCompile Include="src\enemies\enemy.ts" />
     <TypeScriptCompile Include="src\enemies\scy.ts" />
