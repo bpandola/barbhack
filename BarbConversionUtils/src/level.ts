@@ -42,29 +42,25 @@
     }
 
     export class Arrow extends Phaser.Sprite {
-        private timeStep: number;
-        private movement: number;
+
+        private velocity: number;
+        private flightAnim: Phaser.Animation;
 
         constructor(hero: Barbarian.Hero) {
             super(hero.game, hero.x, hero.y-64, 'hero', 128);
+            // Set the arrow movement and initial position based on which way the Hero is facing.
+            this.velocity = hero.facing == Direction.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
+            this.scale.x = hero.facing == Direction.Left ? -1 : 1;
+            this.x += this.velocity * 2;
+            // Kill the arrow if it goes off the edge of the screen.
             this.checkWorldBounds = true;
             this.outOfBoundsKill = true;
-
-            this.timeStep = 0;
-            this.movement = hero.facing == Direction.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
-            this.scale.x = hero.facing == Direction.Left ? -1 : 1;
-            this.x += this.movement * 2;
-
-            hero.game.world.add(this);
-        }
-
-        update() {
-
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % FIXED_TIMESTEP; // save remainder
-                this.x += this.movement;
-            }
+            // Create a single frame Phaser animation that loops indefinitely.
+            this.flightAnim = this.animations.add('fly', [128], FRAMERATE, true, true);
+            // Move the x value on each frame, so the arrow flies through the air.
+            this.flightAnim.enableUpdate = true;
+            this.flightAnim.onUpdate.add(() => { this.x += this.velocity; }, this);
+            this.flightAnim.play();
         }
     }
 

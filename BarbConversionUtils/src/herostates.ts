@@ -379,6 +379,7 @@ namespace Barbarian.HeroStates {
                 if (this.hero.animNum == Animations.ShootArrow) {
                     this.hero.setAnimation(Animations.WaitForArrow);
                     this.arrow = new Arrow(this.hero);
+                    this.hero.game.world.add(this.arrow);
                     this.hero.inventory.numArrows--;
                     this.waitForArrow = true;
                 } else {

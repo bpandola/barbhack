@@ -11,10 +11,11 @@
             // Set the x anchor based on which way the enemy was facing.
             this.anchor.setTo(entity.facing == Direction.Left ? 0 : 1, 1);
             // Create a Phaser animation that plays at our fixed timestep.
-            this.deathAnim = this.animations.add('rise', Ghost.FRAMES, 1000 / FIXED_TIMESTEP, false, true);
+            this.deathAnim = this.animations.add('rise', Ghost.FRAMES, FRAMERATE, false, true);
             // Decrease the y value on each frame, so the ghost rises into the air.
             this.deathAnim.enableUpdate = true;
             this.deathAnim.onUpdate.add(() => { this.y -= TILE_SIZE; }, this);
+            // Remove the ghost when the animation completes.
             this.deathAnim.killOnComplete = true;
             this.deathAnim.play();
         }
