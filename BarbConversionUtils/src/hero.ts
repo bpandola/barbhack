@@ -173,6 +173,13 @@ namespace Barbarian {
             this.frame = 0;
         }
 
+        get isDead(): boolean {
+            if (this.fsm.getCurrentStateName == 'Die')
+                return true;
+            else
+                return false;
+        }
+
         get currentParts() {
             var parts: { flags: number }[] = this.animData[this.animNum].frames[this.frame].parts;
             return parts.filter((part) => { return part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon; });
