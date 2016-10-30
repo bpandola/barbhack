@@ -68,7 +68,7 @@
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\boot.ts" />
     <TypeScriptCompile Include="src\enemies\blk.ts" />
     <TypeScriptCompile Include="src\enemies\man.ts" />
