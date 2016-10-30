@@ -3,6 +3,7 @@
     export class Entity extends Phaser.Group {
 
         facing: Direction;
+        timeStep: number = 0;
 
         constructor(game: Barbarian.Game, key: string) {
             super(game);
@@ -18,6 +19,18 @@
         get currentParts() {
             return [];
         }
+
+        update() {
+            // Call derived objects' tick function.
+            this.timeStep += this.game.time.elapsedMS;
+            if (this.timeStep >= FIXED_TIMESTEP) {
+                this.timeStep = this.timeStep % FIXED_TIMESTEP;
+                this.tick()
+            }
+        }
+
+        // Should be overridden by subclasses
+        tick() { }
 
         render() {
             // Start from scratch every time.

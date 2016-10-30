@@ -55,7 +55,7 @@ namespace Barbarian.Enemies {
 
     export class Enemy extends Entity {
 
-        static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
+        //static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
 
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -63,7 +63,7 @@ namespace Barbarian.Enemies {
         animData: any;
         direction: Direction;
         game: Barbarian.Game;
-        timeStep: number = 0;
+        //timeStep: number = 0;
         dataBlob: EnemyJSON;
         //rotate: number;
 
@@ -84,7 +84,7 @@ namespace Barbarian.Enemies {
             this.facing = this.dataBlob.flags[this.direction + 1] ? Direction.Left : Direction.Right;
 
             // Make sure we update right away
-            this.timeStep = Enemy.FIXED_TIMESTEP;
+            this.timeStep = FIXED_TIMESTEP;
 
             //this.drawEnemy();
         }
@@ -127,7 +127,18 @@ namespace Barbarian.Enemies {
         }
 
         kill() {
-            this.game.world.add(new Ghost(this.game, this));
+            //this.game.world.add(new Ghost(this.game, this));
+            var ghost: Phaser.Sprite = this.game.add.sprite(this.x, this.y - TILE_SIZE, 'misc');
+            var xAnchor = this.facing == Direction.Left ? 0 : 1;
+            ghost.anchor.setTo(xAnchor, 1);
+            var deathAnim: Phaser.Animation = ghost.animations.add('rise', [20, 21, 22, 21, 20, 23, 24, 25, 26, 27], 1000/FIXED_TIMESTEP, false, true);
+
+            deathAnim.killOnComplete = true;
+            deathAnim.enableUpdate = true;
+            deathAnim.onUpdate.add(() => {
+                ghost.y -= TILE_SIZE;
+            }, this, 0, ghost);
+            ghost.animations.play('rise');
             this.destroy();
         }
 
@@ -144,14 +155,11 @@ namespace Barbarian.Enemies {
                 this.frame = 0;
         }
 
-        update() {
-
+        tick() {
+      
          
 
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP; // save remainder
-                
+            
 
                 if (this.dataBlob.xMin > 0 && this.dataBlob.xMax > 0) {
                     //this.x += TILE_SIZE;
@@ -194,7 +202,7 @@ namespace Barbarian.Enemies {
                     this.animNum = 1;
 
                 this.animate();
-            }
+            
 
             
             this.render();

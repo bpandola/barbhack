@@ -34,13 +34,11 @@ namespace Barbarian.Enemies {
             }
         ];
 
-        update() {
+        tick() {
 
             var data = this.game.roomNum === 0x0A ? Spikes.spike_data[0] : Spikes.spike_data[1];
 
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP; // save remainder
+           
 
                 if ((this.animNum == data['fall_anim'] && this.frame === data['last_frame']) || this.animNum == 3) {
                     this.animNum = 3;
@@ -66,7 +64,7 @@ namespace Barbarian.Enemies {
                         }
                     }
                 }
-            }
+            
 
             this.render();
         }

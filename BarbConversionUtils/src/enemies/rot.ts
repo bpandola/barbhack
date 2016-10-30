@@ -19,14 +19,11 @@ namespace Barbarian.Enemies {
             return bounds;
         }
 
-        update() {
+        tick() {
 
 
 
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP; // save remainder
-
+            
                 var heroBounds: Phaser.Rectangle = this.game.hero.getBodyBounds();
                 var thisBounds: any = this.getBounds();
 
@@ -41,7 +38,7 @@ namespace Barbarian.Enemies {
 
 
                 this.animate();
-            }
+            
 
 
             this.render();

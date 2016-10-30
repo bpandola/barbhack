@@ -9,10 +9,8 @@ namespace Barbarian.Enemies {
         static BLK_HIT_LEFT = 0xC0 * SCALE;
         static BLK_HIT_RIGHT = 0xF8 * SCALE;
 
-        update() {
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP; // save remainder
+        tick() {
+           
 
                 if ((this.animNum == 1 && this.frame === 5) || this.animNum == 2) {
                     this.y = 208;
@@ -35,7 +33,7 @@ namespace Barbarian.Enemies {
                         }
                     }
                 }
-            }
+            
 
             this.render();
         }

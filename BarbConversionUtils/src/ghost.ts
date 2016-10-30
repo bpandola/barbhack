@@ -2,8 +2,6 @@
 
     export class Ghost extends Phaser.Sprite {
 
-        static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
-
         timeStep: number = 0;
         frameNums: number[] = [20, 21, 22, 21, 20, 23, 24, 25, 26, 27];
         frameNum: number;
@@ -17,8 +15,8 @@
 
         update() {
             this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Ghost.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Ghost.FIXED_TIMESTEP;
+            if (this.timeStep >= FIXED_TIMESTEP) {
+                this.timeStep = this.timeStep % FIXED_TIMESTEP;
 
                 if (this.frameNum > 9) {
                     this.destroy();

@@ -6,11 +6,8 @@ namespace Barbarian.Enemies {
         static TRIGGER_DISTANCE = 0x20 * SCALE;
         static HIT_DISTANCE = 0x10 * SCALE;
 
-        update() {
-            this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Enemy.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Enemy.FIXED_TIMESTEP; // save remainder
-                
+        tick() {
+           
                 if ((this.animNum == 1 && this.frame === 2) || this.animNum == 2) {
                     this.animNum = 2;
                     this.frame = 0;
@@ -32,7 +29,7 @@ namespace Barbarian.Enemies {
 
                     }
                 }
-            }
+            
 
             this.render();
         }
