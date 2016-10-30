@@ -17,7 +17,7 @@
             super(game, x, y, 'misc', id);
             this.roomNum = roomNum;
             this.itemType = id;
-            // Translate itemType to sprite frame number.
+            // Translate itemType to sprite sheet frame number.
             switch (this.itemType) {
                 case ItemType.Arrow:
                     this.frame = 2;
@@ -69,15 +69,31 @@
         }
     }
 
+    export interface RoomData {
+        id: number;
+        startPos: { tileX: number, tileY: number };
+        map: { left: number, right: number, up: number, down: number };
+        items: Array<{ id: number, x: number, y: number }>;
+        enemies: Array<{ id: number, yOff: number, xMin: number, xMax: number, xOff: Array<number>, flags: Array<number> }>;
+        effects: Array<{ name: string, x: number, y: number }>;
+        area: Array<{ imageId: number, flags: number, unknown: number, xOff: number, yOff: number }>;
+        layout: Array<{ rowData: string }>;
+    }
 
     export class Level {
 
-        private items: Item[] = [];
         private game: Barbarian.Game;
+        private room: number;
+        private roomData: RoomData[];
+        private items: Item[] = [];
 
-        constructor(game: Barbarian.Game, rawData: any) {
+        public onRoomChange: Phaser.Signal = new Phaser.Signal();
+
+        constructor(game: Barbarian.Game, roomData: RoomData[], startingRoom: number = 0) {
             this.game = game;
-            for (var room of rawData) {
+            this.roomData = roomData;
+            this.room = startingRoom;
+            for (var room of this.roomData) {
                 for (var item of room.items) {
                     this.items.push(new Item(this.game, item.id, item.x, item.y, room.id));
                 }
@@ -85,9 +101,48 @@
 
         }
 
-        getRoomItems(room: number) {
+        get currentRoom(): RoomData {
+            return this.roomData[this.room];
+        }
+
+        getStartPosition() {
+            var startPos = this.currentRoom.startPos;
+            // Loop until until we get a valid starting position.
+            // This is needed when the hero falls into a pit and needs to be spawned back at the top.
+            while (startPos.tileX == 0 || startPos.tileY == 0) {
+                this.room--;
+                startPos = this.currentRoom.startPos;
+            }
+            return startPos;
+        }
+
+        nextRoom(direction: Direction) {
+            var newRoom: number;
+
+            switch (direction) {
+                case Direction.Left:
+                    newRoom = this.currentRoom.map.left;
+                    break;
+                case Direction.Right:
+                    newRoom = this.currentRoom.map.right;
+                    break;
+                case Direction.Up:
+                    newRoom = this.currentRoom.map.up;
+                    break;
+                case Direction.Down:
+                    newRoom = this.currentRoom.map.down;
+                    break;
+            }
+
+            if (newRoom !== -1) {
+                this.room = newRoom;
+                this.onRoomChange.dispatch(direction);
+            }
+        }
+
+        getRoomItems() {
             return this.items.filter((item) => {
-                return item.roomNum == room && item.visible;
+                return item.roomNum == this.room && item.visible;
             });
         }
 
@@ -95,7 +150,7 @@
              
             var closestItem: Item = null;
             var closestDelta: number = 0xFFFF;
-            for (var item of this.getRoomItems(this.game.roomNum)) {
+            for (var item of this.getRoomItems()) {
                 if (item.y == hero.y) {
                     var delta = Math.abs(item.x - hero.x);
                     if (delta < closestDelta) {

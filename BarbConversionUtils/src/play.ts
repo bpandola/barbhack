@@ -1,20 +1,8 @@
 ﻿namespace Barbarian {
 
-    export interface RoomObj {
-        flags: number;
-        yOff: number;
-        xOff: number;
-        imageId: number;
-        unknown: number;
-
-    }
-
-    
-
-    export class Layout extends Phaser.State {
+    export class Play extends Phaser.State {
 
         game: Barbarian.Game;
-        roomsJSON: any;
         changeFrameRate: any;       
         enemies: Barbarian.Enemies.Enemy[];
         background: Phaser.BitmapData;
@@ -39,8 +27,12 @@
 
         create() {
 
-            this.roomsJSON = this.cache.getJSON('rooms');
-            this.game.level = new Level(this.game, this.roomsJSON);
+            // Get this line out of here and set the value in a menu state or something (like when you click the play button)
+            this.game.level = new Level(this.game, this.cache.getJSON('rooms'));
+            // A room change will trigger a redraw.
+            this.game.level.onRoomChange.add(this.drawRoom, this);
+
+
 
             this.stage.smoothed = false;
             this.game.renderer.renderSession.roundPixels = false;
@@ -49,10 +41,8 @@
 
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
            
-            // Test
-            var startPos: any = this.roomsJSON[this.game.roomNum].startPos;
+            var startPos = this.game.level.getStartPosition();
             this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
-            this.game.hero.tileMap = new TileMap(this.game.hero);
             this.game.hero.onDied.add(this.heroDied, this);
 
             // Use one background and constantly overwrite so no GC.
@@ -122,70 +112,23 @@
         }
 
         heroDied() {
-
+            // Restart room after a half-second delay.
             this.game.time.events.add(Phaser.Timer.SECOND/2, () => {
-                var newRoom: number = this.game.roomNum;
-                var startPos: any = this.roomsJSON[newRoom].startPos;
-                while (startPos.tileX == 0 || startPos.tileY == 0) {
-                    newRoom--;
-                    startPos = this.roomsJSON[newRoom].startPos;
-                }
-                this.game.hero.x = startPos.tileX << TILE_SHIFT;
-                this.game.hero.y = startPos.tileY << TILE_SHIFT;
-                this.game.hero.fsm.transition('Idle', true);
-                this.game.roomNum = newRoom;
-                this.drawRoom(Direction.None);
-                //this.world.add(this.game.hero);
-                // This is required or hero will stutter step after death.
                 this.game.time.reset();
+                this.game.hero.reset(this.game.level.getStartPosition().tileX, this.game.level.getStartPosition().tileY);
+                this.drawRoom(Direction.None);
             }, this);
         }
 
-        nextRoom(direction: Direction) {
-
-            var newRoom: number;
-
-            switch (direction) {
-                case Direction.Left:
-                    newRoom = this.roomsJSON[this.game.roomNum].map.left;
-                    break;
-                case Direction.Right:
-                    newRoom = this.roomsJSON[this.game.roomNum].map.right;
-                    break;
-                case Direction.Up:
-                    newRoom = this.roomsJSON[this.game.roomNum].map.up;
-                    break;
-                case Direction.Down:
-                    newRoom = this.roomsJSON[this.game.roomNum].map.down;
-                    break;
-            }
-
-            if (newRoom !== -1) {
-                this.game.roomNum = newRoom;
-                this.drawRoom(direction);
-                //this.world.add(this.game.hero);
-                //// Bring static items to the top
-                //this.game.level.getRoomItems(newRoom).forEach(i => {
-                //    i.bringToTop();
-                //});
-            }
-
-            
-        }
-
         drawRoom(direction: Direction) {
-            // clear world
+            // Clear world.
             this.world.removeAll();
-            // create bitmap to hold room background
-            //var background = this.add.bitmapData(640, 320);
+            // Render background.
             this.background.clear();
-            // loop through area data to create background
-            for (var o of this.roomsJSON[this.game.roomNum].area) {
-
-                var obj: RoomObj = o;
-                var spr: Phaser.Sprite;
+            for (var obj of this.game.level.currentRoom.area) {
 
                 if (obj.flags !== 5) {
+                    var spr: Phaser.Sprite;
 
                     spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
                     spr.x += spr.width / 2;
@@ -200,54 +143,54 @@
                     this.background.draw(spr, spr.x, spr.y);
                 }
                 else {
-                    // black out area of background with height of a single tile and width of tile * obj.unkonwn
+                    // Black out area of background with height of a single tile and width of tile * obj.unknown.
                     this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
                 }
 
             }
             // Order is important here to maintain correct z-ordering of entities.
-            // add background to world
             this.background.addToWorld(0, 0);
-            // add effects to room
-            for (var effect of this.roomsJSON[this.game.roomNum].effects) {
+            // Add any room effects.
+            for (var effect of this.game.level.currentRoom.effects) {
 
                 this.createEffect(effect.x, effect.y, effect.name);
             }
-            // add enemies to room
+            // Add enemies.
             this.enemies = [];
-            for (var enemy of this.roomsJSON[this.game.roomNum].enemies) {
+            for (var enemy of this.game.level.currentRoom.enemies) {
                 var createdEnemy = Enemies.Enemy.createEnemy(this.game, enemy, direction);
                 this.world.add(createdEnemy);
                 this.enemies.push(createdEnemy);
             }
-            // add the hero
+            // Add Hegor the Barbarian.
             this.world.add(this.game.hero);
-            // add static items
-            for (var item of this.game.level.getRoomItems(this.game.roomNum)) {
+            // Add static items.
+            for (var item of this.game.level.getRoomItems()) {
                 this.world.add(item);               
             }
         }
        
         handleMovement() {
-           
+
+
             if (this.game.hero.x >= this.world.width + TILE_SIZE && this.game.hero.direction == Direction.Right) {
-                this.nextRoom(Direction.Right);
+                this.game.level.nextRoom(Direction.Right);
                 this.game.hero.x = 0;
                 this.game.hero.tilePos.x = 0;
             } else if (this.game.hero.x <= -16 && this.game.hero.direction == Direction.Left) {
-                this.nextRoom(Direction.Left);
+                this.game.level.nextRoom(Direction.Left);
                 this.game.hero.x = 640;
                 this.game.hero.tilePos.x = 39;
             } else if (this.game.hero.y <= 0 && this.game.hero.direction == Direction.Up) {
-                this.nextRoom(Direction.Up);
+                this.game.level.nextRoom(Direction.Up);
                 this.game.hero.y = 320;
                 this.game.hero.tilePos.y = 19;
-            } else if (this.game.hero.y >= this.world.height - (TILE_SIZE*1.5)/* && this.game.hero.direction == Direction.Down*/) {
-                this.nextRoom(Direction.Down);
+            } else if (this.game.hero.y >= this.world.height - (TILE_SIZE * 1.5)/* && this.game.hero.direction == Direction.Down*/) {
+                this.game.level.nextRoom(Direction.Down);
                 this.game.hero.y = TILE_SIZE;
                 this.game.hero.tilePos.y = 1;
             }
-           
+
         }
 
         
@@ -296,7 +239,7 @@
 
             
             if (this.game.debugOn) {
-                this.game.debug.text(this.game.roomNum.toString(), 20, 20);
+                this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
 
                 this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
                 // Draw Gridlines

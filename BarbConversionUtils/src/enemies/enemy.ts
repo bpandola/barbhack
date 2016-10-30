@@ -55,17 +55,15 @@ namespace Barbarian.Enemies {
 
     export class Enemy extends Entity {
 
-        //static FIXED_TIMESTEP: number = FIXED_TIMESTEP;
-
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
         frame: number;
         animData: any;
-        direction: Direction;
+        
         game: Barbarian.Game;
-        //timeStep: number = 0;
+      
         dataBlob: EnemyJSON;
-        //rotate: number;
+        
 
         constructor(game: Barbarian.Game, dataBlob: EnemyJSON, direction: Direction) {
             super(game, EnemyKeys[dataBlob.id]);
@@ -86,7 +84,7 @@ namespace Barbarian.Enemies {
             // Make sure we update right away
             this.timeStep = FIXED_TIMESTEP;
 
-            //this.drawEnemy();
+            this.render();
         }
 
         /**

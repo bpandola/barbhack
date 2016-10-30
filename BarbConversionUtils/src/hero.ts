@@ -100,8 +100,6 @@ namespace Barbarian {
         //weapon: Weapon;
         keys: any;
         fsm: Barbarian.StateMachine.StateMachine;
-        direction: Direction;
-        //facing: Direction;  // left or right
         game: Barbarian.Game;
         tileMap: TileMap;
         onDied: Phaser.Signal = new Phaser.Signal();
@@ -121,6 +119,8 @@ namespace Barbarian {
             this.inventory = new Inventory();
             this.direction = Direction.Right;
             this.facing = Direction.Right;
+
+            this.tileMap = new TileMap(this);
 
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F });
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
@@ -145,6 +145,14 @@ namespace Barbarian {
             this.fsm.transition('Idle');
 
             this.render();
+        }
+
+        reset(tileX: number, tileY: number) {
+            this.tilePos.setTo(tileX, tileY);
+            this.x = tileX << TILE_SHIFT;
+            this.y = tileY << TILE_SHIFT;  
+            this.timeStep = 0;
+            this.fsm.transition('Idle', true);
         }
 
         // Translates x/y coords, facing, and direction into the TileMap coordinate.
@@ -204,16 +212,7 @@ namespace Barbarian {
             return new Phaser.Rectangle();  // Empty
 
         }
-        // arguments can be decimals, e.g. 0.5 for a half-tile movement.
-        moveRelative(numTilesX: number, numTilesY: number): void {
-
-            var xMovement = this.facing == Direction.Right ? TILE_SIZE : -TILE_SIZE;
-            var yMovement = this.direction == Direction.Up ? -TILE_SIZE : TILE_SIZE;
-
-            this.x += xMovement * numTilesX;
-            this.y += yMovement * numTilesY;
-
-        }
+        
 
         // Returns true if movement is ok, otherwise transitions to new state and returns false
         checkMovement(): boolean {
@@ -327,7 +326,7 @@ namespace Barbarian {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
                 } else {
-                    // TODO: Add if on top of item...
+                    // TODO: Add if (on top of item)...
                     this.fsm.transition('PickUp');
                 }
             } else if (this.keys.up.isDown) {
@@ -362,35 +361,6 @@ namespace Barbarian {
                 bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);
             
             return bounds;
-
-
-        }
-
-        renderOld() {
-            // Start from scratch every time.
-            this.forEach((child) => { child.visible = false; }, this);
-
-            for (var part of this.animData[this.animNum].frames[this.frame].parts) {
-                var weapon = part.flags >> 4;
-                if (part.flags < 5 || weapon == this.inventory.activeWeapon) {
-                    var spr = <Phaser.Sprite>this.getChildAt(part.index);
-                    spr.visible = true;
-                    // Have to reset scale every time...
-                    spr.scale.setTo(1, 1);
-                    spr.x = this.facing == Direction.Left ? part.rx : part.x;
-                    spr.y = this.facing == Direction.Left ? part.ry : part.y;
-                    spr.x += spr.width / 2;
-                    spr.y += spr.height / 2;
-                    spr.anchor.setTo(0.5);
-
-                    var xScale = part.flags & 1 ? -1 : 1;
-                    var yScale = part.flags & 2 ? -1 : 1;
-
-                    // Flip the part horizontally again if Hero is facing left.
-                    xScale = this.facing == Direction.Left ? -xScale : xScale
-                    spr.scale.setTo(xScale, yScale);
-                }
-            }
 
 
         }

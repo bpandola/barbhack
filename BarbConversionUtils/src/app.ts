@@ -8,18 +8,17 @@
 
     export class Game extends Phaser.Game {
 
-        roomNum: number = 0x00;
-        hero: Hero;
-        debugOn: boolean = false;
         level: Level;
-
+        hero: Hero;
+        debugOn: boolean = true;
+        
         constructor() {
             super(640, 400, Phaser.CANVAS, 'game', null);
 
             this.state.add('Boot', new Barbarian.Boot());
-            this.state.add('Layout', new Barbarian.Layout());
+            this.state.add('Layout', new Barbarian.Play());
 
-            this.state.start('Boot',true,true,'Layout');  // pass in the state to start after boot
+            this.state.start('Boot', true, true, 'Play');  // pass in the state to start after boot
         }
 
     }

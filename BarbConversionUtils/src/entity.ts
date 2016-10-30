@@ -2,8 +2,11 @@
 
     export class Entity extends Phaser.Group {
 
-        facing: Direction;
+        
         timeStep: number = 0;
+
+        facing: Direction;      // Which way the entity is facing (left or right).
+        direction: Direction;   // Which way the entity is moving (up, down, left, right).
 
         constructor(game: Barbarian.Game, key: string) {
             super(game);
@@ -18,6 +21,17 @@
         // Should be overridden by subclasses
         get currentParts() {
             return [];
+        }
+
+        // arguments can be decimals, e.g. 0.5 for a half-tile movement.
+        moveRelative(numTilesX: number, numTilesY: number): void {
+
+            var xMovement = this.facing == Direction.Right ? TILE_SIZE : -TILE_SIZE;
+            var yMovement = this.direction == Direction.Up ? -TILE_SIZE : TILE_SIZE;
+
+            this.x += xMovement * numTilesX;
+            this.y += yMovement * numTilesY;
+
         }
 
         update() {

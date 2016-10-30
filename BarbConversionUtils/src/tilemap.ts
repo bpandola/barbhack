@@ -35,7 +35,7 @@
             if (position.x == -1 || position.y == -1)
                 return '?';
 
-            var tile = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum]
+            var tile = this.entity.game.level.currentRoom
                 .layout[position.y].rowData
                 .substring(position.x, position.x + 1);
 
@@ -49,7 +49,7 @@
                 return false;
 
             // Get one row above entity because '#' is not on same row as entity.
-            var tileMapRow: string = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum].layout[position.y-1].rowData;
+            var tileMapRow: string = this.entity.game.level.currentRoom.layout[position.y-1].rowData;
 
             var relativeMovement = this.entity.facing == Direction.Right ? 1 : -1;
 
@@ -100,7 +100,7 @@
             if (position.x == -1 || position.y == -1)
                 return false;
 
-            var tileMapRow: string = this.entity.game.cache.getJSON('rooms')[this.entity.game.roomNum].layout[position.y].rowData;
+            var tileMapRow: string = this.entity.game. level.currentRoom.layout[position.y].rowData;
 
             var index: number = 0;
             // Need to loop through all matches because sometimes there are multiple ladders on the same row.

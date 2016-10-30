@@ -36,7 +36,7 @@ namespace Barbarian.Enemies {
 
         tick() {
 
-            var data = this.game.roomNum === 0x0A ? Spikes.spike_data[0] : Spikes.spike_data[1];
+            var data = this.game.level.currentRoom.id === 0x0A ? Spikes.spike_data[0] : Spikes.spike_data[1];
 
            
 
