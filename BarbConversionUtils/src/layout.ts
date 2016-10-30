@@ -45,9 +45,7 @@
             this.stage.smoothed = false;
             this.game.renderer.renderSession.roundPixels = false;
 
-            // Use one background and constantly overwrite so no GC.
-            this.background = this.add.bitmapData(640, 320);
-            this.drawRoom(Direction.Right);
+            
 
             this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
            
@@ -56,6 +54,10 @@
             this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
             this.game.hero.tileMap = new TileMap(this.game.hero);
             this.game.hero.onDied.add(this.heroDied, this);
+
+            // Use one background and constantly overwrite so no GC.
+            this.background = this.add.bitmapData(640, 320);
+            this.drawRoom(Direction.Right);
             // draw hud
             var hud = this.make.sprite(0, 320, 'hud');
             this.stage.addChild(hud);
@@ -133,7 +135,7 @@
                 this.game.hero.fsm.transition('Idle', true);
                 this.game.roomNum = newRoom;
                 this.drawRoom(Direction.None);
-                this.world.add(this.game.hero);
+                //this.world.add(this.game.hero);
                 // This is required or hero will stutter step after death.
                 this.game.time.reset();
             }, this);
@@ -161,11 +163,11 @@
             if (newRoom !== -1) {
                 this.game.roomNum = newRoom;
                 this.drawRoom(direction);
-                this.world.add(this.game.hero);
-                // Bring static items to the top
-                this.game.level.getRoomItems(newRoom).forEach(i => {
-                    i.bringToTop();
-                });
+                //this.world.add(this.game.hero);
+                //// Bring static items to the top
+                //this.game.level.getRoomItems(newRoom).forEach(i => {
+                //    i.bringToTop();
+                //});
             }
 
             
@@ -203,6 +205,7 @@
                 }
 
             }
+            // Order is important here to maintain correct z-ordering of entities.
             // add background to world
             this.background.addToWorld(0, 0);
             // add effects to room
@@ -217,6 +220,8 @@
                 this.world.add(createdEnemy);
                 this.enemies.push(createdEnemy);
             }
+            // add the hero
+            this.world.add(this.game.hero);
             // add static items
             for (var item of this.game.level.getRoomItems(this.game.roomNum)) {
                 this.world.add(item);               
