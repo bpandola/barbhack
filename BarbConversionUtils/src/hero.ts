@@ -181,6 +181,8 @@ namespace Barbarian {
         }
 
         get currentParts() {
+            // For the hero, we return the parts for the animation frame as well as the current weapon, which
+            // is stored in the upper 4 bits of the part flags value.
             var parts: { flags: number }[] = this.animData[this.animNum].frames[this.frame].parts;
             return parts.filter((part) => { return part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon; });
         }

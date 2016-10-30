@@ -21,7 +21,7 @@
         }
 
         update() {
-            // Call derived objects' tick function.
+            // Call derived objects' tick function on a fixed timebase.
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= FIXED_TIMESTEP) {
                 this.timeStep = this.timeStep % FIXED_TIMESTEP;
@@ -37,6 +37,7 @@
             this.forEach((part) => { part.visible = false; }, this);
             // For each currently visible part, reset properties and set visible to true.
             for (var i = 0, parts = this.currentParts; i < parts.length; i++) {
+                // Get a reference to the sprite for this part.
                 var part = parts[i];
                 var spr = <Phaser.Sprite>this.getChildAt(part.index);
                 // Need to reset the scale here or we may get negative sprite width/height,
@@ -49,12 +50,12 @@
                 // Translate Barbarian x/y data for use with a Phaser middle anchor.
                 spr.x += spr.width / 2;
                 spr.y += spr.height / 2;
-                // Mimic Phaser.Group.create by setting z relative to when the part was added.
+                // Set z relative to when the part was added for proper overlap.
                 spr.z = i;
                 // Part bit flags specify whether to flip the sprite part horizontally or vertically.
                 var xScale = part.flags & 1 ? -1 : 1;
                 var yScale = part.flags & 2 ? -1 : 1;
-                // Flip the part horizontally again if the *entity* is not facing right.
+                // Flip the part horizontally again based on which way the *entity* is facing.
                 xScale = this.facing === Direction.Left ? -xScale : xScale
                 spr.scale.setTo(xScale, yScale);
                 // And finally, make sure this sprite part is rendered by Phaser.
