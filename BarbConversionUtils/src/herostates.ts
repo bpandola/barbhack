@@ -418,9 +418,13 @@ namespace Barbarian.HeroStates {
 
     export class SwitchWeapon extends HeroBaseState {
         
-        onEnter() {
+        onEnter(...args: any[]) {
+            console.log('SwitchWeapon onEnter');
+            var newWeapon: Weapon = args[0][0]; // I think I'm doing something wrong that I have to access it like this...
+            this.hero.inventory.switchWeapon(newWeapon);
             this.hero.setAnimation(Animations.SwitchWeapon);
         }
+
         onUpdate() {
             if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length-1) {
                 this.hero.fsm.transition('Idle');
@@ -563,6 +567,34 @@ namespace Barbarian.HeroStates {
         onLeave() {
             // Set direction to whichever way hero was facing before fall.
             this.hero.direction = this.hero.facing;
+        }
+
+    }
+
+    export class Flee extends HeroBaseState {
+
+        onEnter() {
+            this.hero.setAnimation(Animations.Flee);
+            if (this.hero.facing == Direction.Left) {
+                this.hero.facing = Direction.Right;
+                this.hero.direction = Direction.Right;
+            } else {
+                this.hero.facing = Direction.Left;
+                this.hero.direction = Direction.Left;
+            }
+            this.hero.dropWeapon();
+        }
+
+        onUpdate() {
+            // Move two tiles, but check movement incrementally  
+            // to make sure we don't pass over something.
+            this.hero.moveRelative(1, 0);
+
+            if (this.hero.checkMovement()) {
+                // incremental move was clear, so move forward a second tile.
+                this.hero.moveRelative(1, 0);
+                this.hero.checkMovement();
+            }
         }
 
     }

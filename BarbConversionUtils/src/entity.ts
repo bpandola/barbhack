@@ -1,8 +1,8 @@
-﻿namespace Barbarian {
+﻿/// <reference path="game.ts" />
+namespace Barbarian {
 
     export class Entity extends Phaser.Group {
 
-        
         timeStep: number = 0;
 
         facing: Direction;      // Which way the entity is facing (left or right).

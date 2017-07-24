@@ -4,8 +4,8 @@
     export const TILE_SIZE = 16;
     export const TILE_SHIFT = 4; // 2^4 is 16
 
-    export const FIXED_TIMESTEP = 140;
-    export const FRAMERATE = 1000 / FIXED_TIMESTEP;
+    export var FIXED_TIMESTEP = 140;
+    export var FRAMERATE = 1000 / FIXED_TIMESTEP;
 
     export class Game extends Phaser.Game {
 

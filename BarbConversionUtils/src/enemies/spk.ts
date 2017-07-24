@@ -1,4 +1,5 @@
 ﻿/// <reference path="enemy.ts" />
+/// <reference path="../game.ts" />
 namespace Barbarian.Enemies {
 
     export class Spikes extends Enemy {

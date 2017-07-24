@@ -22,6 +22,7 @@ namespace Barbarian {
         ShootArrow = 22,
         WaitForArrow = 23,
         HitWall = 24,
+        Flee = 26,
         FallToGround = 28,
         FallToGroundFaceFirst = 31,
         HitGround = 34,
@@ -33,6 +34,7 @@ namespace Barbarian {
     }
 
     export enum Weapon {
+        None = 1,
         Sword = 2,
         Shield = 3,
         Bow = 4
@@ -77,12 +79,23 @@ namespace Barbarian {
             }
         }
 
-        switchWeapon(weapon: Weapon): boolean {
-            if (!this.availableWeapons[weapon] || weapon == this.activeWeapon)
+        canSwitchWeaponTo(newWeapon: Weapon): boolean {
+            //console.log(Weapon[this.activeWeapon] === Weapon[newWeapon]);
+            // Can't see to get enum comparison to work with just this.activeWeapon == newWeapon ???
+            //if (!this.availableWeapons[newWeapon] || Weapon[this.activeWeapon] === Weapon[newWeapon])
+            if (!this.availableWeapons[newWeapon] || this.activeWeapon === newWeapon)
                 return false;
-
-            this.activeWeapon = weapon;
             return true;
+        }
+
+        switchWeapon(newWeapon: Weapon) {
+            if (this.canSwitchWeaponTo(newWeapon))
+                this.activeWeapon = newWeapon;
+        }
+
+        dropWeapon() {
+            this.availableWeapons[this.activeWeapon] = false;
+            this.activeWeapon = Weapon.None;
         }
 
 
@@ -90,8 +103,6 @@ namespace Barbarian {
     }
 
     export class Hero extends Entity {
-
-        static FIXED_TIMESTEP: number = FIXED_TIMESTEP; //170;
         
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -122,26 +133,27 @@ namespace Barbarian {
 
             this.tileMap = new TileMap(this);
 
-            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F });
+            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F, 'flee': Phaser.KeyCode.FOUR });
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
-            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run']);
+            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run', 'Flee']);
             this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle']);
             this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk','Run']);
-            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle','Walk','Run']);
-            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this), ['Walk','Run']);
+            this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle','Walk','Run','Flee']);
+            this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this), ['Walk','Run','Flee']);
             this.fsm.add('UseLadder', new Barbarian.HeroStates.UseLadder(this), ['Idle', 'Walk', 'Run']);
-            this.fsm.add('TakeStairs', new Barbarian.HeroStates.TakeStairs(this), ['Walk', 'Run']);
+            this.fsm.add('TakeStairs', new Barbarian.HeroStates.TakeStairs(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['Idle','Walk']);
             this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run']);
-            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk','Run']);
+            this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk','Run','Flee']);
             this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [StateMachine.WILDCARD]);
             this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [StateMachine.WILDCARD]);
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
+            this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD]);
             this.fsm.transition('Idle');
 
             this.render();
@@ -189,8 +201,8 @@ namespace Barbarian {
         }
 
         get currentParts() {
-            // For the hero, we return the parts for the animation frame as well as the current weapon, which
-            // is stored in the upper 4 bits of the part flags value.
+            // For the hero, we return the parts for the animation frame as well as the current 
+            // weapon, which is stored in the upper 4 bits of the part flags value.
             var parts: { flags: number }[] = this.animData[this.animNum].frames[this.frame].parts;
             return parts.filter((part) => { return part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon; });
         }
@@ -272,19 +284,54 @@ namespace Barbarian {
                 this.frame = 0;
         }
 
-        update() {
-            // If switchWeapon succeeds, we need to transition
-            // immediately to avoid having the new weapon display
-            // before the switch animation starts.
+        checkWeaponSwitch() {
+            var newWeapon: Weapon = this.inventory.activeWeapon;
+
             if (this.keys.sword.isDown) {
-                if (this.inventory.switchWeapon(Weapon.Sword))
-                    this.fsm.transition('SwitchWeapon', true);
+                newWeapon = Weapon.Sword;
             } else if (this.keys.bow.isDown) {
-                if (this.inventory.switchWeapon(Weapon.Bow))
-                    this.fsm.transition('SwitchWeapon', true);
+                newWeapon = Weapon.Bow;
             } else if (this.keys.shield.isDown) {
-                if (this.inventory.switchWeapon(Weapon.Shield))
-                    this.fsm.transition('SwitchWeapon', true);
+                newWeapon = Weapon.Shield;
+            }
+
+            if (this.inventory.canSwitchWeaponTo(newWeapon)) {
+                this.fsm.transition('SwitchWeapon', true, newWeapon);
+            }
+
+        }
+
+        dropWeapon() {
+            var item: ItemType;
+
+            switch (this.inventory.activeWeapon) {
+                case Weapon.Bow:
+                    item = ItemType.Bow;
+                    break;
+                case Weapon.Shield:
+                    item = ItemType.Shield;
+                    break;
+                case Weapon.Sword:
+                    item = ItemType.Sword;
+                    break;
+                default:
+                    item = ItemType.None;
+                    break;
+            }
+
+            if (item != ItemType.None) {
+                this.inventory.dropWeapon();
+                this.game.level.addItem(item, this.x, this.y);
+            }
+
+        }
+
+        update() {
+            
+            this.checkWeaponSwitch();
+
+            if (this.keys.flee.isDown) {
+                this.fsm.transition('Flee');
             }
 
             if (this.keys.attack.isDown) {
@@ -340,8 +387,8 @@ namespace Barbarian {
             }
             
             this.timeStep += this.game.time.elapsedMS;
-            if (this.timeStep >= Hero.FIXED_TIMESTEP) {
-                this.timeStep = this.timeStep % Hero.FIXED_TIMESTEP; // save remainder
+            if (this.timeStep >= FIXED_TIMESTEP) {
+                this.timeStep = this.timeStep % FIXED_TIMESTEP; // save remainder
                 
                 this.animate();
                 this.fsm.update();

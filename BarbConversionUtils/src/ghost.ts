@@ -1,4 +1,5 @@
-﻿namespace Barbarian {
+﻿/// <reference path="enemies/enemy.ts" />
+namespace Barbarian {
 
     export class Ghost extends Phaser.Sprite {
 
@@ -19,5 +20,27 @@
             this.deathAnim.killOnComplete = true;
             this.deathAnim.play();
         }
+    }
+
+    export class Spirit extends Enemies.Enemy {
+        constructor(entity: Entity) {
+            var dataBlob: Enemies.EnemyJSON = {
+                id: Enemies.EnemyKeys.misc,
+                xOff: [entity.x,entity.x,entity.x,entity.x,entity.x],
+                yOff: entity.y,
+                xMax: 0,
+                xMin: 0,
+                flags: [0,0,0,0,0]
+            }
+            super(<Barbarian.Game>entity.game, dataBlob, entity.direction);
+
+        }
+
+        tick() {
+            this.y -= TILE_SIZE;
+            this.animate();
+            this.render();
+        }
+
     }
 }

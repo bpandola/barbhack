@@ -96,6 +96,12 @@
 
         }
 
+        addItem(id: number, x: number, y: number) {
+            var newItem = new Item(this.game, id, x, y, this.room);
+            this.items.push(newItem);
+            this.game.world.add(newItem);
+        }
+
         get currentRoom(): RoomData {
             return this.roomData[this.room];
         }

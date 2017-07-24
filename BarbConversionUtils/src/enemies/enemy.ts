@@ -1,46 +1,47 @@
 ﻿/// <reference path="../entity.ts" />
-
+/// <reference path="../game.ts" />
 namespace Barbarian.Enemies {
 
     export enum EnemyKeys {
-        nll,
-        axe,
-        thr,
-        pop,
-        dog,
-        hop,
-        rep,
-        aro,
-        met,
-        ren,
-        ver,
-        bad,
-        roc,
-        ape,
-        scy,
-        rhi,
-        mn1,
-        mn2,
-        mn3,
-        mn4,
-        mn5,
-        mn6,
-        mn7,
-        mor,
-        oc1,
-        oc2,
-        nt1,
-        nt2,
-        nt3,
-        ac1,
-        ac2,
-        ac3,
-        blk,
-        spk,
-        stn,
-        dra,
-        rot,
-        vsp
+        NLL,
+        AXE,
+        THR,
+        POP,
+        DOG,
+        HOP,
+        REP,
+        ARO,
+        MET,
+        REN,
+        VER,
+        BAD,
+        ROC,
+        APE,
+        SCY,
+        RHI,
+        MN1,
+        MN2,
+        MN3,
+        MN4,
+        MN5,
+        MN6,
+        MN7,
+        MOR,
+        OC1,
+        OC2,
+        NT1,
+        NT2,
+        NT3,
+        AC1,
+        AC2,
+        AC3,
+        BLK,
+        SPK,
+        STN,
+        DRA,
+        ROT,
+        VSP,
+        misc
     }
 
     // Encapsulates Enemy JSON Blob
@@ -84,7 +85,7 @@ namespace Barbarian.Enemies {
             // Make sure we update right away
             this.timeStep = FIXED_TIMESTEP;
 
-            this.render();
+            //this.render();
         }
 
         /**
@@ -97,27 +98,29 @@ namespace Barbarian.Enemies {
         */
         public static createEnemy(game: Barbarian.Game, data: EnemyJSON, direction: Direction): Enemy {
             switch (data.id) {
-                case EnemyKeys.rot:
+                case EnemyKeys.ROT:
                     return new Rotate(game, data, direction);
-                case EnemyKeys.scy:
+                case EnemyKeys.SCY:
                     return new Scythe(game, data, direction);
-                case EnemyKeys.blk:
+                case EnemyKeys.BLK:
                     return new Block(game, data, direction);
-                case EnemyKeys.spk:
+                case EnemyKeys.SPK:
                     return new Spikes(game, data, direction);
-                case EnemyKeys.mn1:
-                case EnemyKeys.mn2:
-                case EnemyKeys.mn3:
-                case EnemyKeys.mn4:
-                case EnemyKeys.mn5:
-                case EnemyKeys.mn6:
-                case EnemyKeys.mn7:
-                case EnemyKeys.ape:
-                case EnemyKeys.oc1:
-                case EnemyKeys.oc2:
-                case EnemyKeys.nt1:
-                case EnemyKeys.nt2:
-                case EnemyKeys.nt3:
+                case EnemyKeys.POP:
+                    return new Pop(game, data, direction);
+                case EnemyKeys.MN1:
+                case EnemyKeys.MN2:
+                case EnemyKeys.MN3:
+                case EnemyKeys.MN4:
+                case EnemyKeys.MN5:
+                case EnemyKeys.MN6:
+                case EnemyKeys.MN7:
+                case EnemyKeys.APE:
+                case EnemyKeys.OC1:
+                case EnemyKeys.OC2:
+                case EnemyKeys.NT1:
+                case EnemyKeys.NT2:
+                case EnemyKeys.NT3:
                     return new Man(game, data, direction);
                 default:
                     return new Enemy(game, data, direction);
@@ -126,7 +129,7 @@ namespace Barbarian.Enemies {
 
         get currentParts() {
             // TODO: Fix this for NLLSPR so I don't have to do this check.
-            if (this.dataBlob.id === EnemyKeys.nll)
+            if (this.dataBlob.id === EnemyKeys.NLL)
                 return [];
             return this.animData[this.animNum].frames[this.frame].parts;
         }
@@ -139,7 +142,8 @@ namespace Barbarian.Enemies {
         }
 
         kill() {
-            this.game.world.add(new Ghost(this));
+            //this.game.world.add(new Ghost(this));
+            this.game.world.add(new Spirit(this));
             this.destroy();
         }
 
@@ -199,7 +203,7 @@ namespace Barbarian.Enemies {
                     
                 }
 
-                if (this.dataBlob.id == EnemyKeys.thr)
+                if (this.dataBlob.id == EnemyKeys.THR)
                     this.animNum = 1;
 
                 this.animate();

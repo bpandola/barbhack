@@ -3,7 +3,7 @@
     export const WILDCARD: string = '*';
 
     export interface IState {
-        onEnter();
+        onEnter(...args: any[]);
         onUpdate();
         onLeave();
     }
@@ -14,6 +14,7 @@
         private validFromStates: { id: string, value: string[] }[] = [];
         private currentState: IState = null;
         private pendingState: string = null;
+        private pendingStateArgs: any[];
         private currentStateName: string;
         private hero: Barbarian.Hero;
 
@@ -27,7 +28,7 @@
             this.validFromStates[key] = validFromStates;
         }
 
-        transition(newState: string, immediately: boolean = false) {
+        transition(newState: string, immediately: boolean = false, ...args: any[]) {
             // HACK! - If pending state is Idle, allow it to be overridden
             // by a new (valid) pending state.  This allows things like
             // immediately walking/running after going up stairs without
@@ -39,8 +40,16 @@
 
             // Set this new state to be our pending state, but it won't
             // be called until the update fires (once per FIXED_TIMESTEP).
-            if (this.pendingState == null)
+            if (this.pendingState == null) {
                 this.pendingState = newState;
+
+                // Assigning to arguments properties causes Extreme Deoptimization in Chrome, FF, and IE.
+                // Using an array and pushing each element (not a slice!) is _significantly_ faster.
+                this.pendingStateArgs = [];
+                for (var i = 2; i < arguments.length; i++) {
+                    this.pendingStateArgs.push(arguments[i]);
+                }
+            }
             // If we don't have a current state, we need to transition
             // immediately.
             if (this.currentState == null || immediately == true)
@@ -55,9 +64,8 @@
                 this.currentState = this.states[this.pendingState];
                 this.currentStateName = this.pendingState;
                 this.pendingState = null;
-                this.currentState.onEnter();
 
-                
+                this.currentState.onEnter(this.pendingStateArgs);
                 
             }
             if (this.currentState)

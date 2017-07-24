@@ -21,15 +21,15 @@
 
             // Loop to load enemies
             for (var i = 0; i < 38; i++) {
-                var key:string = Enemies.EnemyKeys[i];
-                this.load.atlasJSONArray(key, 'assets/enemies/'+key+'.png', 'assets/enemies/'+key+'.json');
+                var key:string = Enemies.EnemyKeys[i].toLowerCase();
+                this.load.atlasJSONArray(key.toUpperCase(), 'assets/enemies/'+key+'.png', 'assets/enemies/'+key+'.json');
             }
         }
 
         create() {
 
             // Get this line out of here and set the value in a menu state or something (like when you click the play button)
-            this.game.level = new Level(this.game, this.cache.getJSON('rooms'));
+            this.game.level = new Level(this.game, this.cache.getJSON('rooms'), 0x00);
             // A room change will trigger a redraw.
             this.game.level.onRoomChange.add(this.drawRoom, this);
 
@@ -40,11 +40,14 @@
 
             
 
-            this.changeFrameRate = this.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
-           
+            
             var startPos = this.game.level.getStartPosition();
             this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
             this.game.hero.onDied.add(this.heroDied, this);
+
+
+            //this.changeFrameRate = this.game.input.keyboard.addKeys({ 'fast': Phaser.KeyCode.PLUS, 'slow': Phaser.KeyCode.MINUS });
+            //this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F });
 
             // Use one background and constantly overwrite so no GC.
             this.background = this.add.bitmapData(640, 320);
@@ -107,7 +110,7 @@
             }
             
             if (name != 'blood_drip') {
-                effect.animations.play(name);
+                effect.animations.play(name, FRAMERATE);
             }
 
         }
@@ -198,13 +201,19 @@
         update() {
             this.handleMovement();
 
-            if (this.changeFrameRate.fast.isDown) {
-                console.log('faster');
-                Hero.FIXED_TIMESTEP -= 5;
+            if (this.game.hero.keys.fast.isDown) {
+                FIXED_TIMESTEP -= 1;
+                if (FIXED_TIMESTEP < 1)
+                    FIXED_TIMESTEP = 1;
+                FRAMERATE = 1000 / FIXED_TIMESTEP;
+                console.log(FIXED_TIMESTEP.toString());
             }
-            else if (this.changeFrameRate.slow.isDown) {
-                console.log('slower');
-                Hero.FIXED_TIMESTEP += 5;
+            else if (this.game.hero.keys.slow.isDown) {
+                FIXED_TIMESTEP += 1;
+                if (FIXED_TIMESTEP > 999)
+                    FIXED_TIMESTEP = 999;
+                FRAMERATE = 1000 / FIXED_TIMESTEP;
+                console.log(FIXED_TIMESTEP.toString());
             }
 
             // Basic sword killing test
@@ -228,6 +237,19 @@
                         enemy.kill();
                         arrow.kill();
                     }
+                }
+            }
+            // Basic small arrow kill test.
+            for (var small of <Enemies.SmallArrow[]>this.world.children.filter((obj) => { return obj instanceof Enemies.SmallArrow && obj.alive; })) {
+                
+                    // Inflate the enemyBounds so it doesn't go over their head without a hit.
+                    var heroBounds = new Phaser.Rectangle().copyFrom(this.game.hero.getBounds()).inflate(TILE_SIZE / 2, TILE_SIZE * 2);
+                    var arrowBounds = new Phaser.Rectangle().copyFrom(small.getBounds());
+
+                    if (heroBounds.containsRect(arrowBounds)) {
+                        this.game.hero.fsm.transition('Die');
+                        small.kill();
+                    
                 }
             }
 
