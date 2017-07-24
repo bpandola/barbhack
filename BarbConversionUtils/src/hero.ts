@@ -327,12 +327,16 @@ namespace Barbarian {
         }
 
         update() {
-            
+
+            var input = this.game.inputManager;
+
             this.checkWeaponSwitch();
 
-            if (this.keys.flee.isDown) {
+            if (input.buttonsState & Barbarian.Input.Buttons.FLEE)
                 this.fsm.transition('Flee');
-            }
+            //if (this.keys.flee.isDown) {
+            //    this.fsm.transition('Flee');
+            //}
 
             if (this.keys.attack.isDown) {
                 this.fsm.transition('Attack');              

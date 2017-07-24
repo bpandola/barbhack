@@ -11,6 +11,8 @@
 
         level: Level;
         hero: Hero;
+        inputManager: Barbarian.Input.InputManager;
+
         debugOn: boolean = true;
         
         constructor() {

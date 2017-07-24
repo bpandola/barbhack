@@ -1023,10 +1023,10 @@ var Barbarian;
             }
         };
         Hero.prototype.update = function () {
+            var input = this.game.inputManager;
             this.checkWeaponSwitch();
-            if (this.keys.flee.isDown) {
+            if (input.buttonsState & Barbarian.Input.Buttons.FLEE)
                 this.fsm.transition('Flee');
-            }
             if (this.keys.attack.isDown) {
                 this.fsm.transition('Attack');
             }
@@ -1677,6 +1677,171 @@ var Barbarian;
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {
+    var Input;
+    (function (Input) {
+        (function (Buttons) {
+            Buttons[Buttons["Up"] = 1] = "Up";
+            Buttons[Buttons["Down"] = 2] = "Down";
+            Buttons[Buttons["Back"] = 4] = "Back";
+            Buttons[Buttons["Forward"] = 8] = "Forward";
+            Buttons[Buttons["A"] = 16] = "A";
+            Buttons[Buttons["B"] = 32] = "B";
+            Buttons[Buttons["FLEE"] = 64] = "FLEE";
+        })(Input.Buttons || (Input.Buttons = {}));
+        var Buttons = Input.Buttons;
+        var ControlCodes = (function () {
+            function ControlCodes() {
+            }
+            ControlCodes.A = 0;
+            ControlCodes.B = 1;
+            ControlCodes.UP = 2;
+            ControlCodes.DOWN = 3;
+            ControlCodes.BACK = 4;
+            ControlCodes.FORWARD = 5;
+            ControlCodes.F1 = 6;
+            ControlCodes.F2 = 7;
+            ControlCodes.F3 = 8;
+            ControlCodes.F4 = 9;
+            ControlCodes.F5 = 10;
+            ControlCodes.F6 = 11;
+            ControlCodes.F7 = 12;
+            ControlCodes.F8 = 13;
+            ControlCodes.F9 = 14;
+            ControlCodes.F10 = 15;
+            return ControlCodes;
+        }());
+        Input.ControlCodes = ControlCodes;
+        var KeyboardState = (function () {
+            function KeyboardState() {
+                this.controlState = new Array(25);
+            }
+            KeyboardState.GetState = function (game) {
+                var keyboardState = new KeyboardState();
+                keyboardState.controlState[ControlCodes.F1] = game.input.keyboard.isDown(Phaser.KeyCode.F1);
+                keyboardState.controlState[ControlCodes.F2] = game.input.keyboard.isDown(Phaser.KeyCode.F2);
+                keyboardState.controlState[ControlCodes.F3] = game.input.keyboard.isDown(Phaser.KeyCode.F3);
+                keyboardState.controlState[ControlCodes.F4] = game.input.keyboard.isDown(Phaser.KeyCode.F4);
+                keyboardState.controlState[ControlCodes.F5] = game.input.keyboard.isDown(Phaser.KeyCode.F5);
+                keyboardState.controlState[ControlCodes.F6] = game.input.keyboard.isDown(Phaser.KeyCode.F6);
+                keyboardState.controlState[ControlCodes.F7] = game.input.keyboard.isDown(Phaser.KeyCode.F7);
+                keyboardState.controlState[ControlCodes.F8] = game.input.keyboard.isDown(Phaser.KeyCode.F8);
+                keyboardState.controlState[ControlCodes.F9] = game.input.keyboard.isDown(Phaser.KeyCode.F9);
+                keyboardState.controlState[ControlCodes.F10] = game.input.keyboard.isDown(Phaser.KeyCode.F10);
+                return keyboardState;
+            };
+            KeyboardState.prototype.isKeyUp = function (key) {
+                return !this.controlState[key];
+            };
+            KeyboardState.prototype.isKeyDown = function (key) {
+                return this.controlState[key];
+            };
+            return KeyboardState;
+        }());
+        Input.KeyboardState = KeyboardState;
+        var ControlDirection = (function () {
+            function ControlDirection() {
+            }
+            ControlDirection.fromInput = function (keyboardState) {
+                var direction = ControlDirection.None;
+                if (keyboardState.isKeyDown(ControlCodes.UP)) {
+                    direction |= ControlDirection.Up;
+                }
+                else if (keyboardState.isKeyDown(ControlCodes.DOWN)) {
+                    direction |= ControlDirection.Down;
+                }
+                if (keyboardState.isKeyDown(ControlCodes.BACK)) {
+                    direction |= ControlDirection.Back;
+                }
+                else if (keyboardState.isKeyDown(ControlCodes.FORWARD)) {
+                    direction |= ControlDirection.Forward;
+                }
+                return direction;
+            };
+            ControlDirection.None = 0;
+            ControlDirection.Up = 1;
+            ControlDirection.Down = 2;
+            ControlDirection.Back = 4;
+            ControlDirection.Forward = 8;
+            ControlDirection.UpBack = ControlDirection.Up | ControlDirection.Back;
+            ControlDirection.UpForward = ControlDirection.Up | ControlDirection.Forward;
+            ControlDirection.DownBack = ControlDirection.Down | ControlDirection.Back;
+            ControlDirection.DownForward = ControlDirection.Down | ControlDirection.Forward;
+            ControlDirection.Any = ControlDirection.Up | ControlDirection.Down | ControlDirection.Back | ControlDirection.Forward;
+            return ControlDirection;
+        }());
+        Input.ControlDirection = ControlDirection;
+        var InputManager = (function () {
+            function InputManager(game) {
+                this.lastInputTime = 0;
+                this.nonDirectionButtons = {};
+                this.game = game;
+                this.game.input.keyboard.addKeyCapture([
+                    Phaser.KeyCode.F1,
+                    Phaser.KeyCode.F2,
+                    Phaser.KeyCode.F3,
+                    Phaser.KeyCode.F4,
+                    Phaser.KeyCode.F5,
+                    Phaser.KeyCode.F6,
+                    Phaser.KeyCode.F7,
+                    Phaser.KeyCode.F8,
+                    Phaser.KeyCode.F9,
+                    Phaser.KeyCode.F10
+                ]);
+                this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
+                this.keyboardState = KeyboardState.GetState(this.game);
+                this.nonDirectionButtons[Buttons.A.toString()] = { button: Buttons.A, controlKey: ControlCodes.A };
+                this.nonDirectionButtons[Buttons.B.toString()] = { button: Buttons.B, controlKey: ControlCodes.B };
+                this.nonDirectionButtons[Buttons.FLEE.toString()] = { button: Buttons.FLEE, controlKey: ControlCodes.F10 };
+            }
+            InputManager.prototype.update = function (gameTime) {
+                this.lastKeyboardState = this.keyboardState;
+                this.keyboardState = KeyboardState.GetState(this.game);
+                if (this.lastKeyboardState.isKeyUp(ControlCodes.F1) && this.keyboardState.isKeyDown(ControlCodes.F1))
+                    console.log('F1 pressed.');
+                var time = gameTime.time;
+                var timeSinceLast = time - this.lastInputTime;
+                if (timeSinceLast > InputManager.bufferTimeOut) {
+                    this.buttonBuffer = [];
+                    this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
+                }
+                var buttons = 0;
+                for (var key in this.nonDirectionButtons) {
+                    var button = this.nonDirectionButtons[key].button;
+                    var controlKey = this.nonDirectionButtons[key].controlKey;
+                    if (this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey)) {
+                        buttons |= button;
+                    }
+                }
+                var mergeInput = (this.buttonBuffer.length > 0 && timeSinceLast < InputManager.mergeInputTime);
+                var direction = ControlDirection.fromInput(this.keyboardState);
+                if (ControlDirection.fromInput(this.lastKeyboardState) != direction) {
+                    buttons |= direction;
+                    mergeInput = false;
+                }
+                if (buttons != 0) {
+                    if (mergeInput) {
+                        this.buttonBuffer[this.buttonBuffer.length - 1] = this.buttonBuffer[this.buttonBuffer.length - 1] | buttons;
+                    }
+                    else {
+                        if (this.buttonBuffer.length === InputManager.BUFFER_SIZE) {
+                            this.buttonBuffer.shift();
+                        }
+                        this.buttonBuffer.push(buttons);
+                        this.lastInputTime = time;
+                    }
+                }
+                this.buttonsState = buttons;
+            };
+            InputManager.bufferTimeOut = 500;
+            InputManager.mergeInputTime = 100;
+            InputManager.BUFFER_SIZE = 10;
+            return InputManager;
+        }());
+        Input.InputManager = InputManager;
+    })(Input = Barbarian.Input || (Barbarian.Input = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
     (function (ItemType) {
         ItemType[ItemType["None"] = -1] = "None";
         ItemType[ItemType["Arrow"] = 0] = "Arrow";
@@ -1871,6 +2036,7 @@ var Barbarian;
                     _this.game.hero.keys.right.isDown = false;
                 }
             }, this);
+            this.game.inputManager = new Barbarian.Input.InputManager(this.game);
         };
         Play.prototype.createEffect = function (x, y, name) {
             var effect = this.add.sprite(x, y, 'misc');
@@ -1974,6 +2140,7 @@ var Barbarian;
             }
         };
         Play.prototype.update = function () {
+            this.game.inputManager.update(this.game.time);
             this.handleMovement();
             if (this.game.hero.keys.fast.isDown) {
                 Barbarian.FIXED_TIMESTEP -= 1;

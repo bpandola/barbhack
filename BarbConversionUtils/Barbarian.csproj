@@ -82,6 +82,7 @@
     <TypeScriptCompile Include="src\ghost.ts" />
     <TypeScriptCompile Include="src\hero.ts" />
     <TypeScriptCompile Include="src\herostates.ts" />
+    <TypeScriptCompile Include="src\input.ts" />
     <TypeScriptCompile Include="src\play.ts" />
     <TypeScriptCompile Include="src\level.ts" />
     <TypeScriptCompile Include="src\tilemap.ts" />

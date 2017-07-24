@@ -8,6 +8,8 @@
         enemies: Barbarian.Enemies.Enemy[];
         changeFrameRate: any;
 
+        inputManager: Barbarian.Input.InputManager;
+
         preload() {
             this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
             this.load.json('rooms', 'assets/rooms.json');
@@ -72,7 +74,8 @@
                 }
             }, this);
 
-            
+
+            this.game.inputManager = new Barbarian.Input.InputManager(this.game);
            
             
         }
@@ -199,6 +202,8 @@
 
         
         update() {
+            this.game.inputManager.update(this.game.time);
+
             this.handleMovement();
 
             if (this.game.hero.keys.fast.isDown) {
