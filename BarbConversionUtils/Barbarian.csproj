@@ -63,6 +63,7 @@
     <Content Include="css\app.css" />
     <Content Include="index.html" />
     <Content Include="js\barb.js" />
+    <Content Include="js\lib\phaser-2-10-5.min.js" />
     <Content Include="js\lib\phaser.js" />
     <Content Include="js\lib\phaser.min.js" />
     <Content Include="web.config" />
@@ -135,6 +136,7 @@
     <Content Include="assets\enemies\thr.json" />
     <Content Include="assets\enemies\ver.json" />
     <Content Include="assets\enemies\vsp.json" />
+    <Content Include="assets\hud.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
