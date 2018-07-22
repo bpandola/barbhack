@@ -11,6 +11,7 @@
 
         level: Level;
         hero: Hero;
+        lives: number = 3;
         inputManager: Barbarian.Input.InputManager;
 
         debugOn: boolean = true;
