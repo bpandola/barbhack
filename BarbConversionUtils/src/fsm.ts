@@ -16,16 +16,18 @@
         private pendingState: string = null;
         private pendingStateArgs: any[];
         private currentStateName: string;
+        private canTransitionFromSelf: { id: string, value: boolean }[] = [];
         private hero: Barbarian.Hero;
 
         constructor(hero: Barbarian.Hero) {
             this.hero = hero;
         }
 
-        add(key: string, state: IState, validFromStates: string[]) {
+        add(key: string, state: IState, validFromStates: string[], canTransitionFromSelf: boolean = false) {
 
             this.states[key] = state;
             this.validFromStates[key] = validFromStates;
+            this.canTransitionFromSelf[key] = canTransitionFromSelf;
         }
 
         transition(newState: string, immediately: boolean = false, ...args: any[]) {
@@ -83,7 +85,7 @@
 
         isValidFrom(newState: string): boolean {
             var isValid = false;
-            if (newState != this.currentStateName) {
+            if (newState != this.currentStateName || this.canTransitionFromSelf[newState]) {
                 for (var state of this.validFromStates[newState]) {
                     if (state == this.currentStateName || state == WILDCARD)
                         isValid = true;
@@ -95,7 +97,7 @@
         isValidFromPending(newState: string): boolean {
             var isValid = false;
             if (newState != this.pendingState) {
-                for (var state of this.validFromStates[newState]) {
+                for (var state of this.validFromStates[newState] || this.canTransitionFromSelf[newState]) {
                     if (state == this.pendingState || state == WILDCARD)
                         isValid = true;
                 }
