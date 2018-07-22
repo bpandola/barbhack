@@ -5,28 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Barbarian;
 (function (Barbarian) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.apply(this, arguments);
-        }
-        Boot.prototype.init = function (stateToStart) {
-            this.input.maxPointers = 1;
-            this.stage.disableVisibilityChange = true;
-            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.scale.pageAlignHorizontally = true;
-            this.scale.pageAlignVertically = true;
-            this.game.time.advancedTiming = true;
-            this.stage.smoothed = false;
-            this.game.renderer.renderSession.roundPixels = true;
-            this.game.state.start(stateToStart);
-        };
-        return Boot;
-    }(Phaser.State));
-    Barbarian.Boot = Boot;
-})(Barbarian || (Barbarian = {}));
-var Barbarian;
-(function (Barbarian) {
     Barbarian.SCALE = 2;
     Barbarian.TILE_SIZE = 16;
     Barbarian.TILE_SHIFT = 4;
@@ -36,6 +14,7 @@ var Barbarian;
         __extends(Game, _super);
         function Game() {
             _super.call(this, 640, 400, Phaser.CANVAS, 'game', null);
+            this.lives = 3;
             this.debugOn = true;
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Play', new Barbarian.Play());
@@ -270,6 +249,107 @@ var Barbarian;
 (function (Barbarian) {
     var Enemies;
     (function (Enemies) {
+        var SmallArrow = (function (_super) {
+            __extends(SmallArrow, _super);
+            function SmallArrow(entity) {
+                var _this = this;
+                _super.call(this, entity.game, entity.x, entity.y - 28, 'POP', 9);
+                this.velocity = entity.facing == Barbarian.Direction.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
+                this.scale.x = entity.facing == Barbarian.Direction.Left ? -1 : 1;
+                this.x += this.velocity * 2;
+                this.checkWorldBounds = true;
+                this.outOfBoundsKill = true;
+                this.flightAnim = this.animations.add('fly', [9], Barbarian.FRAMERATE, true, true);
+                this.flightAnim.enableUpdate = true;
+                this.flightAnim.onUpdate.add(function () { _this.x += _this.velocity; }, this);
+                this.flightAnim.play();
+            }
+            return SmallArrow;
+        }(Phaser.Sprite));
+        Enemies.SmallArrow = SmallArrow;
+        var Pop = (function (_super) {
+            __extends(Pop, _super);
+            function Pop(game, dataBlob, direction) {
+                _super.call(this, game, dataBlob, direction);
+                this.hasAlreadyPopped = false;
+                this.createAnimations();
+                this.idleAnim.play(Barbarian.FRAMERATE);
+            }
+            Object.defineProperty(Pop.prototype, "currentParts", {
+                get: function () {
+                    var animName = this.nllSprite.animations.currentAnim.name;
+                    var animFrame = this.nllSprite.animations.currentFrame.index;
+                    var animNum = 0;
+                    if (animName == 'pop')
+                        animNum = 1;
+                    return this.animData[animNum].frames[animFrame].parts;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Pop.prototype.createAnimations = function () {
+                var _this = this;
+                this.nllSprite = this.create(0, 0, 'POP', 0);
+                this.idleAnim = this.nllSprite.animations.add('idle', [0], Barbarian.FRAMERATE, true, true);
+                this.popAnim = this.nllSprite.animations.add('pop', [0, 0, 0, 0, 0, 0, 0, 0], Barbarian.FRAMERATE, false, true);
+                this.popAnim.enableUpdate = true;
+                this.popAnim.onUpdate.add(function () {
+                    if (_this.nllSprite.animations.currentAnim.currentFrame.index == 3) {
+                        var arrow = new SmallArrow(_this);
+                        _this.game.world.add(arrow);
+                        _this.hasAlreadyPopped = true;
+                    }
+                }, this);
+                this.popAnim.onComplete.add(function () {
+                    _this.hasAlreadyPopped = true;
+                    _this.nllSprite.play('idle');
+                }, this);
+            };
+            Pop.prototype.isWithinStrikingDistance = function () {
+                if (this.game.hero.y + Barbarian.TILE_SIZE == this.y) {
+                    var delta = this.x - this.game.hero.x;
+                    if (delta >= 0 && delta <= Barbarian.TILE_SIZE * 15)
+                        return true;
+                }
+                return false;
+            };
+            Pop.prototype.update = function () {
+                if (this.isWithinStrikingDistance() && !this.hasAlreadyPopped) {
+                    this.nllSprite.play('pop');
+                }
+                this.render();
+            };
+            return Pop;
+        }(Enemies.Enemy));
+        Enemies.Pop = Pop;
+    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.init = function (stateToStart) {
+            this.input.maxPointers = 1;
+            this.stage.disableVisibilityChange = true;
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.scale.pageAlignHorizontally = true;
+            this.scale.pageAlignVertically = true;
+            this.game.time.advancedTiming = true;
+            this.stage.smoothed = false;
+            this.game.renderer.renderSession.roundPixels = true;
+            this.game.state.start(stateToStart);
+        };
+        return Boot;
+    }(Phaser.State));
+    Barbarian.Boot = Boot;
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Enemies;
+    (function (Enemies) {
         var Block = (function (_super) {
             __extends(Block, _super);
             function Block() {
@@ -389,85 +469,6 @@ var Barbarian;
             return Man;
         }(Enemies.Enemy));
         Enemies.Man = Man;
-    })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
-})(Barbarian || (Barbarian = {}));
-var Barbarian;
-(function (Barbarian) {
-    var Enemies;
-    (function (Enemies) {
-        var SmallArrow = (function (_super) {
-            __extends(SmallArrow, _super);
-            function SmallArrow(entity) {
-                var _this = this;
-                _super.call(this, entity.game, entity.x, entity.y - 28, 'POP', 9);
-                this.velocity = entity.facing == Barbarian.Direction.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
-                this.scale.x = entity.facing == Barbarian.Direction.Left ? -1 : 1;
-                this.x += this.velocity * 2;
-                this.checkWorldBounds = true;
-                this.outOfBoundsKill = true;
-                this.flightAnim = this.animations.add('fly', [9], Barbarian.FRAMERATE, true, true);
-                this.flightAnim.enableUpdate = true;
-                this.flightAnim.onUpdate.add(function () { _this.x += _this.velocity; }, this);
-                this.flightAnim.play();
-            }
-            return SmallArrow;
-        }(Phaser.Sprite));
-        Enemies.SmallArrow = SmallArrow;
-        var Pop = (function (_super) {
-            __extends(Pop, _super);
-            function Pop(game, dataBlob, direction) {
-                _super.call(this, game, dataBlob, direction);
-                this.hasAlreadyPopped = false;
-                this.createAnimations();
-                this.idleAnim.play(Barbarian.FRAMERATE);
-            }
-            Object.defineProperty(Pop.prototype, "currentParts", {
-                get: function () {
-                    var animName = this.nllSprite.animations.currentAnim.name;
-                    var animFrame = this.nllSprite.animations.currentFrame.index;
-                    var animNum = 0;
-                    if (animName == 'pop')
-                        animNum = 1;
-                    return this.animData[animNum].frames[animFrame].parts;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Pop.prototype.createAnimations = function () {
-                var _this = this;
-                this.nllSprite = this.create(0, 0, 'POP', 0);
-                this.idleAnim = this.nllSprite.animations.add('idle', [0], Barbarian.FRAMERATE, true, true);
-                this.popAnim = this.nllSprite.animations.add('pop', [0, 0, 0, 0, 0, 0, 0, 0], Barbarian.FRAMERATE, false, true);
-                this.popAnim.enableUpdate = true;
-                this.popAnim.onUpdate.add(function () {
-                    if (_this.nllSprite.animations.currentAnim.currentFrame.index == 3) {
-                        var arrow = new SmallArrow(_this);
-                        _this.game.world.add(arrow);
-                        _this.hasAlreadyPopped = true;
-                    }
-                }, this);
-                this.popAnim.onComplete.add(function () {
-                    _this.hasAlreadyPopped = true;
-                    _this.nllSprite.play('idle');
-                }, this);
-            };
-            Pop.prototype.isWithinStrikingDistance = function () {
-                if (this.game.hero.y + Barbarian.TILE_SIZE == this.y) {
-                    var delta = this.x - this.game.hero.x;
-                    if (delta >= 0 && delta <= Barbarian.TILE_SIZE * 15)
-                        return true;
-                }
-                return false;
-            };
-            Pop.prototype.update = function () {
-                if (this.isWithinStrikingDistance() && !this.hasAlreadyPopped) {
-                    this.nllSprite.play('pop');
-                }
-                this.render();
-            };
-            return Pop;
-        }(Enemies.Enemy));
-        Enemies.Pop = Pop;
     })(Enemies = Barbarian.Enemies || (Barbarian.Enemies = {}));
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
@@ -635,6 +636,7 @@ var Barbarian;
                 for (var _i = 2; _i < arguments.length; _i++) {
                     args[_i - 2] = arguments[_i];
                 }
+                console.log(newState);
                 if (this.pendingState === 'Idle' && this.isValidFromPending(newState)) {
                     this.pendingState = newState;
                 }
@@ -793,10 +795,13 @@ var Barbarian;
             this.availableWeapons = [];
             this.numArrows = 10;
             this.availableWeapons[Weapon.Bow] = true;
-            this.availableWeapons[Weapon.Shield] = false;
+            this.availableWeapons[Weapon.Shield] = true;
             this.availableWeapons[Weapon.Sword] = true;
             this.activeWeapon = Weapon.Sword;
         }
+        Inventory.prototype.hasWeapon = function (weapon) {
+            return this.availableWeapons[weapon];
+        };
         Inventory.prototype.addItem = function (itemType) {
             switch (itemType) {
                 case Barbarian.ItemType.Arrow:
@@ -937,6 +942,7 @@ var Barbarian;
             return new Phaser.Rectangle();
         };
         Hero.prototype.checkMovement = function () {
+            var input = this.game.inputManager;
             switch (this.tileMap.getTile()) {
                 case '3':
                     this.fsm.transition('HitWall', true);
@@ -965,14 +971,14 @@ var Barbarian;
                 return false;
             }
             else if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.StairsDownOptional)) {
-                if (this.keys.down.isDown) {
+                if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
                     this.direction = Direction.Down;
                     this.fsm.transition('TakeStairs');
                     return false;
                 }
             }
             else if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.StairsUpOptional)) {
-                if (this.keys.up.isDown) {
+                if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
                     this.direction = Direction.Up;
                     this.fsm.transition('TakeStairs');
                     return false;
@@ -1025,12 +1031,19 @@ var Barbarian;
         Hero.prototype.update = function () {
             var input = this.game.inputManager;
             this.checkWeaponSwitch();
-            if (input.buttonsState & Barbarian.Input.Buttons.FLEE)
+            if (input.buttonsState & Barbarian.Input.Buttons.Flee) {
                 this.fsm.transition('Flee');
-            if (this.keys.attack.isDown) {
+            }
+            if (input.buttonsState & Barbarian.Input.Buttons.Attack) {
                 this.fsm.transition('Attack');
             }
-            if (this.keys.jump.isDown) {
+            if (input.buttonsState & Barbarian.Input.Buttons.Jump) {
+                if (this.fsm.getCurrentStateName == 'Run')
+                    this.fsm.transition('FrontFlip');
+                else
+                    this.fsm.transition('Jump');
+            }
+            else if (this.keys.jump.isDown) {
                 if (this.tileMap.isAbleToJump()) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('FrontFlip');
@@ -1044,7 +1057,7 @@ var Barbarian;
                 }
             }
             if (this.facing == Direction.Right) {
-                if (this.keys.right.isDown) {
+                if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
                     }
@@ -1052,11 +1065,11 @@ var Barbarian;
                         this.fsm.transition('Walk');
                     }
                 }
-                else if (this.keys.left.isDown)
+                else if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left)
                     this.fsm.transition('ChangeDirection');
             }
             else if (this.facing == Direction.Left) {
-                if (this.keys.left.isDown) {
+                if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
                     }
@@ -1064,10 +1077,10 @@ var Barbarian;
                         this.fsm.transition('Walk');
                     }
                 }
-                else if (this.keys.right.isDown)
+                else if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right)
                     this.fsm.transition('ChangeDirection');
             }
-            if (this.keys.down.isDown) {
+            if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
                 if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
                 }
@@ -1075,12 +1088,12 @@ var Barbarian;
                     this.fsm.transition('PickUp');
                 }
             }
-            else if (this.keys.up.isDown) {
+            else if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
                 if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderBottom)) {
                     this.fsm.transition('UseLadder');
                 }
             }
-            if (!this.keys.left.isDown && !this.keys.right.isDown) {
+            if (!input.buttonsState) {
                 this.fsm.transition('Stop');
             }
             this.timeStep += this.game.time.elapsedMS;
@@ -1601,14 +1614,16 @@ var Barbarian;
                 this.hero.setAnimation(Barbarian.Animations.HitGround);
                 this.hero.direction = Barbarian.Direction.Down;
                 this.animDone = false;
+                this.deathDispatched = false;
                 if (this.hero.checkMovement()) {
                     this.hero.moveRelative(0, 1);
                 }
             };
             FallDeath.prototype.onUpdate = function () {
-                if (this.hero.frame == 0 && this.animDone) {
+                if (this.hero.frame == 0 && this.animDone && !this.deathDispatched) {
                     this.hero.frame = 3;
                     this.hero.onDied.dispatch();
+                    this.deathDispatched = true;
                 }
                 else {
                     this.animDone = true;
@@ -1630,11 +1645,13 @@ var Barbarian;
                 var anim = this.hero.game.rnd.pick(this.deathAnims);
                 this.hero.setAnimation(anim);
                 this.animDone = false;
+                this.deathDispatched = false;
             };
             Die.prototype.onUpdate = function () {
-                if (this.hero.frame == 0 && this.animDone) {
+                if (this.hero.frame == 0 && this.animDone && !this.deathDispatched) {
                     this.hero.frame = this.hero.animData[this.hero.animNum].frames.length - 1;
                     this.hero.onDied.dispatch();
+                    this.deathDispatched = true;
                 }
                 else {
                     this.animDone = true;
@@ -1682,13 +1699,37 @@ var Barbarian;
         (function (Buttons) {
             Buttons[Buttons["Up"] = 1] = "Up";
             Buttons[Buttons["Down"] = 2] = "Down";
-            Buttons[Buttons["Back"] = 4] = "Back";
-            Buttons[Buttons["Forward"] = 8] = "Forward";
+            Buttons[Buttons["Right"] = 4] = "Right";
+            Buttons[Buttons["Left"] = 8] = "Left";
             Buttons[Buttons["A"] = 16] = "A";
             Buttons[Buttons["B"] = 32] = "B";
-            Buttons[Buttons["FLEE"] = 64] = "FLEE";
+            Buttons[Buttons["Flee"] = 64] = "Flee";
+            Buttons[Buttons["Attack"] = 128] = "Attack";
+            Buttons[Buttons["Jump"] = 256] = "Jump";
+            Buttons[Buttons["Stop"] = 512] = "Stop";
         })(Input.Buttons || (Input.Buttons = {}));
         var Buttons = Input.Buttons;
+        Input.NumIcons = 16;
+        (function (Icon) {
+            Icon[Icon["Left"] = 0] = "Left";
+            Icon[Icon["Up"] = 1] = "Up";
+            Icon[Icon["Down"] = 2] = "Down";
+            Icon[Icon["Right"] = 3] = "Right";
+            Icon[Icon["Stop"] = 4] = "Stop";
+            Icon[Icon["Jump"] = 5] = "Jump";
+            Icon[Icon["Run"] = 6] = "Run";
+            Icon[Icon["Attack"] = 7] = "Attack";
+            Icon[Icon["Defend"] = 8] = "Defend";
+            Icon[Icon["Flee"] = 9] = "Flee";
+            Icon[Icon["Get"] = 10] = "Get";
+            Icon[Icon["Use"] = 11] = "Use";
+            Icon[Icon["Drop"] = 12] = "Drop";
+            Icon[Icon["Sword"] = 13] = "Sword";
+            Icon[Icon["Bow"] = 14] = "Bow";
+            Icon[Icon["Shield"] = 15] = "Shield";
+            Icon[Icon["None"] = 16] = "None";
+        })(Input.Icon || (Input.Icon = {}));
+        var Icon = Input.Icon;
         var ControlCodes = (function () {
             function ControlCodes() {
             }
@@ -1696,8 +1737,8 @@ var Barbarian;
             ControlCodes.B = 1;
             ControlCodes.UP = 2;
             ControlCodes.DOWN = 3;
-            ControlCodes.BACK = 4;
-            ControlCodes.FORWARD = 5;
+            ControlCodes.LEFT = 4;
+            ControlCodes.RIGHT = 5;
             ControlCodes.F1 = 6;
             ControlCodes.F2 = 7;
             ControlCodes.F3 = 8;
@@ -1711,6 +1752,24 @@ var Barbarian;
             return ControlCodes;
         }());
         Input.ControlCodes = ControlCodes;
+        var HudState = (function () {
+            function HudState(iconsSelected, iconState) {
+                this.iconsState = new Array(Input.NumIcons);
+                this.iconState2 = 0;
+                this.iconState2 = iconState;
+                for (var i = 0; i < Input.NumIcons; i++) {
+                    this.iconsState[i] = iconsSelected.indexOf(i) == -1 ? false : true;
+                }
+            }
+            HudState.prototype.isIconSelected = function (icon) {
+                return this.iconsState[icon];
+            };
+            HudState.prototype.isButtonSelected = function (button) {
+                return (this.iconState2 & button) > 0;
+            };
+            return HudState;
+        }());
+        Input.HudState = HudState;
         var KeyboardState = (function () {
             function KeyboardState() {
                 this.controlState = new Array(25);
@@ -1741,40 +1800,41 @@ var Barbarian;
         var ControlDirection = (function () {
             function ControlDirection() {
             }
-            ControlDirection.fromInput = function (keyboardState) {
+            ControlDirection.fromInput = function (keyboardState, hudState) {
                 var direction = ControlDirection.None;
-                if (keyboardState.isKeyDown(ControlCodes.UP)) {
+                if (keyboardState.isKeyDown(ControlCodes.UP) || hudState.isButtonSelected(Buttons.Up) || hudState.isIconSelected(Icon.Up)) {
                     direction |= ControlDirection.Up;
                 }
-                else if (keyboardState.isKeyDown(ControlCodes.DOWN)) {
+                else if (keyboardState.isKeyDown(ControlCodes.DOWN) || hudState.isButtonSelected(Buttons.Down) || hudState.isIconSelected(Icon.Down)) {
                     direction |= ControlDirection.Down;
                 }
-                if (keyboardState.isKeyDown(ControlCodes.BACK)) {
-                    direction |= ControlDirection.Back;
+                if (keyboardState.isKeyDown(ControlCodes.LEFT) || hudState.isButtonSelected(Buttons.Left) || hudState.isIconSelected(Icon.Left)) {
+                    direction |= ControlDirection.Left;
                 }
-                else if (keyboardState.isKeyDown(ControlCodes.FORWARD)) {
-                    direction |= ControlDirection.Forward;
+                else if (keyboardState.isKeyDown(ControlCodes.RIGHT) || hudState.isButtonSelected(Buttons.Right) || hudState.isIconSelected(Icon.Right)) {
+                    direction |= ControlDirection.Right;
                 }
                 return direction;
             };
             ControlDirection.None = 0;
             ControlDirection.Up = 1;
             ControlDirection.Down = 2;
-            ControlDirection.Back = 4;
-            ControlDirection.Forward = 8;
-            ControlDirection.UpBack = ControlDirection.Up | ControlDirection.Back;
-            ControlDirection.UpForward = ControlDirection.Up | ControlDirection.Forward;
-            ControlDirection.DownBack = ControlDirection.Down | ControlDirection.Back;
-            ControlDirection.DownForward = ControlDirection.Down | ControlDirection.Forward;
-            ControlDirection.Any = ControlDirection.Up | ControlDirection.Down | ControlDirection.Back | ControlDirection.Forward;
+            ControlDirection.Right = 4;
+            ControlDirection.Left = 8;
+            ControlDirection.UpLeft = ControlDirection.Up | ControlDirection.Left;
+            ControlDirection.UpRight = ControlDirection.Up | ControlDirection.Right;
+            ControlDirection.DownLeft = ControlDirection.Down | ControlDirection.Left;
+            ControlDirection.DownRight = ControlDirection.Down | ControlDirection.Right;
+            ControlDirection.Any = ControlDirection.Up | ControlDirection.Down | ControlDirection.Left | ControlDirection.Right;
             return ControlDirection;
         }());
         Input.ControlDirection = ControlDirection;
         var InputManager = (function () {
-            function InputManager(game) {
+            function InputManager(game, hud) {
                 this.lastInputTime = 0;
                 this.nonDirectionButtons = {};
                 this.game = game;
+                this.hud = hud;
                 this.game.input.keyboard.addKeyCapture([
                     Phaser.KeyCode.F1,
                     Phaser.KeyCode.F2,
@@ -1789,13 +1849,17 @@ var Barbarian;
                 ]);
                 this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
                 this.keyboardState = KeyboardState.GetState(this.game);
-                this.nonDirectionButtons[Buttons.A.toString()] = { button: Buttons.A, controlKey: ControlCodes.A };
-                this.nonDirectionButtons[Buttons.B.toString()] = { button: Buttons.B, controlKey: ControlCodes.B };
-                this.nonDirectionButtons[Buttons.FLEE.toString()] = { button: Buttons.FLEE, controlKey: ControlCodes.F10 };
+                this.hudState = this.hud.getState();
+                this.nonDirectionButtons[Buttons.Stop.toString()] = { button: Buttons.Stop, controlKey: ControlCodes.F5, icon: Icon.Stop };
+                this.nonDirectionButtons[Buttons.Jump.toString()] = { button: Buttons.Jump, controlKey: ControlCodes.F6, icon: Icon.Jump };
+                this.nonDirectionButtons[Buttons.Attack.toString()] = { button: Buttons.Attack, controlKey: ControlCodes.F8, icon: Icon.Attack };
+                this.nonDirectionButtons[Buttons.Flee.toString()] = { button: Buttons.Flee, controlKey: ControlCodes.F10, icon: Icon.Flee };
             }
             InputManager.prototype.update = function (gameTime) {
                 this.lastKeyboardState = this.keyboardState;
+                this.lastHudState = this.hudState;
                 this.keyboardState = KeyboardState.GetState(this.game);
+                this.hudState = this.hud.getState();
                 if (this.lastKeyboardState.isKeyUp(ControlCodes.F1) && this.keyboardState.isKeyDown(ControlCodes.F1))
                     console.log('F1 pressed.');
                 var time = gameTime.time;
@@ -1808,16 +1872,16 @@ var Barbarian;
                 for (var key in this.nonDirectionButtons) {
                     var button = this.nonDirectionButtons[key].button;
                     var controlKey = this.nonDirectionButtons[key].controlKey;
-                    if (this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey)) {
+                    var icon = this.nonDirectionButtons[key].icon;
+                    if ((this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey))
+                        || (!this.lastHudState.isIconSelected(icon) && this.hudState.isIconSelected(icon))) {
                         buttons |= button;
                     }
                 }
                 var mergeInput = (this.buttonBuffer.length > 0 && timeSinceLast < InputManager.mergeInputTime);
-                var direction = ControlDirection.fromInput(this.keyboardState);
-                if (ControlDirection.fromInput(this.lastKeyboardState) != direction) {
-                    buttons |= direction;
-                    mergeInput = false;
-                }
+                var direction = ControlDirection.fromInput(this.keyboardState, this.hudState);
+                buttons |= direction;
+                mergeInput = false;
                 if (buttons != 0) {
                     if (mergeInput) {
                         this.buttonBuffer[this.buttonBuffer.length - 1] = this.buttonBuffer[this.buttonBuffer.length - 1] | buttons;
@@ -1839,6 +1903,367 @@ var Barbarian;
         }());
         Input.InputManager = InputManager;
     })(Input = Barbarian.Input || (Barbarian.Input = {}));
+})(Barbarian || (Barbarian = {}));
+var Barbarian;
+(function (Barbarian) {
+    var Play = (function (_super) {
+        __extends(Play, _super);
+        function Play() {
+            _super.apply(this, arguments);
+        }
+        Play.prototype.preload = function () {
+            this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
+            this.load.json('rooms', 'assets/rooms.json');
+            this.load.atlasJSONArray('misc', 'assets/miscspr.png', 'assets/miscspr.json');
+            this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
+            this.load.json('hero', 'assets/heroanims.json');
+            this.load.atlasJSONArray('hud', 'assets/hud.png', 'assets/hud.json');
+            this.load.json('enemies', 'assets/enemyanims.json');
+            for (var i = 0; i < 38; i++) {
+                var key = Barbarian.Enemies.EnemyKeys[i].toLowerCase();
+                this.load.atlasJSONArray(key.toUpperCase(), 'assets/enemies/' + key + '.png', 'assets/enemies/' + key + '.json');
+            }
+        };
+        Play.prototype.create = function () {
+            this.game.level = new Barbarian.Level(this.game, this.cache.getJSON('rooms'), 0x00);
+            this.game.level.onRoomChange.add(this.drawRoom, this);
+            this.stage.smoothed = false;
+            this.game.renderer.renderSession.roundPixels = false;
+            var startPos = this.game.level.getStartPosition();
+            this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
+            this.game.hero.onDied.add(this.heroDied, this);
+            this.background = this.add.bitmapData(640, 320);
+            this.drawRoom(Barbarian.Direction.Right);
+            this.hud = new Hud(this.game, 'hud', 0, 320);
+            this.stage.addChild(this.hud);
+            this.game.inputManager = new Barbarian.Input.InputManager(this.game, this.hud);
+            this.game.time.reset();
+        };
+        Play.prototype.createEffect = function (x, y, name) {
+            var effect = this.add.sprite(x, y, 'misc');
+            switch (name) {
+                case 'bat':
+                    effect.scale.setTo(-1, 1);
+                    effect.animations.add(name, [33, 34], 4, true, true);
+                    var tween = this.game.add.tween(effect).to({ x: -40 }, 10000, Phaser.Easing.Linear.None, true, 500);
+                    break;
+                case 'torch1':
+                    effect.animations.add(name, [9, 7, 8], 6, true, true);
+                    break;
+                case 'torch2':
+                    effect.animations.add(name, [7, 8, 9], 6, true, true);
+                    break;
+                case 'fire':
+                    effect.animations.add(name, [10, 11, 12], 6, true, true);
+                    break;
+                case 'skull_eyes':
+                    effect.animations.add(name, [17, 18, 19, 18], 6, true, true);
+                    break;
+                case 'demon_eyes':
+                    effect.animations.add(name, [13, 14, 15, 14], 6, true, true);
+                    break;
+                case 'blood_drip':
+                    effect.frame = 16;
+                    var tween = this.game.add.tween(effect).to({ y: 320 }, 1200, Phaser.Easing.Exponential.In, true);
+                    tween.repeat(-1, 1000);
+                    break;
+            }
+            if (name != 'blood_drip') {
+                effect.animations.play(name, Barbarian.FRAMERATE);
+            }
+        };
+        Play.prototype.heroDied = function () {
+            var _this = this;
+            this.game.lives--;
+            this.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
+                _this.game.time.reset();
+                _this.game.hero.reset(_this.game.level.getStartPosition().tileX, _this.game.level.getStartPosition().tileY);
+                _this.drawRoom(Barbarian.Direction.None);
+            }, this);
+        };
+        Play.prototype.drawRoom = function (direction) {
+            this.world.removeAll();
+            this.background.clear();
+            for (var _i = 0, _a = this.game.level.currentRoom.area; _i < _a.length; _i++) {
+                var obj = _a[_i];
+                if (obj.flags !== 5) {
+                    var spr;
+                    spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
+                    spr.x += spr.width / 2;
+                    spr.y += spr.height / 2;
+                    spr.anchor.setTo(0.5);
+                    var xScale = obj.flags & 1 ? -1 : 1;
+                    var yScale = obj.flags & 2 ? -1 : 1;
+                    spr.scale.setTo(xScale, yScale);
+                    this.background.draw(spr, spr.x, spr.y);
+                }
+                else {
+                    this.background.rect(obj.xOff, obj.yOff, Barbarian.TILE_SIZE * obj.unknown, Barbarian.TILE_SIZE, '#000');
+                }
+            }
+            this.background.addToWorld(0, 0);
+            for (var _b = 0, _c = this.game.level.currentRoom.effects; _b < _c.length; _b++) {
+                var effect = _c[_b];
+                this.createEffect(effect.x, effect.y, effect.name);
+            }
+            this.enemies = [];
+            for (var _d = 0, _e = this.game.level.currentRoom.enemies; _d < _e.length; _d++) {
+                var enemy = _e[_d];
+                var createdEnemy = Barbarian.Enemies.Enemy.createEnemy(this.game, enemy, direction);
+                this.world.add(createdEnemy);
+                this.enemies.push(createdEnemy);
+            }
+            this.world.add(this.game.hero);
+            for (var _f = 0, _g = this.game.level.getRoomItems(); _f < _g.length; _f++) {
+                var item = _g[_f];
+                this.world.add(item);
+            }
+        };
+        Play.prototype.handleMovement = function () {
+            if (this.game.hero.x >= this.world.width + Barbarian.TILE_SIZE && this.game.hero.direction == Barbarian.Direction.Right) {
+                this.game.level.nextRoom(Barbarian.Direction.Right);
+                this.game.hero.x = 0;
+                this.game.hero.tilePos.x = 0;
+            }
+            else if (this.game.hero.x <= -16 && this.game.hero.direction == Barbarian.Direction.Left) {
+                this.game.level.nextRoom(Barbarian.Direction.Left);
+                this.game.hero.x = 640;
+                this.game.hero.tilePos.x = 39;
+            }
+            else if (this.game.hero.y <= 0 && this.game.hero.direction == Barbarian.Direction.Up) {
+                this.game.level.nextRoom(Barbarian.Direction.Up);
+                this.game.hero.y = 320;
+                this.game.hero.tilePos.y = 19;
+            }
+            else if (this.game.hero.y >= this.world.height - (Barbarian.TILE_SIZE * 1.5)) {
+                this.game.level.nextRoom(Barbarian.Direction.Down);
+                this.game.hero.y = Barbarian.TILE_SIZE;
+                this.game.hero.tilePos.y = 1;
+            }
+        };
+        Play.prototype.update = function () {
+            this.game.inputManager.update(this.game.time);
+            this.handleMovement();
+            if (this.game.hero.keys.fast.isDown) {
+                Barbarian.FIXED_TIMESTEP -= 1;
+                if (Barbarian.FIXED_TIMESTEP < 1)
+                    Barbarian.FIXED_TIMESTEP = 1;
+                Barbarian.FRAMERATE = 1000 / Barbarian.FIXED_TIMESTEP;
+                console.log(Barbarian.FIXED_TIMESTEP.toString());
+            }
+            else if (this.game.hero.keys.slow.isDown) {
+                Barbarian.FIXED_TIMESTEP += 1;
+                if (Barbarian.FIXED_TIMESTEP > 999)
+                    Barbarian.FIXED_TIMESTEP = 999;
+                Barbarian.FRAMERATE = 1000 / Barbarian.FIXED_TIMESTEP;
+                console.log(Barbarian.FIXED_TIMESTEP.toString());
+            }
+            if (this.game.hero.isAttackingWithSword) {
+                for (var _i = 0, _a = this.enemies.filter(function (e) { return e.isKillable; }); _i < _a.length; _i++) {
+                    var enemy = _a[_i];
+                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds());
+                    if (enemyBounds.intersects(this.game.hero.getSwordBounds(), 0)) {
+                        enemy.kill();
+                    }
+                }
+            }
+            for (var _b = 0, _c = this.world.children.filter(function (obj) { return obj instanceof Barbarian.Arrow && obj.alive; }); _b < _c.length; _b++) {
+                var arrow = _c[_b];
+                for (var _d = 0, _e = this.enemies.filter(function (e) { return e.isKillable; }); _d < _e.length; _d++) {
+                    var enemy = _e[_d];
+                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds()).inflate(Barbarian.TILE_SIZE / 2, Barbarian.TILE_SIZE * 2);
+                    var arrowBounds = new Phaser.Rectangle().copyFrom(arrow.getBounds());
+                    if (enemyBounds.containsRect(arrowBounds)) {
+                        enemy.kill();
+                        arrow.kill();
+                    }
+                }
+            }
+            for (var _f = 0, _g = this.world.children.filter(function (obj) { return obj instanceof Barbarian.Enemies.SmallArrow && obj.alive; }); _f < _g.length; _f++) {
+                var small = _g[_f];
+                var heroBounds = new Phaser.Rectangle().copyFrom(this.game.hero.getBounds()).inflate(Barbarian.TILE_SIZE / 2, Barbarian.TILE_SIZE * 2);
+                var arrowBounds = new Phaser.Rectangle().copyFrom(small.getBounds());
+                if (heroBounds.containsRect(arrowBounds)) {
+                    this.game.hero.fsm.transition('Die');
+                    small.kill();
+                }
+            }
+        };
+        Play.prototype.render = function () {
+            if (this.game.debugOn) {
+                this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
+                this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
+                for (var i = 0; i < 40; i++)
+                    for (var j = 0; j < 20; j++)
+                        this.game.debug.rectangle(new Phaser.Rectangle(i * Barbarian.TILE_SIZE, j * Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), null, false);
+                var dumbAdjust = this.game.hero.direction == Barbarian.Direction.Right ? -Barbarian.TILE_SIZE : 0;
+                this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), "green", true);
+                this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
+                var bounds = this.game.hero.getBodyBounds();
+                this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+                this.game.debug.rectangle(this.game.hero.getSwordBounds(), 'red', false);
+                for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
+                    var enemy = _a[_i];
+                    if (enemy != null) {
+                        bounds = enemy.getBounds();
+                        this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
+                    }
+                }
+            }
+        };
+        return Play;
+    }(Phaser.State));
+    Barbarian.Play = Play;
+    (function (IconBitFlags) {
+        IconBitFlags[IconBitFlags["Stop"] = 0] = "Stop";
+        IconBitFlags[IconBitFlags["Up"] = 1] = "Up";
+        IconBitFlags[IconBitFlags["Down"] = 2] = "Down";
+        IconBitFlags[IconBitFlags["Right"] = 4] = "Right";
+        IconBitFlags[IconBitFlags["Left"] = 8] = "Left";
+        IconBitFlags[IconBitFlags["Attack"] = 16] = "Attack";
+        IconBitFlags[IconBitFlags["Jump"] = 32] = "Jump";
+        IconBitFlags[IconBitFlags["Run"] = 64] = "Run";
+    })(Barbarian.IconBitFlags || (Barbarian.IconBitFlags = {}));
+    var IconBitFlags = Barbarian.IconBitFlags;
+    var Hud = (function (_super) {
+        __extends(Hud, _super);
+        function Hud(game, key, x, y) {
+            _super.call(this, game);
+            this.primaryVisible = true;
+            this.weaponIcons = [];
+            this.heroIcons = [];
+            this.iconsSelected = new Array(Barbarian.Input.NumIcons);
+            this.iconSelected = Barbarian.Input.Icon.None;
+            this.iconState = 0;
+            this.x = x;
+            this.y = y;
+            this.primaryHud = this.create(0, 0, key, 'ICON-06.PNG');
+            this.primaryHud.inputEnabled = true;
+            this.primaryHud.events.onInputDown.add(this.onPressed, this);
+            this.secondaryHud = this.create(640, 0, key, 'ICON-07.PNG');
+            this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 240, 80), true);
+            this.secondaryHud.inputEnabled = true;
+            this.weaponIcons[Barbarian.Weapon.Sword] = this.create(640 + 3 * 80, 0, key, 'ICON-03.PNG');
+            this.weaponIcons[Barbarian.Weapon.Bow] = this.create(640 + 4 * 80, 0, key, 'ICON-04.PNG');
+            this.weaponIcons[Barbarian.Weapon.Shield] = this.create(640 + 5 * 80, 0, key, 'ICON-05.PNG');
+            for (var i = 0; i < 3; i++) {
+                this.heroIcons[i] = this.create(640 + 544 + i * 32, 0, 'hud', 'ICON-01.PNG');
+            }
+            var toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
+            toggleKey.onDown.add(this.toggle, this);
+        }
+        Hud.prototype.getState = function () {
+            var state = this.iconSelected != Barbarian.Input.Icon.None ? [this.iconSelected] : [];
+            if (this.iconSelected != Barbarian.Input.Icon.Left && this.iconSelected != Barbarian.Input.Icon.Right)
+                this.iconSelected = Barbarian.Input.Icon.None;
+            return new Barbarian.Input.HudState([], this.iconState);
+        };
+        Hud.prototype.onPressed = function (sprite, pointer) {
+            console.log('Icon pressed x: ' + pointer.x + ' y: ' + pointer.y);
+            var bounds = new Phaser.Rectangle(560, 320, 80, 80);
+            if (pointer.x >= 560 && pointer.x < 640)
+                this.iconSelected = Barbarian.Input.Icon.Flee;
+            else if (pointer.x >= 400 && pointer.x < 480)
+                this.iconSelected = Barbarian.Input.Icon.Attack;
+            else if (pointer.x >= 240 && pointer.x < 320)
+                this.iconSelected = Barbarian.Input.Icon.Jump;
+            else if (pointer.x >= 160 && pointer.x < 240) {
+                this.iconSelected = Barbarian.Input.Icon.Stop;
+                this.iconState = Hud.None;
+            }
+            else if (pointer.x >= 0 && pointer.x < 40) {
+                this.iconSelected = Barbarian.Input.Icon.Left;
+                this.iconState = Hud.Left | (this.iconState & Hud.UpDown);
+            }
+            else if (pointer.x >= 120 && pointer.x < 160) {
+                this.iconSelected = Barbarian.Input.Icon.Right;
+                this.iconState = Hud.Right | (this.iconState & Hud.UpDown);
+            }
+            else if (pointer.x >= 40 && pointer.x < 120) {
+                if (pointer.y >= 320 && pointer.y < 360) {
+                    this.iconSelected = Barbarian.Input.Icon.Up;
+                    this.iconState = Hud.Up | (this.iconState & Hud.LeftRight);
+                }
+                else {
+                    this.iconSelected = Barbarian.Input.Icon.Down;
+                    this.iconState = Hud.Down | (this.iconState & Hud.LeftRight);
+                }
+            }
+            else {
+                this.iconSelected = this.iconSelected;
+                this.iconState = this.iconState;
+            }
+            console.log(this.iconState);
+        };
+        Hud.prototype.update = function () {
+            this.forEach(function (part) { if (part.animations.currentFrame.name.startsWith("DIGIT")) {
+                part.kill();
+            } }, this);
+            this.render();
+        };
+        Hud.prototype.toggle = function () {
+            this.primaryVisible = !this.primaryVisible;
+            this.x = this.primaryVisible ? 0 : -640;
+        };
+        Hud.prototype.render = function () {
+            this.renderTimer();
+            this.renderArrowCount(this.game.hero.inventory.numArrows);
+            this.renderWeaponIcons();
+            this.renderLives();
+        };
+        Hud.prototype.renderLives = function () {
+            this.heroIcons.forEach(function (icon) {
+                icon.visible = false;
+            });
+            for (var i = 0; i < this.game.lives && i < 3; i++) {
+                this.heroIcons[i].visible = true;
+            }
+        };
+        Hud.prototype.renderWeaponIcons = function () {
+            for (var weapon = Barbarian.Weapon.Sword; weapon <= Barbarian.Weapon.Bow; weapon++) {
+                if (this.game.hero.inventory.hasWeapon(weapon)) {
+                    this.weaponIcons[weapon].visible = true;
+                }
+                else {
+                    this.weaponIcons[weapon].visible = false;
+                }
+            }
+        };
+        Hud.prototype.renderTimer = function () {
+            var date = new Date(null);
+            date.setSeconds(this.game.time.totalElapsedSeconds());
+            var result = date.toISOString().substr(11, 8);
+            for (var i = 0, iMax = result.length; i < iMax; i++) {
+                this.renderDigit(result.charAt(i), 640 + 496 + i * 16, 50);
+            }
+        };
+        Hud.prototype.renderDigit = function (digit, x, y) {
+            var key = digit === ":" ? 'DIGIT-10.PNG' : 'DIGIT-0' + digit + '.PNG';
+            digit = this.getFirstDead(true, x, y, 'hud', key);
+        };
+        Hud.prototype.renderArrowCount = function (numArrows) {
+            var count = "0" + numArrows;
+            count = count.substr(count.length - 2);
+            this.getFirstDead(true, 640 + 512, 0, 'hud', 'ICON-00.PNG');
+            for (var i = 0, iMax = count.length; i < iMax; i++) {
+                this.renderDigit(count.charAt(i), 640 + 480 + i * 16, 0);
+            }
+        };
+        Hud.None = 0;
+        Hud.Up = 1;
+        Hud.Down = 2;
+        Hud.Right = 4;
+        Hud.Left = 8;
+        Hud.UpLeft = Hud.Up | Hud.Left;
+        Hud.UpRight = Hud.Up | Hud.Right;
+        Hud.DownLeft = Hud.Down | Hud.Left;
+        Hud.DownRight = Hud.Down | Hud.Right;
+        Hud.UpDown = Hud.Up | Hud.Down;
+        Hud.LeftRight = Hud.Left | Hud.Right;
+        Hud.Any = Hud.Up | Hud.Down | Hud.Left | Hud.Right;
+        return Hud;
+    }(Phaser.Group));
+    Barbarian.Hud = Hud;
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {
@@ -1989,229 +2414,6 @@ var Barbarian;
         return Level;
     }());
     Barbarian.Level = Level;
-})(Barbarian || (Barbarian = {}));
-var Barbarian;
-(function (Barbarian) {
-    var Play = (function (_super) {
-        __extends(Play, _super);
-        function Play() {
-            _super.apply(this, arguments);
-        }
-        Play.prototype.preload = function () {
-            this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
-            this.load.json('rooms', 'assets/rooms.json');
-            this.load.atlasJSONArray('misc', 'assets/miscspr.png', 'assets/miscspr.json');
-            this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
-            this.load.json('hero', 'assets/heroanims.json');
-            this.load.image('hud', 'assets/hud.png');
-            this.load.json('enemies', 'assets/enemyanims.json');
-            for (var i = 0; i < 38; i++) {
-                var key = Barbarian.Enemies.EnemyKeys[i].toLowerCase();
-                this.load.atlasJSONArray(key.toUpperCase(), 'assets/enemies/' + key + '.png', 'assets/enemies/' + key + '.json');
-            }
-        };
-        Play.prototype.create = function () {
-            var _this = this;
-            this.game.level = new Barbarian.Level(this.game, this.cache.getJSON('rooms'), 0x00);
-            this.game.level.onRoomChange.add(this.drawRoom, this);
-            this.stage.smoothed = false;
-            this.game.renderer.renderSession.roundPixels = false;
-            var startPos = this.game.level.getStartPosition();
-            this.game.hero = new Barbarian.Hero(this.game, startPos.tileX, startPos.tileY);
-            this.game.hero.onDied.add(this.heroDied, this);
-            this.background = this.add.bitmapData(640, 320);
-            this.drawRoom(Barbarian.Direction.Right);
-            var hud = this.make.sprite(0, 320, 'hud');
-            this.stage.addChild(hud);
-            hud.inputEnabled = true;
-            hud.input.enableDrag();
-            hud.input.allowVerticalDrag = false;
-            hud.input.enableSnap(160, 80);
-            hud.events.onInputDown.add(function (sprite, pointer) {
-                console.log('here');
-                if (pointer.x >= 120 && pointer.x < 160) {
-                    _this.game.hero.keys.right.isDown = true;
-                }
-                else if (pointer.x >= 160 && pointer.x < 240) {
-                    _this.game.hero.keys.right.isDown = false;
-                }
-            }, this);
-            this.game.inputManager = new Barbarian.Input.InputManager(this.game);
-        };
-        Play.prototype.createEffect = function (x, y, name) {
-            var effect = this.add.sprite(x, y, 'misc');
-            switch (name) {
-                case 'bat':
-                    effect.scale.setTo(-1, 1);
-                    effect.animations.add(name, [33, 34], 4, true, true);
-                    var tween = this.game.add.tween(effect).to({ x: -40 }, 10000, Phaser.Easing.Linear.None, true, 500);
-                    break;
-                case 'torch1':
-                    effect.animations.add(name, [9, 7, 8], 6, true, true);
-                    break;
-                case 'torch2':
-                    effect.animations.add(name, [7, 8, 9], 6, true, true);
-                    break;
-                case 'fire':
-                    effect.animations.add(name, [10, 11, 12], 6, true, true);
-                    break;
-                case 'skull_eyes':
-                    effect.animations.add(name, [17, 18, 19, 18], 6, true, true);
-                    break;
-                case 'demon_eyes':
-                    effect.animations.add(name, [13, 14, 15, 14], 6, true, true);
-                    break;
-                case 'blood_drip':
-                    effect.frame = 16;
-                    var tween = this.game.add.tween(effect).to({ y: 320 }, 1200, Phaser.Easing.Exponential.In, true);
-                    tween.repeat(-1, 1000);
-                    break;
-            }
-            if (name != 'blood_drip') {
-                effect.animations.play(name, Barbarian.FRAMERATE);
-            }
-        };
-        Play.prototype.heroDied = function () {
-            var _this = this;
-            this.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
-                _this.game.time.reset();
-                _this.game.hero.reset(_this.game.level.getStartPosition().tileX, _this.game.level.getStartPosition().tileY);
-                _this.drawRoom(Barbarian.Direction.None);
-            }, this);
-        };
-        Play.prototype.drawRoom = function (direction) {
-            this.world.removeAll();
-            this.background.clear();
-            for (var _i = 0, _a = this.game.level.currentRoom.area; _i < _a.length; _i++) {
-                var obj = _a[_i];
-                if (obj.flags !== 5) {
-                    var spr;
-                    spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
-                    spr.x += spr.width / 2;
-                    spr.y += spr.height / 2;
-                    spr.anchor.setTo(0.5);
-                    var xScale = obj.flags & 1 ? -1 : 1;
-                    var yScale = obj.flags & 2 ? -1 : 1;
-                    spr.scale.setTo(xScale, yScale);
-                    this.background.draw(spr, spr.x, spr.y);
-                }
-                else {
-                    this.background.rect(obj.xOff, obj.yOff, Barbarian.TILE_SIZE * obj.unknown, Barbarian.TILE_SIZE, '#000');
-                }
-            }
-            this.background.addToWorld(0, 0);
-            for (var _b = 0, _c = this.game.level.currentRoom.effects; _b < _c.length; _b++) {
-                var effect = _c[_b];
-                this.createEffect(effect.x, effect.y, effect.name);
-            }
-            this.enemies = [];
-            for (var _d = 0, _e = this.game.level.currentRoom.enemies; _d < _e.length; _d++) {
-                var enemy = _e[_d];
-                var createdEnemy = Barbarian.Enemies.Enemy.createEnemy(this.game, enemy, direction);
-                this.world.add(createdEnemy);
-                this.enemies.push(createdEnemy);
-            }
-            this.world.add(this.game.hero);
-            for (var _f = 0, _g = this.game.level.getRoomItems(); _f < _g.length; _f++) {
-                var item = _g[_f];
-                this.world.add(item);
-            }
-        };
-        Play.prototype.handleMovement = function () {
-            if (this.game.hero.x >= this.world.width + Barbarian.TILE_SIZE && this.game.hero.direction == Barbarian.Direction.Right) {
-                this.game.level.nextRoom(Barbarian.Direction.Right);
-                this.game.hero.x = 0;
-                this.game.hero.tilePos.x = 0;
-            }
-            else if (this.game.hero.x <= -16 && this.game.hero.direction == Barbarian.Direction.Left) {
-                this.game.level.nextRoom(Barbarian.Direction.Left);
-                this.game.hero.x = 640;
-                this.game.hero.tilePos.x = 39;
-            }
-            else if (this.game.hero.y <= 0 && this.game.hero.direction == Barbarian.Direction.Up) {
-                this.game.level.nextRoom(Barbarian.Direction.Up);
-                this.game.hero.y = 320;
-                this.game.hero.tilePos.y = 19;
-            }
-            else if (this.game.hero.y >= this.world.height - (Barbarian.TILE_SIZE * 1.5)) {
-                this.game.level.nextRoom(Barbarian.Direction.Down);
-                this.game.hero.y = Barbarian.TILE_SIZE;
-                this.game.hero.tilePos.y = 1;
-            }
-        };
-        Play.prototype.update = function () {
-            this.game.inputManager.update(this.game.time);
-            this.handleMovement();
-            if (this.game.hero.keys.fast.isDown) {
-                Barbarian.FIXED_TIMESTEP -= 1;
-                if (Barbarian.FIXED_TIMESTEP < 1)
-                    Barbarian.FIXED_TIMESTEP = 1;
-                Barbarian.FRAMERATE = 1000 / Barbarian.FIXED_TIMESTEP;
-                console.log(Barbarian.FIXED_TIMESTEP.toString());
-            }
-            else if (this.game.hero.keys.slow.isDown) {
-                Barbarian.FIXED_TIMESTEP += 1;
-                if (Barbarian.FIXED_TIMESTEP > 999)
-                    Barbarian.FIXED_TIMESTEP = 999;
-                Barbarian.FRAMERATE = 1000 / Barbarian.FIXED_TIMESTEP;
-                console.log(Barbarian.FIXED_TIMESTEP.toString());
-            }
-            if (this.game.hero.isAttackingWithSword) {
-                for (var _i = 0, _a = this.enemies.filter(function (e) { return e.isKillable; }); _i < _a.length; _i++) {
-                    var enemy = _a[_i];
-                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds());
-                    if (enemyBounds.intersects(this.game.hero.getSwordBounds(), 0)) {
-                        enemy.kill();
-                    }
-                }
-            }
-            for (var _b = 0, _c = this.world.children.filter(function (obj) { return obj instanceof Barbarian.Arrow && obj.alive; }); _b < _c.length; _b++) {
-                var arrow = _c[_b];
-                for (var _d = 0, _e = this.enemies.filter(function (e) { return e.isKillable; }); _d < _e.length; _d++) {
-                    var enemy = _e[_d];
-                    var enemyBounds = new Phaser.Rectangle().copyFrom(enemy.getBounds()).inflate(Barbarian.TILE_SIZE / 2, Barbarian.TILE_SIZE * 2);
-                    var arrowBounds = new Phaser.Rectangle().copyFrom(arrow.getBounds());
-                    if (enemyBounds.containsRect(arrowBounds)) {
-                        enemy.kill();
-                        arrow.kill();
-                    }
-                }
-            }
-            for (var _f = 0, _g = this.world.children.filter(function (obj) { return obj instanceof Barbarian.Enemies.SmallArrow && obj.alive; }); _f < _g.length; _f++) {
-                var small = _g[_f];
-                var heroBounds = new Phaser.Rectangle().copyFrom(this.game.hero.getBounds()).inflate(Barbarian.TILE_SIZE / 2, Barbarian.TILE_SIZE * 2);
-                var arrowBounds = new Phaser.Rectangle().copyFrom(small.getBounds());
-                if (heroBounds.containsRect(arrowBounds)) {
-                    this.game.hero.fsm.transition('Die');
-                    small.kill();
-                }
-            }
-        };
-        Play.prototype.render = function () {
-            if (this.game.debugOn) {
-                this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
-                this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
-                for (var i = 0; i < 40; i++)
-                    for (var j = 0; j < 20; j++)
-                        this.game.debug.rectangle(new Phaser.Rectangle(i * Barbarian.TILE_SIZE, j * Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), null, false);
-                var dumbAdjust = this.game.hero.direction == Barbarian.Direction.Right ? -Barbarian.TILE_SIZE : 0;
-                this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), "green", true);
-                this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
-                var bounds = this.game.hero.getBodyBounds();
-                this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
-                this.game.debug.rectangle(this.game.hero.getSwordBounds(), 'red', false);
-                for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
-                    var enemy = _a[_i];
-                    if (enemy != null) {
-                        bounds = enemy.getBounds();
-                        this.game.debug.rectangle(new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height));
-                    }
-                }
-            }
-        };
-        return Play;
-    }(Phaser.State));
-    Barbarian.Play = Play;
 })(Barbarian || (Barbarian = {}));
 var Barbarian;
 (function (Barbarian) {

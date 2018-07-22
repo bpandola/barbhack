@@ -29,6 +29,7 @@
         }
 
         transition(newState: string, immediately: boolean = false, ...args: any[]) {
+            console.log(newState);
             // HACK! - If pending state is Idle, allow it to be overridden
             // by a new (valid) pending state.  This allows things like
             // immediately walking/running after going up stairs without

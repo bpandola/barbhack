@@ -7,6 +7,7 @@
         background: Phaser.BitmapData;
         enemies: Barbarian.Enemies.Enemy[];
         changeFrameRate: any;
+        hud: Hud;
 
         inputManager: Barbarian.Input.InputManager;
 
@@ -16,7 +17,7 @@
             this.load.atlasJSONArray('misc', 'assets/miscspr.png', 'assets/miscspr.json');
             this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
             this.load.json('hero', 'assets/heroanims.json');
-            this.load.image('hud', 'assets/hud.png');
+            this.load.atlasJSONArray('hud', 'assets/hud.png', 'assets/hud.json');
 
             // Enemies
             this.load.json('enemies', 'assets/enemyanims.json');
@@ -55,27 +56,46 @@
             this.background = this.add.bitmapData(640, 320);
             this.drawRoom(Direction.Right);
             // draw hud
-            var hud = this.make.sprite(0, 320, 'hud');
-            this.stage.addChild(hud);
+            this.hud = new Hud(this.game, 'hud', 0, 320); // this.make.sprite(0, 320, 'hud', 5);
+            this.stage.addChild(this.hud);
+
+            //var test_input = this.hud.getState();
 
 
             // Button Test
-            hud.inputEnabled = true;
-            hud.input.enableDrag();
-            hud.input.allowVerticalDrag = false;
-            hud.input.enableSnap(160, 80);
-            hud.events.onInputDown.add((sprite, pointer) => {
-                console.log('here');
+            //hud.inputEnabled = true;
+            //hud.input.enableDrag();
+            //hud.input.allowVerticalDrag = false;
+            //hud.input.enableSnap(10, 10);
+            //hud.events.onInputDown.add((sprite, pointer) => {
+            //    console.log(pointer.x);
 
-                if (pointer.x >= 120 && pointer.x < 160) {
-                    this.game.hero.keys.right.isDown = true;
-                } else if (pointer.x >= 160 && pointer.x < 240) {
-                    this.game.hero.keys.right.isDown = false;
-                }
-            }, this);
+            //    if (pointer.x >= 120 && pointer.x < 160) {
+            //        this.game.hero.keys.right.isDown = true;
+            //        this.game.hero.keys.left.isDown = false;
+            //    } else if (pointer.x >= 0 && pointer.x < 40) {
+            //        this.game.hero.keys.left.isDown = true;
+            //        this.game.hero.keys.right.isDown = false;
+            //    } else if (pointer.x >= 40 && pointer.x < 120) {
+            //        if (pointer.y < 20) {
+            //            this.game.hero.keys.up.isDown = true;
+            //            this.game.hero.keys.down.isDown = true;
+            //        } else {
+            //            this.game.hero.keys.up.isDown = false;
+            //            this.game.hero.keys.down.isDown = true;
+            //        }
+            //    } else if (pointer.x >= 160 && pointer.x < 240) {
+            //        this.game.hero.keys.right.isDown = false;
+            //        this.game.hero.keys.left.isDown = false;
+            //        this.game.hero.keys.up.isDown = false;
+            //        this.game.hero.keys.down.isDown = false;
+            //    }
+            //}, this);
 
 
-            this.game.inputManager = new Barbarian.Input.InputManager(this.game);
+            this.game.inputManager = new Barbarian.Input.InputManager(this.game, this.hud);
+
+            this.game.time.reset()
            
             
         }
@@ -119,6 +139,9 @@
         }
 
         heroDied() {
+            // Extract this into a method and handle lives less than zero... add a continue or quit screen.
+            this.game.lives--;
+
             // Restart room after a half-second delay.
             this.game.time.events.add(Phaser.Timer.SECOND/2, () => {
                 this.game.time.reset();
@@ -202,6 +225,7 @@
 
         
         update() {
+
             this.game.inputManager.update(this.game.time);
 
             this.handleMovement();
@@ -295,6 +319,193 @@
                     }
                 }
             }
+        }
+
+    }
+
+
+    export enum IconBitFlags {
+        Stop = 0,
+        Up = 1,
+        Down = 2,
+        Right = 4,
+        Left = 8,
+        Attack = 16,
+        Jump = 32,
+        Run = 64,
+    }
+
+    export class Hud extends Phaser.Group {
+
+        game: Barbarian.Game;
+        primaryHud: Phaser.Sprite;
+        secondaryHud: Phaser.Sprite;
+        primaryVisible: boolean = true;
+        weaponIcons: Phaser.Sprite[] = [];
+        heroIcons: Phaser.Sprite[] = [];
+
+        private iconsSelected: boolean[] = new Array(Input.NumIcons);
+
+        private iconSelected: Input.Icon = Input.Icon.None;
+
+        public static None: IconBitFlags = 0;
+        public static Up: IconBitFlags = 1;
+        public static Down: IconBitFlags = 2;
+        public static Right: IconBitFlags = 4;
+        public static Left: IconBitFlags = 8;
+        public static UpLeft: IconBitFlags = Hud.Up | Hud.Left;
+        public static UpRight: IconBitFlags = Hud.Up | Hud.Right;
+        public static DownLeft: IconBitFlags = Hud.Down | Hud.Left;
+        public static DownRight: IconBitFlags = Hud.Down | Hud.Right;
+        public static UpDown: IconBitFlags = Hud.Up | Hud.Down
+        public static LeftRight: IconBitFlags = Hud.Left | Hud.Right
+        public static Any: IconBitFlags = Hud.Up | Hud.Down | Hud.Left | Hud.Right;
+
+        private iconState: IconBitFlags = 0;
+
+        constructor(game: Barbarian.Game, key: string, x: number, y: number) {
+            super(game);
+            this.x = x;
+            this.y = y;
+            //this.inputEnableChildren = true;  // we only want this for icons, not for digits and stuff
+            this.primaryHud = this.create(0, 0, key, 'ICON-06.PNG');
+            this.primaryHud.inputEnabled = true;
+            this.primaryHud.events.onInputDown.add(this.onPressed, this);
+            //this.primaryHud.input.enableDrag(true);
+            this.secondaryHud = this.create(640, 0, key, 'ICON-07.PNG');
+            // We have to crop this because data from Barb has 00:00:00 for the time...
+            this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 240, 80), true);
+            this.secondaryHud.inputEnabled = true;
+            //this.secondaryHud.input.enableDrag(true);
+            // Create weapon icons on secondary Hud
+            this.weaponIcons[Weapon.Sword] = this.create(640 + 3 * 80, 0, key, 'ICON-03.PNG');
+            this.weaponIcons[Weapon.Bow] = this.create(640 + 4 * 80, 0, key, 'ICON-04.PNG');
+            this.weaponIcons[Weapon.Shield] = this.create(640 + 5 * 80, 0, key, 'ICON-05.PNG');
+
+            for (var i = 0; i < 3; i++) {
+                this.heroIcons[i] = this.create(640 + 544 + i * 32, 0, 'hud', 'ICON-01.PNG');
+            }
+            
+            var toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
+            toggleKey.onDown.add(this.toggle, this);
+
+        }
+
+        getState(): Input.HudState {
+            
+
+            var state = this.iconSelected != Input.Icon.None ? [this.iconSelected] : [];
+            if (this.iconSelected != Input.Icon.Left && this.iconSelected != Input.Icon.Right)
+                this.iconSelected = Input.Icon.None;
+            return new Input.HudState([], this.iconState);
+
+        }
+
+        onPressed(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
+            console.log('Icon pressed x: ' + pointer.x + ' y: ' + pointer.y);
+            var bounds = new Phaser.Rectangle(560, 320, 80, 80);
+            //if (bounds.contains(pointer.x, pointer.y)) {
+            //    console.log('Flee');
+            //    this.iconSelected = Math.floor(pointer.x / 80) + 1;
+            //    console.log(this.iconSelected);
+            //}
+            if (pointer.x >= 560 && pointer.x < 640)
+                this.iconSelected = Input.Icon.Flee;
+            else if (pointer.x >= 400 && pointer.x < 480)
+                this.iconSelected = Input.Icon.Attack;
+            else if (pointer.x >= 240 && pointer.x < 320)
+                this.iconSelected = Input.Icon.Jump;
+            else if (pointer.x >= 160 && pointer.x < 240) {
+                this.iconSelected = Input.Icon.Stop;
+                this.iconState = Hud.None;
+            } else if (pointer.x >= 0 && pointer.x < 40) {
+                this.iconSelected = Input.Icon.Left;
+                this.iconState = Hud.Left | (this.iconState & Hud.UpDown);
+            } else if (pointer.x >= 120 && pointer.x < 160) {
+                this.iconSelected = Input.Icon.Right;
+                this.iconState = Hud.Right | (this.iconState & Hud.UpDown);
+            } else if (pointer.x >= 40 && pointer.x < 120) {
+                if (pointer.y >= 320 && pointer.y < 360) {
+                    this.iconSelected = Input.Icon.Up;
+                    this.iconState = Hud.Up | (this.iconState & Hud.LeftRight);
+                } else {
+                    this.iconSelected = Input.Icon.Down;
+                    this.iconState = Hud.Down | (this.iconState & Hud.LeftRight);
+                }
+            } else {
+                this.iconSelected = this.iconSelected;
+                this.iconState = this.iconState;
+            }
+            console.log(this.iconState);
+        }
+
+        update() {
+            // Primitive object pooling for digit sprites.
+            this.forEach((part) => { if (part.animations.currentFrame.name.startsWith("DIGIT")) { part.kill(); } }, this);
+            
+            this.render();
+        }
+
+        // Should be overridden by subclasses
+        toggle() {
+            this.primaryVisible = !this.primaryVisible;
+            this.x = this.primaryVisible ? 0 : -640;
+        }
+
+        render() {
+            this.renderTimer();
+            this.renderArrowCount(this.game.hero.inventory.numArrows);
+            this.renderWeaponIcons();
+            this.renderLives();
+
+            
+        }
+
+        renderLives() {
+            this.heroIcons.forEach((icon) => {
+                icon.visible = false;
+            });
+           
+            for (var i = 0; i < this.game.lives && i < 3; i++) {
+                this.heroIcons[i].visible = true;
+            }
+        }
+
+        renderWeaponIcons() {
+            for (var weapon = Weapon.Sword; weapon <= Weapon.Bow; weapon++) {
+                if (this.game.hero.inventory.hasWeapon(weapon)) {
+                    this.weaponIcons[weapon].visible = true;
+                } else {
+                    this.weaponIcons[weapon].visible = false;
+                }
+            }
+        }
+
+        renderTimer() {
+            var date = new Date(null);
+            date.setSeconds(this.game.time.totalElapsedSeconds());
+            var result = date.toISOString().substr(11, 8);
+            for (var i = 0, iMax = result.length; i < iMax; i++) {
+                this.renderDigit(result.charAt(i), 640 + 496 + i * 16, 50);
+            }
+
+        }
+
+        renderDigit(digit: string, x: number, y: number) {
+            var key = digit === ":" ? 'DIGIT-10.PNG' : 'DIGIT-0' + digit + '.PNG'
+            digit = this.getFirstDead(true, x, y, 'hud', key);
+        }
+
+        renderArrowCount(numArrows: number) {
+            var count = "0" + numArrows;
+            count = count.substr(count.length - 2);
+            this.getFirstDead(true, 640 + 512, 0, 'hud', 'ICON-00.PNG');
+            for (var i = 0, iMax = count.length; i < iMax; i++) {
+                this.renderDigit(count.charAt(i), 640 + 480 + i * 16, 0);
+            }
+
+
+
         }
 
     }

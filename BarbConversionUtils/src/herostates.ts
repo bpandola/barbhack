@@ -514,11 +514,13 @@ namespace Barbarian.HeroStates {
     export class FallDeath extends HeroBaseState {
 
         private animDone: boolean;
+        private deathDispatched: boolean;
 
         onEnter() {
             this.hero.setAnimation(Animations.HitGround);
             this.hero.direction = Direction.Down;
             this.animDone = false;
+            this.deathDispatched = false;
             // We have to check movement before and after in case we came from another
             // and/or trip and fell close to the ground (and don't need to fall).
             if (this.hero.checkMovement()) {
@@ -529,9 +531,10 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
-            if (this.hero.frame == 0 && this.animDone) {
+            if (this.hero.frame == 0 && this.animDone && !this.deathDispatched) {
                 this.hero.frame = 3;
                 this.hero.onDied.dispatch();
+                this.deathDispatched = true;
             } else {
                 this.animDone = true;
             }
@@ -547,18 +550,21 @@ namespace Barbarian.HeroStates {
     export class Die extends HeroBaseState {
 
         private animDone: boolean;
+        private deathDispatched: boolean;
         private deathAnims: number[] = [Animations.FallToGround, Animations.FallToGroundFaceFirst];
 
         onEnter() {
             var anim = this.hero.game.rnd.pick(this.deathAnims)
             this.hero.setAnimation(anim);
             this.animDone = false;
+            this.deathDispatched = false;
         }
 
         onUpdate() {
-            if (this.hero.frame == 0 && this.animDone) {
+            if (this.hero.frame == 0 && this.animDone && !this.deathDispatched) {
                 this.hero.frame = this.hero.animData[this.hero.animNum].frames.length-1;
                 this.hero.onDied.dispatch();
+                this.deathDispatched = true;
             } else {
                 this.animDone = true;
             }
