@@ -323,18 +323,6 @@
 
     }
 
-
-    export enum IconBitFlags {
-        Stop = 0,
-        Up = 1,
-        Down = 2,
-        Right = 4,
-        Left = 8,
-        Attack = 16,
-        Jump = 32,
-        Run = 64,
-    }
-
     export class Hud extends Phaser.Group {
 
         game: Barbarian.Game;
@@ -344,24 +332,11 @@
         weaponIcons: Phaser.Sprite[] = [];
         heroIcons: Phaser.Sprite[] = [];
 
-        private iconsSelected: boolean[] = new Array(Input.NumIcons);
+        private static DirectionIcons: Input.Icons = Input.Icons.Left | Input.Icons.Right | Input.Icons.Up | Input.Icons.Down | Input.Icons.Run;
 
-        private iconSelected: Input.Icon = Input.Icon.None;
+        private iconSelected: Input.Icons = Input.Icons.None;
 
-        public static None: IconBitFlags = 0;
-        public static Up: IconBitFlags = 1;
-        public static Down: IconBitFlags = 2;
-        public static Right: IconBitFlags = 4;
-        public static Left: IconBitFlags = 8;
-        public static UpLeft: IconBitFlags = Hud.Up | Hud.Left;
-        public static UpRight: IconBitFlags = Hud.Up | Hud.Right;
-        public static DownLeft: IconBitFlags = Hud.Down | Hud.Left;
-        public static DownRight: IconBitFlags = Hud.Down | Hud.Right;
-        public static UpDown: IconBitFlags = Hud.Up | Hud.Down
-        public static LeftRight: IconBitFlags = Hud.Left | Hud.Right
-        public static Any: IconBitFlags = Hud.Up | Hud.Down | Hud.Left | Hud.Right;
-
-        private iconState: IconBitFlags = 0;
+        private iconHitBoxes: { [key: string]: { icon: Input.Icons, hitBox: Phaser.Rectangle; } } = {};
 
         constructor(game: Barbarian.Game, key: string, x: number, y: number) {
             super(game);
@@ -376,6 +351,7 @@
             // We have to crop this because data from Barb has 00:00:00 for the time...
             this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 240, 80), true);
             this.secondaryHud.inputEnabled = true;
+            this.secondaryHud.events.onInputDown.add(this.onPressed, this);
             //this.secondaryHud.input.enableDrag(true);
             // Create weapon icons on secondary Hud
             this.weaponIcons[Weapon.Sword] = this.create(640 + 3 * 80, 0, key, 'ICON-03.PNG');
@@ -389,54 +365,41 @@
             var toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
             toggleKey.onDown.add(this.toggle, this);
 
+            // Hitboxes for Icons
+            this.iconHitBoxes[Input.Icons.Left.toString()] = { icon: Input.Icons.Left, hitBox: new Phaser.Rectangle(0, 320, 40, 80) };
+            this.iconHitBoxes[Input.Icons.Up.toString()] = { icon: Input.Icons.Up, hitBox: new Phaser.Rectangle(40, 320, 80, 40) };
+            this.iconHitBoxes[Input.Icons.Down.toString()] = { icon: Input.Icons.Down, hitBox: new Phaser.Rectangle(40, 360, 80, 40) };
+            this.iconHitBoxes[Input.Icons.Right.toString()] = { icon: Input.Icons.Right, hitBox: new Phaser.Rectangle(120, 320, 40, 80) };
+            this.iconHitBoxes[Input.Icons.Stop.toString()] = { icon: Input.Icons.Stop, hitBox: new Phaser.Rectangle(160, 320, 80, 80) };
+            this.iconHitBoxes[Input.Icons.Jump.toString()] = { icon: Input.Icons.Jump, hitBox: new Phaser.Rectangle(240, 320, 80, 80) };
+            this.iconHitBoxes[Input.Icons.Run.toString()] = { icon: Input.Icons.Run, hitBox: new Phaser.Rectangle(320, 320, 80, 80) };
+            this.iconHitBoxes[Input.Icons.Attack.toString()] = { icon: Input.Icons.Attack, hitBox: new Phaser.Rectangle(400, 320, 80, 80) };
+            this.iconHitBoxes[Input.Icons.Defend.toString()] = { icon: Input.Icons.Defend, hitBox: new Phaser.Rectangle(480, 320, 80, 80) };
+            this.iconHitBoxes[Input.Icons.Flee.toString()] = { icon: Input.Icons.Flee, hitBox: new Phaser.Rectangle(560, 320, 80, 80) };
+            // Secondary Icons
+            this.iconHitBoxes[Input.Icons.Get.toString()] = { icon: Input.Icons.Get, hitBox: new Phaser.Rectangle(640, 320, 80, 80) };
+            // It's 'Use' in the manual, but it's really just Stop so we map it to that.
+            this.iconHitBoxes[Input.Icons.Use.toString()] = { icon: Input.Icons.Stop, hitBox: new Phaser.Rectangle(720, 320, 80, 80) };
         }
 
         getState(): Input.HudState {
             
-
-            var state = this.iconSelected != Input.Icon.None ? [this.iconSelected] : [];
-            if (this.iconSelected != Input.Icon.Left && this.iconSelected != Input.Icon.Right)
-                this.iconSelected = Input.Icon.None;
-            return new Input.HudState([], this.iconState);
+            var state = new Input.HudState(this.iconSelected);
+            if (!(this.iconSelected & Hud.DirectionIcons)) {
+                this.iconSelected = Input.Icons.None;
+            }
+            return state;
 
         }
 
         onPressed(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
-            console.log('Icon pressed x: ' + pointer.x + ' y: ' + pointer.y);
-            var bounds = new Phaser.Rectangle(560, 320, 80, 80);
-            //if (bounds.contains(pointer.x, pointer.y)) {
-            //    console.log('Flee');
-            //    this.iconSelected = Math.floor(pointer.x / 80) + 1;
-            //    console.log(this.iconSelected);
-            //}
-            if (pointer.x >= 560 && pointer.x < 640)
-                this.iconSelected = Input.Icon.Flee;
-            else if (pointer.x >= 400 && pointer.x < 480)
-                this.iconSelected = Input.Icon.Attack;
-            else if (pointer.x >= 240 && pointer.x < 320)
-                this.iconSelected = Input.Icon.Jump;
-            else if (pointer.x >= 160 && pointer.x < 240) {
-                this.iconSelected = Input.Icon.Stop;
-                this.iconState = Hud.None;
-            } else if (pointer.x >= 0 && pointer.x < 40) {
-                this.iconSelected = Input.Icon.Left;
-                this.iconState = Hud.Left | (this.iconState & Hud.UpDown);
-            } else if (pointer.x >= 120 && pointer.x < 160) {
-                this.iconSelected = Input.Icon.Right;
-                this.iconState = Hud.Right | (this.iconState & Hud.UpDown);
-            } else if (pointer.x >= 40 && pointer.x < 120) {
-                if (pointer.y >= 320 && pointer.y < 360) {
-                    this.iconSelected = Input.Icon.Up;
-                    this.iconState = Hud.Up | (this.iconState & Hud.LeftRight);
-                } else {
-                    this.iconSelected = Input.Icon.Down;
-                    this.iconState = Hud.Down | (this.iconState & Hud.LeftRight);
+            for (var key in this.iconHitBoxes) {
+                var hitBox = this.iconHitBoxes[key].hitBox;
+                if (hitBox.contains(Math.abs(this.x) + pointer.x, pointer.y)) {
+                    this.iconSelected = this.iconHitBoxes[key].icon;
+                    break;
                 }
-            } else {
-                this.iconSelected = this.iconSelected;
-                this.iconState = this.iconState;
             }
-            console.log(this.iconState);
         }
 
         update() {
