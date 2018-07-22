@@ -8792,6 +8792,8 @@ declare module Phaser {
         */
         ignoreDestroy: boolean;
 
+        inputEnableChildren: boolean;
+
         /**
         * Total number of children in this group, regardless of exists/alive status.
         */
