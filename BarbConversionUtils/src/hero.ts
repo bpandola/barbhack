@@ -142,14 +142,14 @@ namespace Barbarian {
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
             this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run', 'Flee']);
-            this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle']);
-            this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk','Run']);
+            this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle', 'Flee', 'Walk']);
+            this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk','Run', 'Flee']);
             this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle','Walk','Run','Flee']);
             this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this), ['Walk','Run','Flee']);
             this.fsm.add('UseLadder', new Barbarian.HeroStates.UseLadder(this), ['Idle', 'Walk', 'Run']);
             this.fsm.add('TakeStairs', new Barbarian.HeroStates.TakeStairs(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['Idle','Walk']);
-            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run']);
+            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle','Walk','Run', 'Flee']);
             this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk','Run','Flee']);
             this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [StateMachine.WILDCARD]);
             this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [StateMachine.WILDCARD]);
@@ -157,7 +157,7 @@ namespace Barbarian {
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
-            this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD]);
+            this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD], true);
             this.fsm.transition('Idle');
 
             this.render();
@@ -336,9 +336,18 @@ namespace Barbarian {
 
             this.checkWeaponSwitch();
 
-            if (input.buttonsState & Barbarian.Input.Buttons.Flee) {
+            if (input.buttonsState & Input.Buttons.Stop) {
+                this.fsm.transition('Stop');
+            }
+
+            if (input.buttonsState & Input.Buttons.Flee) {
                 this.fsm.transition('Flee');
             }
+
+            if (input.buttonsState & Input.Buttons.Run) {
+                this.fsm.transition('Run');
+            }
+
             //if (this.keys.flee.isDown) {
             //    this.fsm.transition('Flee');
             //}
@@ -384,12 +393,11 @@ namespace Barbarian {
                     this.fsm.transition('ChangeDirection');
             }
 
-            if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
+            if (input.buttonsState & Input.Buttons.Get) {
+                this.fsm.transition('PickUp');
+            } else if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
-                } else {
-                    // TODO: Add if (on top of item)...
-                    this.fsm.transition('PickUp');
                 }
             } else if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderBottom)) {
@@ -399,7 +407,7 @@ namespace Barbarian {
             }
             //if (!this.keys.left.isDown && !this.keys.right.isDown) {
             if (!input.buttonsState) {
-                this.fsm.transition('Stop');
+                // this.fsm.transition('Stop');
             }
             
             this.timeStep += this.game.time.elapsedMS;
