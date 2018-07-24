@@ -138,24 +138,30 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.HitWall);
+            this.hero.moveRelative(-1, 0);
         }
 
         onUpdate() {
-            switch (this.hero.frame) {
-                case 0:
-                    this.hero.moveRelative(1, 0);
-                case 1:
-                    this.hero.moveRelative(-1, 0);
-                    break;
-                case 2:
-                    this.hero.moveRelative(-1, 0);
-                    break;
-                case 3:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                case 8:
-                    this.hero.fsm.transition('Idle');
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 8) {
+                this.hero.fsm.transition('Idle');
             }
+            //switch (this.hero.frame) {
+            //    case 0:
+            //        this.hero.moveRelative(1, 0);
+            //    case 1:
+            //        this.hero.moveRelative(-1, 0);
+            //        break;
+            //    case 2:
+            //        this.hero.moveRelative(-1, 0);
+            //        break;
+            //    case 3:
+            //        this.hero.moveRelative(1, 0);
+            //        break;
+            //    case 8:
+            //        this.hero.fsm.transition('Idle');
+            //}
         }
     }
 
@@ -166,34 +172,38 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
-            
-            switch (this.hero.frame) {
-                case 0:
-                    this.hero.moveRelative(2, 0);
-                    break;
-                case 2:
-                    this.hero.moveRelative(2, -1);
-                    break;
-                case 3:
-                    this.hero.moveRelative(2, -1);
-                    break;
-                case 4:
-                    this.hero.moveRelative(2, -1);
-                    break;
-                case 5:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 6:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 7:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 8:
-                    this.hero.moveRelative(1, 0);
-                    this.hero.fsm.transition('Idle');
-                    break;                    
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 10) {
+                this.hero.fsm.transition('Idle');
             }
+            //switch (this.hero.frame) {
+            //    case 0:
+            //        this.hero.moveRelative(2, 0);
+            //        break;
+            //    case 2:
+            //        this.hero.moveRelative(2, -1);
+            //        break;
+            //    case 3:
+            //        this.hero.moveRelative(2, -1);
+            //        break;
+            //    case 4:
+            //        this.hero.moveRelative(2, -1);
+            //        break;
+            //    case 5:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 6:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 7:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 8:
+            //        this.hero.moveRelative(1, 0);
+            //        this.hero.fsm.transition('Idle');
+            //        break;                    
+            //}
 
             this.hero.checkMovement();
         }
@@ -202,7 +212,7 @@ namespace Barbarian.HeroStates {
             // There's a tenth animation frame, but the DOS game doesn't
             // use it.  It just pushes the Hero one more tile forward
             // and transitions to the Idle1 animation.
-            this.hero.moveRelative(1, 0);
+            //this.hero.moveRelative(1, 0);
         }
 
     }
@@ -214,42 +224,46 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
-
-            switch (this.hero.frame) {
-                case 0:
-                    this.hero.moveRelative(0, 0);
-                    break;
-                case 1:
-                    this.hero.moveRelative(0, 0);
-                    break;
-                case 2:
-                    this.hero.moveRelative(1, -1);
-                    break;
-                case 3:
-                    this.hero.moveRelative(2, -1);
-                    break;
-                case 4:
-                    this.hero.moveRelative(2, -1);
-                    break;
-                case 5:
-                    this.hero.moveRelative(2, 0);
-                    break;
-                case 6:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 7:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 8:
-                    this.hero.moveRelative(1, 1);
-                    break;
-                case 9:
-                    this.hero.moveRelative(0, 0);
-                    break;
-                case 10:
-                    this.hero.fsm.transition('Idle');
-                    break;
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 10) {
+                this.hero.fsm.transition('Idle');
             }
+            //switch (this.hero.frame) {
+            //    case 0:
+            //        this.hero.moveRelative(0, 0);
+            //        break;
+            //    case 1:
+            //        this.hero.moveRelative(0, 0);
+            //        break;
+            //    case 2:
+            //        this.hero.moveRelative(1, -1);
+            //        break;
+            //    case 3:
+            //        this.hero.moveRelative(2, -1);
+            //        break;
+            //    case 4:
+            //        this.hero.moveRelative(2, -1);
+            //        break;
+            //    case 5:
+            //        this.hero.moveRelative(2, 0);
+            //        break;
+            //    case 6:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 7:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 8:
+            //        this.hero.moveRelative(1, 1);
+            //        break;
+            //    case 9:
+            //        this.hero.moveRelative(0, 0);
+            //        break;
+            //    case 10:
+            //        this.hero.fsm.transition('Idle');
+            //        break;
+            //}
         }
         
     }
