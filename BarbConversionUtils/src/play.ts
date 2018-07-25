@@ -34,7 +34,7 @@
             
 
             // Get this line out of here and set the value in a menu state or something (like when you click the play button)
-            this.game.level = new Level(this.game, this.cache.getJSON('rooms'), 0x00);
+            this.game.level = new Level(this.game, this.cache.getJSON('rooms'), this.game.debugRoomWarp ? this.game.debugRoomWarp : 0x00);
             // A room change will trigger a redraw.
             this.game.level.onRoomChange.add(this.drawRoom, this);
 

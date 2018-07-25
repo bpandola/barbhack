@@ -15,19 +15,43 @@
         inputManager: Barbarian.Input.InputManager;
 
         debugOn: boolean = false;
+        debugRoomWarp: number = 0;
         
-        constructor() {
+        constructor(queryParams: {}) {
             super(640, 400, Phaser.CANVAS, 'game', null);
 
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Play', new Barbarian.Play());
 
             this.state.start('Boot', true, true, 'Play');  // pass in the state to start after boot
+
+            if ('debugOn' in queryParams) {
+                this.debugOn = true;
+            }
+
+            if ('debugRoomWarp' in queryParams) {
+                this.debugRoomWarp = parseInt(queryParams['debugRoomWarp']);
+            }
         }
 
     }
 }
 
 window.onload = () => {
-    var game = new Barbarian.Game();
+    var queryParams = getUrlQueryParams();
+    console.log(queryParams);
+    var game = new Barbarian.Game(queryParams);
 };
+
+function getUrlQueryParams() {
+    var queryParams = {}, param;
+    // http://example.com/?id=123456&name=amy
+    // window.location.search="?id=123456&name=amy"
+    var params = window.location.search.substring(1).split("&");
+    for (var i = 0; i < params.length; i++) {
+        param = params[i].split('=');
+        queryParams[param[0]] = param[1];
+    }
+    return queryParams;
+}
+

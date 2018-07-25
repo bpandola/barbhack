@@ -12,21 +12,39 @@ var Barbarian;
     Barbarian.FRAMERATE = 1000 / Barbarian.FIXED_TIMESTEP;
     var Game = (function (_super) {
         __extends(Game, _super);
-        function Game() {
+        function Game(queryParams) {
             _super.call(this, 640, 400, Phaser.CANVAS, 'game', null);
             this.lives = 3;
             this.debugOn = false;
+            this.debugRoomWarp = 0;
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Play', new Barbarian.Play());
             this.state.start('Boot', true, true, 'Play');
+            if ('debugOn' in queryParams) {
+                this.debugOn = true;
+            }
+            if ('debugRoomWarp' in queryParams) {
+                this.debugRoomWarp = parseInt(queryParams['debugRoomWarp']);
+            }
         }
         return Game;
     }(Phaser.Game));
     Barbarian.Game = Game;
 })(Barbarian || (Barbarian = {}));
 window.onload = function () {
-    var game = new Barbarian.Game();
+    var queryParams = getUrlQueryParams();
+    console.log(queryParams);
+    var game = new Barbarian.Game(queryParams);
 };
+function getUrlQueryParams() {
+    var queryParams = {}, param;
+    var params = window.location.search.substring(1).split("&");
+    for (var i = 0; i < params.length; i++) {
+        param = params[i].split('=');
+        queryParams[param[0]] = param[1];
+    }
+    return queryParams;
+}
 var Barbarian;
 (function (Barbarian) {
     var Entity = (function (_super) {
@@ -770,6 +788,7 @@ var Barbarian;
         Animations[Animations["Flee"] = 26] = "Flee";
         Animations[Animations["FallToGround"] = 28] = "FallToGround";
         Animations[Animations["FallToGroundFaceFirst"] = 31] = "FallToGroundFaceFirst";
+        Animations[Animations["DropWeapon"] = 32] = "DropWeapon";
         Animations[Animations["HitGround"] = 34] = "HitGround";
         Animations[Animations["Falling"] = 36] = "Falling";
         Animations[Animations["TripFall"] = 37] = "TripFall";
@@ -873,6 +892,7 @@ var Barbarian;
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
             this.fsm.add('BackFlip', new Barbarian.HeroStates.BackFlip(this), ['Idle']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
+            this.fsm.add('DropWeapon', new Barbarian.HeroStates.DropWeapon(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
             this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [Barbarian.StateMachine.WILDCARD], true);
             this.fsm.transition('Idle');
@@ -1097,6 +1117,9 @@ var Barbarian;
                 }
                 else if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right)
                     this.fsm.transition('ChangeDirection');
+            }
+            if (input.buttonsState & Barbarian.Input.Buttons.Drop) {
+                this.fsm.transition('DropWeapon');
             }
             if (input.buttonsState & Barbarian.Input.Buttons.Get) {
                 this.fsm.transition('PickUp');
@@ -1479,6 +1502,30 @@ var Barbarian;
             return PickUp;
         }(HeroBaseState));
         HeroStates.PickUp = PickUp;
+        var DropWeapon = (function (_super) {
+            __extends(DropWeapon, _super);
+            function DropWeapon() {
+                _super.apply(this, arguments);
+                this.animDone = false;
+            }
+            DropWeapon.prototype.onEnter = function () {
+                this.hero.setAnimation(Barbarian.Animations.DropWeapon);
+                this.animDone = false;
+            };
+            DropWeapon.prototype.onUpdate = function () {
+                if (this.hero.frame == 0 && this.animDone) {
+                    this.hero.fsm.transition('Idle');
+                }
+                else {
+                    this.animDone = true;
+                }
+                if (this.hero.frame == 2) {
+                    this.hero.dropWeapon();
+                }
+            };
+            return DropWeapon;
+        }(HeroBaseState));
+        HeroStates.DropWeapon = DropWeapon;
         var SwitchWeapon = (function (_super) {
             __extends(SwitchWeapon, _super);
             function SwitchWeapon() {
@@ -2002,6 +2049,7 @@ var Barbarian;
                 this.nonDirectionButtons[Buttons.Defend.toString()] = { button: Buttons.Defend, controlKey: ControlCodes.F9, icon: Icon.Defend };
                 this.nonDirectionButtons[Buttons.Flee.toString()] = { button: Buttons.Flee, controlKey: ControlCodes.F10, icon: Icon.Flee };
                 this.nonDirectionButtons[Buttons.Get.toString()] = { button: Buttons.Get, controlKey: ControlCodes.DOWN, icon: Icon.Pickup };
+                this.nonDirectionButtons[Buttons.Drop.toString()] = { button: Buttons.Drop, controlKey: ControlCodes.DOWN, icon: Icon.Drop };
                 this.nonDirectionButtons[Buttons.Run.toString()] = { button: Buttons.Run, controlKey: ControlCodes.F7, icon: Icon.Run };
                 this.nonDirectionButtons[Buttons.Sword.toString()] = { button: Buttons.Sword, controlKey: ControlCodes.F7, icon: Icon.Sword };
                 this.nonDirectionButtons[Buttons.Bow.toString()] = { button: Buttons.Bow, controlKey: ControlCodes.F7, icon: Icon.Bow };
@@ -2079,7 +2127,7 @@ var Barbarian;
             }
         };
         Play.prototype.create = function () {
-            this.game.level = new Barbarian.Level(this.game, this.cache.getJSON('rooms'), 0x00);
+            this.game.level = new Barbarian.Level(this.game, this.cache.getJSON('rooms'), this.game.debugRoomWarp ? this.game.debugRoomWarp : 0x00);
             this.game.level.onRoomChange.add(this.drawRoom, this);
             this.stage.smoothed = false;
             this.game.renderer.renderSession.roundPixels = false;
