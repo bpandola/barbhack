@@ -462,6 +462,24 @@ namespace Barbarian.HeroStates {
         }        
     }
 
+    export class DropWeapon extends HeroBaseState {
+        private animDone = false;
+        onEnter() {
+            this.hero.setAnimation(Animations.DropWeapon);
+            this.animDone = false;
+        }
+        onUpdate() {
+            if (this.hero.frame == 0 && this.animDone) {
+                this.hero.fsm.transition('Idle');
+            } else {
+                this.animDone = true;
+            }
+            if (this.hero.frame == 2) {
+                this.hero.dropWeapon();
+            }
+        }
+    }
+
     export class SwitchWeapon extends HeroBaseState {
         
         onEnter(...args: any[]) {

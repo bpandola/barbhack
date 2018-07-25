@@ -411,6 +411,7 @@
             this.nonDirectionButtons[Buttons.Defend.toString()] = { button: Buttons.Defend, controlKey: ControlCodes.F9, icon: Icon.Defend }
             this.nonDirectionButtons[Buttons.Flee.toString()] = { button: Buttons.Flee, controlKey: ControlCodes.F10, icon: Icon.Flee };
             this.nonDirectionButtons[Buttons.Get.toString()] = { button: Buttons.Get, controlKey: ControlCodes.DOWN, icon: Icon.Pickup };
+            this.nonDirectionButtons[Buttons.Drop.toString()] = { button: Buttons.Drop, controlKey: ControlCodes.DOWN, icon: Icon.Drop };
             this.nonDirectionButtons[Buttons.Run.toString()] = { button: Buttons.Run, controlKey: ControlCodes.F7, icon: Icon.Run };
             this.nonDirectionButtons[Buttons.Sword.toString()] = { button: Buttons.Sword, controlKey: ControlCodes.F7, icon: Icon.Sword };
             this.nonDirectionButtons[Buttons.Bow.toString()] = { button: Buttons.Bow, controlKey: ControlCodes.F7, icon: Icon.Bow };
