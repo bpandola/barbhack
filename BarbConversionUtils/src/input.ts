@@ -5,8 +5,8 @@
         Down = 2,
         Right = 4,
         Left = 8,
-        A = 16,
-        B = 32,
+        Pickup = 16,
+        Drop = 32,
         Flee = 64,
         Attack = 128,
         Jump = 256,
@@ -14,6 +14,9 @@
         Get = 1024,
         Run = 2048,
         Defend = 4096,
+        Sword = 32768,
+        Bow = 8192,
+        Shield = 16384
     }
 
     export enum Icons {
@@ -58,6 +61,26 @@
         Shield,
     }
 
+    export const ICON_TO_BUTTONS: Buttons[] = [
+        0,
+        Buttons.Left,
+        Buttons.Up,
+        Buttons.Down,
+        Buttons.Right,
+        Buttons.Stop,
+        Buttons.Jump,
+        Buttons.Run,
+        Buttons.Attack,
+        Buttons.Defend,
+        Buttons.Flee,
+        Buttons.Pickup,
+        Buttons.Stop,
+        Buttons.Drop,
+        Buttons.Sword,
+        Buttons.Bow,
+        Buttons.Shield,
+    ];
+
     export class ControlCodes {
         // Define array indices for control buttons
         static A: number = 0;
@@ -78,19 +101,48 @@
         static F10: number = 15;
     }
 
-    export class HudState {
+    export class IconsState {
 
-        private iconSelected: Icon;
-        private iconState2: Buttons = 0;
+        public lastIconSelected: Icon = Icon.None;
 
-        constructor(iconSelected: Icon) {
-            this.iconSelected = iconSelected;
+        private state: Buttons = 0;
+
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            this.lastIconSelected = Icon.None;
+            this.state = 0;
+        }
+
+        selectIcon(icon: Icon) {
+            this.lastIconSelected = icon;
+            switch (this.lastIconSelected) {
+                case Icon.Left:
+                    this.state &= (Buttons.Left | Buttons.Up | Buttons.Down);
+                    break;
+                case Icon.Up:
+                    this.state &= (Buttons.Up | Buttons.Left | Buttons.Right);
+                    break;
+                case Icon.Down:
+                    this.state &= (Buttons.Down | Buttons.Left | Buttons.Right);
+                    break;
+                case Icon.Right:
+                    this.state &= (Buttons.Right | Buttons.Up | Buttons.Down);
+                    break;
+                case Icon.Jump:
+                    this.state &= (Buttons.Jump | Buttons.Run);
+                    break;
+                default:
+                    this.state &= ICON_TO_BUTTONS[icon];
+                    break;
+            }
         }
 
         isIconSelected(icon: Icon): boolean {
-            return this.iconSelected == icon;
+            return !!(this.state & ICON_TO_BUTTONS[icon]);
         }
-
     }
 
     export class IconMenu {
@@ -135,7 +187,7 @@
             Phaser.KeyCode.F10
         ]
 
-        private iconSelected: Icon = Icon.None;
+        public state: IconsState = new IconsState();
 
         private menuToggled: boolean = false;
 
@@ -154,15 +206,23 @@
             this.game.input.onDown.add(this.menuClicked, this);
         }
 
-        get selectedIcon(): Icon {
-            return this.iconSelected;
+        public get selectedIcon(): Icon {
+            return this.state.lastIconSelected;
         }
 
-        get isMenuToggled(): boolean {
+        public get isMenuToggled(): boolean {
             return this.menuToggled;
         }
 
-        menuClicked(pointer: Phaser.Pointer) {
+        public clearInput() {
+            this.state.reset();
+        }
+
+        private set iconSelected(icon: Icon) {
+            this.state.selectIcon(icon);
+        }
+
+        private menuClicked(pointer: Phaser.Pointer) {
             if (pointer.y < this.game.world.height - IconMenu.ICON_HEIGHT) { return; }
 
             var iconIndex = Math.floor(pointer.x / IconMenu.ICON_WIDTH);
@@ -188,7 +248,7 @@
             }
         }
 
-        keyPressed(event) {
+        private keyPressed(event) {
             var iconIndex = IconMenu.FUNCTION_KEY_CODES.indexOf(event.keyCode);
             if (iconIndex !== -1) {
                 this.iconSelected = iconIndex + (this.menuToggled ? Icon.Pickup : Icon.Left);
@@ -248,18 +308,18 @@
         public static Vertical: Buttons = ControlDirection.Up | ControlDirection.Down;
         public static Any: Buttons = ControlDirection.Up | ControlDirection.Down | ControlDirection.Left | ControlDirection.Right;
 
-        static fromInput(keyboardState: KeyboardState, hudState: HudState): Buttons {
+        static fromInput(keyboardState: KeyboardState, iconsState: IconsState): Buttons {
             var direction: Buttons = ControlDirection.None;
             // Get vertical direction
-            if (keyboardState.isKeyDown(ControlCodes.UP) || hudState.isIconSelected(Icon.Up)) {
+            if (keyboardState.isKeyDown(ControlCodes.UP) || iconsState.isIconSelected(Icon.Up)) {
                 direction |= ControlDirection.Up;
-            } else if (keyboardState.isKeyDown(ControlCodes.DOWN) || hudState.isIconSelected(Icon.Down)) {
+            } else if (keyboardState.isKeyDown(ControlCodes.DOWN) || iconsState.isIconSelected(Icon.Down)) {
                 direction |= ControlDirection.Down;
             }
             // Combine with horizontal direction
-            if (keyboardState.isKeyDown(ControlCodes.LEFT) || hudState.isIconSelected(Icon.Left)) {
+            if (keyboardState.isKeyDown(ControlCodes.LEFT) || iconsState.isIconSelected(Icon.Left)) {
                 direction |= ControlDirection.Left;
-            } else if (keyboardState.isKeyDown(ControlCodes.RIGHT) || hudState.isIconSelected(Icon.Right)) {
+            } else if (keyboardState.isKeyDown(ControlCodes.RIGHT) || iconsState.isIconSelected(Icon.Right)) {
                 direction |= ControlDirection.Right;
             }
 
@@ -271,7 +331,7 @@
             return buttons & ControlDirection.Any;
         }
 
-        static fromIconState(iconState: HudState): Buttons {
+        static fromIconState(iconState: IconsState): Buttons {
             var direction: Buttons = ControlDirection.None;
             // Get vertical direction
             if (iconState.isIconSelected(Icon.Up)) {
@@ -301,8 +361,8 @@
         iconMenu: IconMenu;
         keyboardState: KeyboardState;
         lastKeyboardState: KeyboardState;
-        hudState: HudState;
-        lastHudState: HudState;
+        iconsState: IconsState;
+        lastIconsState: IconsState;
 
         lastInputTime: number = 0;
         buttonBuffer: number[];
@@ -318,38 +378,18 @@
         /// </summary>
         private nonDirectionButtons: { [key: string]: { button: Buttons, controlKey: number, icon: Icon; } } = {};
 
-        private functionKeys: Phaser.KeyCode[] = [
-            Phaser.KeyCode.F1,
-            Phaser.KeyCode.F2,
-            Phaser.KeyCode.F3,
-            Phaser.KeyCode.F4,
-            Phaser.KeyCode.F5,
-            Phaser.KeyCode.F6,
-            Phaser.KeyCode.F7,
-            Phaser.KeyCode.F8,
-            Phaser.KeyCode.F9,
-            Phaser.KeyCode.F10
-        ]
-
         constructor(game: Barbarian.Game, hud: Hud) {
             this.game = game;
             this.hud = hud;
             this.iconMenu = new IconMenu(game);
 
-            //this.hud.onIconPressed.add(this.iconPressed, this);
-
-            //this.game.input.keyboard.addKeyCapture(this.functionKeys);
-
-            //this.game.input.keyboard.addCallbacks(this, this.keyPressed);
             // Debug Toggle
             // this.game.input.keyboard.addKey(Phaser.KeyCode.D).onDown.add(this.game.toggleDebug, this.game);
             this.game.input.keyboard.addKey(Phaser.KeyCode.D).onDown.add(() => { this.game.debugOn = !this.game.debugOn });
-            // Icon Screen Toggle
-            //this.game.input.keyboard.addKey(Phaser.KeyCode.BACKSPACE).onDown.add(this.hud.toggle, this.hud);
 
             this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
             this.keyboardState = KeyboardState.GetState(this.game);
-            this.hudState = this.hud.getState();
+            this.iconsState = this.iconMenu.state;
 
             //this.nonDirectionButtons[Buttons.A.toString()] = { button: Buttons.A, controlKey: ControlCodes.A };
             //this.nonDirectionButtons[Buttons.B.toString()] = { button: Buttons.B, controlKey: ControlCodes.B };
@@ -369,33 +409,17 @@
             this.nonDirectionButtons[Buttons.Right.toString()] = { button: Buttons.Right, controlKey: ControlCodes.F4, icon: Icon.Right };
         }
 
-        //keyPressed(event) {
-        //    console.log(event.keyCode);
-        //    var iconIndex = this.functionKeys.indexOf(event.keyCode);
-        //    if (iconIndex !== -1) {
-        //        console.log(iconIndex);
-        //        this.hud.onKeyPressed(event.keyCode);
-        //    }
-        //}
-
-        //iconPressed(icon) {
-        //    console.log(icon.toString());
-        //}
-
         clearInput(): void {
-            this.hud.clearInput();
+            this.iconMenu.clearInput();
         }
+
         update(gameTime: Phaser.Time): void {
             // Save keyboard state
             this.lastKeyboardState = this.keyboardState;
-            this.lastHudState = this.hudState;
+            this.lastIconsState = this.iconsState;
             // Get new keyboard state
             this.keyboardState = KeyboardState.GetState(this.game);
-            this.hudState = this.hud.getState();
-
-            // HACK - TESTING
-            //if (this.lastKeyboardState.isKeyUp(ControlCodes.F1) && this.keyboardState.isKeyDown(ControlCodes.F1))
-            //    console.log('F1 pressed.');
+            this.iconsState = this.iconMenu.state;
 
             // Expire old input
             var time: number = gameTime.time; //gameTime.elapsedMS;
@@ -413,7 +437,7 @@
                 var icon: Icon = this.nonDirectionButtons[key].icon;
                 // Check if just pressed
                 if ((this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey))
-                    || (!this.lastHudState.isIconSelected(icon) && this.hudState.isIconSelected(icon))
+                    || (this.iconsState.isIconSelected(icon))
                 ) {
                     // Use a bitwise-or to accumulate button presses.
                     buttons |= button;
@@ -425,7 +449,7 @@
             var mergeInput: boolean = (this.buttonBuffer.length > 0 && timeSinceLast < InputManager.mergeInputTime);
 
             // See if the player has changed direction
-            var direction: number = ControlDirection.fromInput(this.keyboardState, this.hudState);
+            var direction: number = ControlDirection.fromInput(this.keyboardState, this.iconsState);
             //if (ControlDirection.fromInput(this.lastKeyboardState, this.hudState) != direction) {
                 // combine direction with buttons
                 buttons |= direction;
@@ -437,11 +461,11 @@
             //}
 
             // HACK - Merge previous hud state for up/down and left/right.
-                if (direction & ControlDirection.Horizontal) {
-                    direction |= (ControlDirection.fromIconState(this.lastHudState) & ControlDirection.Vertical)
-                } else if (direction & ControlDirection.Vertical) {
-                    direction |= (ControlDirection.fromIconState(this.lastHudState) & ControlDirection.Horizontal)
-                }
+                //if (direction & ControlDirection.Horizontal) {
+                //    direction |= (ControlDirection.fromIconState(this.lastHudState) & ControlDirection.Vertical)
+                //} else if (direction & ControlDirection.Vertical) {
+                //    direction |= (ControlDirection.fromIconState(this.lastHudState) & ControlDirection.Horizontal)
+                //}
             
             // If there was any new input on this update, add it to our buffer.
             if (buttons != 0) {
@@ -467,16 +491,6 @@
             
 
         }
-
-
-
-       
-
-
-
-
-
-
 
 
     }
