@@ -336,6 +336,7 @@
             // Icon Selector
             this.iconSelector = this.create(0, 0, 'misc', '000.PNG');
             this.iconSelector.anchor.setTo(0.5, 0.5);
+            this.iconSelector.x = this.iconSelector.y = -100; // off screen initially
 
             for (var i = 0; i < 3; i++) {
                 this.heroIcons[i] = this.create(640 + 544 + i * 32, 0, 'hud', 'ICON-01.PNG');
@@ -395,12 +396,12 @@
         }
 
         renderLives() {
-            this.heroIcons.forEach((icon) => {
-                icon.visible = false;
-            });
-
-            for (var i = 0; i < this.game.lives && i < 3; i++) {
-                this.heroIcons[i].visible = true;
+            for (var i = 0; i < 3; i++) {
+                if (i < this.game.lives) {
+                    this.heroIcons[i].visible = true;
+                } else {
+                    this.heroIcons[i].visible = false;
+                }
             }
         }
 
