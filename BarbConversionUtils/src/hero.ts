@@ -28,6 +28,7 @@ namespace Barbarian {
         HitGround = 34,
         Falling = 36,
         TripFall = 37,
+        BackFlip = 38,
         FrontFlip = 39,
         PickUp = 42,
         Idle = 43
@@ -155,6 +156,7 @@ namespace Barbarian {
             this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [StateMachine.WILDCARD]);
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [StateMachine.WILDCARD]);
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
+            this.fsm.add('BackFlip', new Barbarian.HeroStates.BackFlip(this), ['Idle']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
             this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD], true);
@@ -330,11 +332,20 @@ namespace Barbarian {
 
         }
 
+        clearInput() {
+            var input = this.game.inputManager;
+            input.clearInput();
+        }
+
         update() {
 
             var input = this.game.inputManager;
 
             this.checkWeaponSwitch();
+
+            if (input.buttonsState & Input.Buttons.Defend) {
+                this.fsm.transition('BackFlip');
+            }
 
             if (input.buttonsState & Input.Buttons.Stop) {
                 this.fsm.transition('Stop');

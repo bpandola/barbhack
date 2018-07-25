@@ -97,33 +97,50 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.ChangeDirection);
+            this.hero.clearInput();
         }
 
         onUpdate() {
-            switch (this.hero.frame) {
-                case 0:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                case 1:
-                    this.hero.moveRelative(-1, 0);
-                    break;
-                case 2:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                case 3:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                case 4:
-                    // Need to transition immediately to Idle so OnLeave gets called
-                    // to set the Hero's direction properly.  If we don't do this,
-                    // holding down an arrow key will cause the Hero to just reverse
-                    // direction over and over without walking out of the state.
-                    this.hero.fsm.transition('Idle', true);
-                    break;
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            //if (this.hero.frame > 0) {
+            //    movement.x = -movement.x;
+            //    movement.y = -movement.y;
+            //}
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 4) {
+                this.hero.fsm.transition('Idle', true);
             }
+            //switch (this.hero.frame) {
+            //    case 0:
+            //        this.hero.moveRelative(1, 0);
+            //        if (this.hero.facing == Direction.Left) {
+            //            this.hero.facing = Direction.Right;
+            //        }
+            //        else {
+            //            this.hero.facing = Direction.Left;
+            //        }
+            //        break;
+            //    case 1:
+            //        this.hero.moveRelative(-1, 0);
+            //        break;
+            //    case 2:
+            //        this.hero.moveRelative(1, 0);
+            //        break;
+            //    case 3:
+            //        this.hero.moveRelative(1, 0);
+            //        break;
+            //    case 4:
+            //        // Need to transition immediately to Idle so OnLeave gets called
+            //        // to set the Hero's direction properly.  If we don't do this,
+            //        // holding down an arrow key will cause the Hero to just reverse
+            //        // direction over and over without walking out of the state.
+            //        this.hero.fsm.transition('Idle', true);
+            //        break;
+            //}
         }
 
         onLeave() {
+            // this.hero.direction = this.hero.facing;
             this.hero.moveRelative(-3, 0);
             if (this.hero.facing == Direction.Left) {
                 this.hero.direction = this.hero.facing = Direction.Right;
@@ -268,6 +285,21 @@ namespace Barbarian.HeroStates {
         
     }
 
+    export class BackFlip extends HeroBaseState {
+
+        onEnter() {
+            this.hero.setAnimation(Animations.BackFlip);
+        }
+
+        onUpdate() {
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 10) {
+                this.hero.fsm.transition('Idle');
+            }
+        }
+
+    }
     export class TakeStairs extends HeroBaseState {
 
        onEnter() {

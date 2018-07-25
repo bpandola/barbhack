@@ -14,7 +14,7 @@
         lives: number = 3;
         inputManager: Barbarian.Input.InputManager;
 
-        debugOn: boolean = true;
+        debugOn: boolean = false;
         
         constructor() {
             super(640, 400, Phaser.CANVAS, 'game', null);

@@ -26,6 +26,14 @@
             this.entity = entity;
         }
 
+        getTileValue(x: number, y: number): string {
+            var tile = this.entity.game.level.currentRoom
+                .layout[y].rowData
+                .substring(x, x + 1);
+
+            return tile;
+        }
+
         getTile(adjustX?: number, adjustY?: number): string {
             if (adjustX == null) { adjustX = 0 }
             if (adjustY == null) { adjustY = 0 }
@@ -35,11 +43,12 @@
             if (position.x == -1 || position.y == -1)
                 return '?';
 
-            var tile = this.entity.game.level.currentRoom
-                .layout[position.y].rowData
-                .substring(position.x, position.x + 1);
+            //var tile = this.entity.game.level.currentRoom
+            //    .layout[position.y].rowData
+            //    .substring(position.x, position.x + 1);
 
-            return tile;
+            //return tile;
+            return this.getTileValue(position.x, position.y);
         }
 
         isAbleToJump(): boolean {
