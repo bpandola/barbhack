@@ -15,7 +15,7 @@ var Barbarian;
         function Game() {
             _super.call(this, 640, 400, Phaser.CANVAS, 'game', null);
             this.lives = 3;
-            this.debugOn = true;
+            this.debugOn = false;
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Play', new Barbarian.Play());
             this.state.start('Boot', true, true, 'Play');
@@ -624,11 +624,14 @@ var Barbarian;
                 this.validFromStates = [];
                 this.currentState = null;
                 this.pendingState = null;
+                this.canTransitionFromSelf = [];
                 this.hero = hero;
             }
-            StateMachine.prototype.add = function (key, state, validFromStates) {
+            StateMachine.prototype.add = function (key, state, validFromStates, canTransitionFromSelf) {
+                if (canTransitionFromSelf === void 0) { canTransitionFromSelf = false; }
                 this.states[key] = state;
                 this.validFromStates[key] = validFromStates;
+                this.canTransitionFromSelf[key] = canTransitionFromSelf;
             };
             StateMachine.prototype.transition = function (newState, immediately) {
                 if (immediately === void 0) { immediately = false; }
@@ -676,7 +679,7 @@ var Barbarian;
             });
             StateMachine.prototype.isValidFrom = function (newState) {
                 var isValid = false;
-                if (newState != this.currentStateName) {
+                if (newState != this.currentStateName || this.canTransitionFromSelf[newState]) {
                     for (var _i = 0, _a = this.validFromStates[newState]; _i < _a.length; _i++) {
                         var state = _a[_i];
                         if (state == this.currentStateName || state == StateMachine_1.WILDCARD)
@@ -688,7 +691,7 @@ var Barbarian;
             StateMachine.prototype.isValidFromPending = function (newState) {
                 var isValid = false;
                 if (newState != this.pendingState) {
-                    for (var _i = 0, _a = this.validFromStates[newState]; _i < _a.length; _i++) {
+                    for (var _i = 0, _a = this.validFromStates[newState] || this.canTransitionFromSelf[newState]; _i < _a.length; _i++) {
                         var state = _a[_i];
                         if (state == this.pendingState || state == StateMachine_1.WILDCARD)
                             isValid = true;
@@ -770,6 +773,7 @@ var Barbarian;
         Animations[Animations["HitGround"] = 34] = "HitGround";
         Animations[Animations["Falling"] = 36] = "Falling";
         Animations[Animations["TripFall"] = 37] = "TripFall";
+        Animations[Animations["BackFlip"] = 38] = "BackFlip";
         Animations[Animations["FrontFlip"] = 39] = "FrontFlip";
         Animations[Animations["PickUp"] = 42] = "PickUp";
         Animations[Animations["Idle"] = 43] = "Idle";
@@ -854,22 +858,23 @@ var Barbarian;
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [Barbarian.StateMachine.WILDCARD]);
             this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle', 'Run', 'Flee']);
-            this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle']);
-            this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk', 'Run']);
+            this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle', 'Flee', 'Walk']);
+            this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle', 'Walk', 'Run', 'Flee']);
             this.fsm.add('HitWall', new Barbarian.HeroStates.HitWall(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('UseLadder', new Barbarian.HeroStates.UseLadder(this), ['Idle', 'Walk', 'Run']);
             this.fsm.add('TakeStairs', new Barbarian.HeroStates.TakeStairs(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('Run', new Barbarian.HeroStates.Run(this), ['Idle', 'Walk']);
-            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle', 'Walk', 'Run']);
+            this.fsm.add('Attack', new Barbarian.HeroStates.Attack(this), ['Idle', 'Walk', 'Run', 'Flee']);
             this.fsm.add('TripFall', new Barbarian.HeroStates.TripFall(this), ['Walk', 'Run', 'Flee']);
             this.fsm.add('Fall', new Barbarian.HeroStates.Fall(this), [Barbarian.StateMachine.WILDCARD]);
             this.fsm.add('FallDeath', new Barbarian.HeroStates.FallDeath(this), [Barbarian.StateMachine.WILDCARD]);
             this.fsm.add('Die', new Barbarian.HeroStates.Die(this), [Barbarian.StateMachine.WILDCARD]);
             this.fsm.add('FrontFlip', new Barbarian.HeroStates.FrontFlip(this), ['Run']);
+            this.fsm.add('BackFlip', new Barbarian.HeroStates.BackFlip(this), ['Idle']);
             this.fsm.add('PickUp', new Barbarian.HeroStates.PickUp(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
-            this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [Barbarian.StateMachine.WILDCARD]);
+            this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [Barbarian.StateMachine.WILDCARD], true);
             this.fsm.transition('Idle');
             this.render();
         }
@@ -992,15 +997,15 @@ var Barbarian;
             if (this.frame >= numFrames)
                 this.frame = 0;
         };
-        Hero.prototype.checkWeaponSwitch = function () {
+        Hero.prototype.checkWeaponSwitch = function (input) {
             var newWeapon = this.inventory.activeWeapon;
-            if (this.keys.sword.isDown) {
+            if (input.buttonsState & Barbarian.Input.Buttons.Sword) {
                 newWeapon = Weapon.Sword;
             }
-            else if (this.keys.bow.isDown) {
+            else if (input.buttonsState & Barbarian.Input.Buttons.Bow) {
                 newWeapon = Weapon.Bow;
             }
-            else if (this.keys.shield.isDown) {
+            else if (input.buttonsState & Barbarian.Input.Buttons.Shield) {
                 newWeapon = Weapon.Shield;
             }
             if (this.inventory.canSwitchWeaponTo(newWeapon)) {
@@ -1028,11 +1033,24 @@ var Barbarian;
                 this.game.level.addItem(item, this.x, this.y);
             }
         };
+        Hero.prototype.clearInput = function () {
+            var input = this.game.inputManager;
+            input.clearInput();
+        };
         Hero.prototype.update = function () {
             var input = this.game.inputManager;
-            this.checkWeaponSwitch();
+            this.checkWeaponSwitch(input);
+            if (input.buttonsState & Barbarian.Input.Buttons.Defend) {
+                this.fsm.transition('BackFlip');
+            }
+            if (input.buttonsState & Barbarian.Input.Buttons.Stop) {
+                this.fsm.transition('Stop');
+            }
             if (input.buttonsState & Barbarian.Input.Buttons.Flee) {
                 this.fsm.transition('Flee');
+            }
+            if (input.buttonsState & Barbarian.Input.Buttons.Run) {
+                this.fsm.transition('Run');
             }
             if (input.buttonsState & Barbarian.Input.Buttons.Attack) {
                 this.fsm.transition('Attack');
@@ -1080,12 +1098,12 @@ var Barbarian;
                 else if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right)
                     this.fsm.transition('ChangeDirection');
             }
-            if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
+            if (input.buttonsState & Barbarian.Input.Buttons.Get) {
+                this.fsm.transition('PickUp');
+            }
+            else if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
                 if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
-                }
-                else {
-                    this.fsm.transition('PickUp');
                 }
             }
             else if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
@@ -1094,7 +1112,6 @@ var Barbarian;
                 }
             }
             if (!input.buttonsState) {
-                this.fsm.transition('Stop');
             }
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= Barbarian.FIXED_TIMESTEP) {
@@ -1213,24 +1230,13 @@ var Barbarian;
             }
             ChangeDirection.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.ChangeDirection);
+                this.hero.clearInput();
             };
             ChangeDirection.prototype.onUpdate = function () {
-                switch (this.hero.frame) {
-                    case 0:
-                        this.hero.moveRelative(1, 0);
-                        break;
-                    case 1:
-                        this.hero.moveRelative(-1, 0);
-                        break;
-                    case 2:
-                        this.hero.moveRelative(1, 0);
-                        break;
-                    case 3:
-                        this.hero.moveRelative(1, 0);
-                        break;
-                    case 4:
-                        this.hero.fsm.transition('Idle', true);
-                        break;
+                var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+                this.hero.moveRelative(movement.x / Barbarian.TILE_SIZE, movement.y / Barbarian.TILE_SIZE);
+                if (this.hero.frame == 4) {
+                    this.hero.fsm.transition('Idle', true);
                 }
             };
             ChangeDirection.prototype.onLeave = function () {
@@ -1252,22 +1258,13 @@ var Barbarian;
             }
             HitWall.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.HitWall);
+                this.hero.moveRelative(-1, 0);
             };
             HitWall.prototype.onUpdate = function () {
-                switch (this.hero.frame) {
-                    case 0:
-                        this.hero.moveRelative(1, 0);
-                    case 1:
-                        this.hero.moveRelative(-1, 0);
-                        break;
-                    case 2:
-                        this.hero.moveRelative(-1, 0);
-                        break;
-                    case 3:
-                        this.hero.moveRelative(1, 0);
-                        break;
-                    case 8:
-                        this.hero.fsm.transition('Idle');
+                var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+                this.hero.moveRelative(movement.x / Barbarian.TILE_SIZE, movement.y / Barbarian.TILE_SIZE);
+                if (this.hero.frame == 8) {
+                    this.hero.fsm.transition('Idle');
                 }
             };
             return HitWall;
@@ -1282,37 +1279,14 @@ var Barbarian;
                 this.hero.setAnimation(Barbarian.Animations.Jump);
             };
             Jump.prototype.onUpdate = function () {
-                switch (this.hero.frame) {
-                    case 0:
-                        this.hero.moveRelative(2, 0);
-                        break;
-                    case 2:
-                        this.hero.moveRelative(2, -1);
-                        break;
-                    case 3:
-                        this.hero.moveRelative(2, -1);
-                        break;
-                    case 4:
-                        this.hero.moveRelative(2, -1);
-                        break;
-                    case 5:
-                        this.hero.moveRelative(2, 1);
-                        break;
-                    case 6:
-                        this.hero.moveRelative(2, 1);
-                        break;
-                    case 7:
-                        this.hero.moveRelative(2, 1);
-                        break;
-                    case 8:
-                        this.hero.moveRelative(1, 0);
-                        this.hero.fsm.transition('Idle');
-                        break;
+                var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+                this.hero.moveRelative(movement.x / Barbarian.TILE_SIZE, movement.y / Barbarian.TILE_SIZE);
+                if (this.hero.frame == 10) {
+                    this.hero.fsm.transition('Idle');
                 }
                 this.hero.checkMovement();
             };
             Jump.prototype.onLeave = function () {
-                this.hero.moveRelative(1, 0);
             };
             return Jump;
         }(HeroBaseState));
@@ -1326,45 +1300,33 @@ var Barbarian;
                 this.hero.setAnimation(Barbarian.Animations.FrontFlip);
             };
             FrontFlip.prototype.onUpdate = function () {
-                switch (this.hero.frame) {
-                    case 0:
-                        this.hero.moveRelative(0, 0);
-                        break;
-                    case 1:
-                        this.hero.moveRelative(0, 0);
-                        break;
-                    case 2:
-                        this.hero.moveRelative(1, -1);
-                        break;
-                    case 3:
-                        this.hero.moveRelative(2, -1);
-                        break;
-                    case 4:
-                        this.hero.moveRelative(2, -1);
-                        break;
-                    case 5:
-                        this.hero.moveRelative(2, 0);
-                        break;
-                    case 6:
-                        this.hero.moveRelative(2, 1);
-                        break;
-                    case 7:
-                        this.hero.moveRelative(2, 1);
-                        break;
-                    case 8:
-                        this.hero.moveRelative(1, 1);
-                        break;
-                    case 9:
-                        this.hero.moveRelative(0, 0);
-                        break;
-                    case 10:
-                        this.hero.fsm.transition('Idle');
-                        break;
+                var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+                this.hero.moveRelative(movement.x / Barbarian.TILE_SIZE, movement.y / Barbarian.TILE_SIZE);
+                if (this.hero.frame == 10) {
+                    this.hero.fsm.transition('Idle');
                 }
             };
             return FrontFlip;
         }(HeroBaseState));
         HeroStates.FrontFlip = FrontFlip;
+        var BackFlip = (function (_super) {
+            __extends(BackFlip, _super);
+            function BackFlip() {
+                _super.apply(this, arguments);
+            }
+            BackFlip.prototype.onEnter = function () {
+                this.hero.setAnimation(Barbarian.Animations.BackFlip);
+            };
+            BackFlip.prototype.onUpdate = function () {
+                var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+                this.hero.moveRelative(movement.x / Barbarian.TILE_SIZE, movement.y / Barbarian.TILE_SIZE);
+                if (this.hero.frame == 10) {
+                    this.hero.fsm.transition('Idle');
+                }
+            };
+            return BackFlip;
+        }(HeroBaseState));
+        HeroStates.BackFlip = BackFlip;
         var TakeStairs = (function (_super) {
             __extends(TakeStairs, _super);
             function TakeStairs() {
@@ -1701,35 +1663,79 @@ var Barbarian;
             Buttons[Buttons["Down"] = 2] = "Down";
             Buttons[Buttons["Right"] = 4] = "Right";
             Buttons[Buttons["Left"] = 8] = "Left";
-            Buttons[Buttons["A"] = 16] = "A";
-            Buttons[Buttons["B"] = 32] = "B";
+            Buttons[Buttons["Pickup"] = 16] = "Pickup";
+            Buttons[Buttons["Drop"] = 32] = "Drop";
             Buttons[Buttons["Flee"] = 64] = "Flee";
             Buttons[Buttons["Attack"] = 128] = "Attack";
             Buttons[Buttons["Jump"] = 256] = "Jump";
             Buttons[Buttons["Stop"] = 512] = "Stop";
+            Buttons[Buttons["Get"] = 1024] = "Get";
+            Buttons[Buttons["Run"] = 2048] = "Run";
+            Buttons[Buttons["Defend"] = 4096] = "Defend";
+            Buttons[Buttons["Sword"] = 32768] = "Sword";
+            Buttons[Buttons["Bow"] = 8192] = "Bow";
+            Buttons[Buttons["Shield"] = 16384] = "Shield";
         })(Input.Buttons || (Input.Buttons = {}));
         var Buttons = Input.Buttons;
-        Input.NumIcons = 16;
+        (function (Icons) {
+            Icons[Icons["None"] = 0] = "None";
+            Icons[Icons["Left"] = 8] = "Left";
+            Icons[Icons["Up"] = 1] = "Up";
+            Icons[Icons["Down"] = 2] = "Down";
+            Icons[Icons["Right"] = 4] = "Right";
+            Icons[Icons["Stop"] = 0] = "Stop";
+            Icons[Icons["Jump"] = 32] = "Jump";
+            Icons[Icons["Run"] = 64] = "Run";
+            Icons[Icons["Attack"] = 16] = "Attack";
+            Icons[Icons["Defend"] = 128] = "Defend";
+            Icons[Icons["Flee"] = 256] = "Flee";
+            Icons[Icons["Get"] = 512] = "Get";
+            Icons[Icons["Use"] = 1024] = "Use";
+            Icons[Icons["Drop"] = 2048] = "Drop";
+            Icons[Icons["Sword"] = 4096] = "Sword";
+            Icons[Icons["Bow"] = 8192] = "Bow";
+            Icons[Icons["Shield"] = 16384] = "Shield";
+        })(Input.Icons || (Input.Icons = {}));
+        var Icons = Input.Icons;
         (function (Icon) {
-            Icon[Icon["Left"] = 0] = "Left";
-            Icon[Icon["Up"] = 1] = "Up";
-            Icon[Icon["Down"] = 2] = "Down";
-            Icon[Icon["Right"] = 3] = "Right";
-            Icon[Icon["Stop"] = 4] = "Stop";
-            Icon[Icon["Jump"] = 5] = "Jump";
-            Icon[Icon["Run"] = 6] = "Run";
-            Icon[Icon["Attack"] = 7] = "Attack";
-            Icon[Icon["Defend"] = 8] = "Defend";
-            Icon[Icon["Flee"] = 9] = "Flee";
-            Icon[Icon["Get"] = 10] = "Get";
-            Icon[Icon["Use"] = 11] = "Use";
-            Icon[Icon["Drop"] = 12] = "Drop";
-            Icon[Icon["Sword"] = 13] = "Sword";
-            Icon[Icon["Bow"] = 14] = "Bow";
-            Icon[Icon["Shield"] = 15] = "Shield";
-            Icon[Icon["None"] = 16] = "None";
+            Icon[Icon["None"] = 0] = "None";
+            Icon[Icon["Left"] = 1] = "Left";
+            Icon[Icon["Up"] = 2] = "Up";
+            Icon[Icon["Down"] = 3] = "Down";
+            Icon[Icon["Right"] = 4] = "Right";
+            Icon[Icon["Stop"] = 5] = "Stop";
+            Icon[Icon["Jump"] = 6] = "Jump";
+            Icon[Icon["Run"] = 7] = "Run";
+            Icon[Icon["Attack"] = 8] = "Attack";
+            Icon[Icon["Defend"] = 9] = "Defend";
+            Icon[Icon["Flee"] = 10] = "Flee";
+            Icon[Icon["Pickup"] = 11] = "Pickup";
+            Icon[Icon["Use"] = 12] = "Use";
+            Icon[Icon["Drop"] = 13] = "Drop";
+            Icon[Icon["Sword"] = 14] = "Sword";
+            Icon[Icon["Bow"] = 15] = "Bow";
+            Icon[Icon["Shield"] = 16] = "Shield";
         })(Input.Icon || (Input.Icon = {}));
         var Icon = Input.Icon;
+        Input.ICON_TO_BUTTONS = [
+            0,
+            Buttons.Left,
+            Buttons.Up,
+            Buttons.Down,
+            Buttons.Right,
+            Buttons.Stop,
+            Buttons.Jump,
+            Buttons.Run,
+            Buttons.Attack,
+            Buttons.Defend,
+            Buttons.Flee,
+            Buttons.Pickup,
+            Buttons.Stop,
+            Buttons.Drop,
+            Buttons.Sword,
+            Buttons.Bow,
+            Buttons.Shield,
+        ];
         var ControlCodes = (function () {
             function ControlCodes() {
             }
@@ -1752,40 +1758,168 @@ var Barbarian;
             return ControlCodes;
         }());
         Input.ControlCodes = ControlCodes;
-        var HudState = (function () {
-            function HudState(iconsSelected, iconState) {
-                this.iconsState = new Array(Input.NumIcons);
-                this.iconState2 = 0;
-                this.iconState2 = iconState;
-                for (var i = 0; i < Input.NumIcons; i++) {
-                    this.iconsState[i] = iconsSelected.indexOf(i) == -1 ? false : true;
-                }
+        var IconsState = (function () {
+            function IconsState(state) {
+                if (state === void 0) { state = 0; }
+                this.lastIconSelected = Icon.None;
+                this.state = 0;
+                this.lastIconSelected = Icon.None;
+                this.state = state;
             }
-            HudState.prototype.isIconSelected = function (icon) {
-                return this.iconsState[icon];
+            IconsState.GetState = function (menu) {
+                var iconsState = new IconsState();
+                iconsState.state = menu.state.state;
+                return iconsState;
             };
-            HudState.prototype.isButtonSelected = function (button) {
-                return (this.iconState2 & button) > 0;
+            IconsState.prototype.toString = function () {
+                return this.state.toString();
             };
-            return HudState;
+            IconsState.prototype.reset = function () {
+                this.state &= (Buttons.Left | Buttons.Right | Buttons.Up | Buttons.Down | Buttons.Run);
+            };
+            IconsState.prototype.selectIcon = function (icon) {
+                this.lastIconSelected = icon;
+                switch (this.lastIconSelected) {
+                    case Icon.Left:
+                    case Icon.Right:
+                        this.state &= (Buttons.Up | Buttons.Down);
+                        break;
+                    case Icon.Up:
+                    case Icon.Down:
+                        this.state &= (Buttons.Left | Buttons.Right);
+                        break;
+                    case Icon.Jump:
+                        this.state &= Buttons.Run;
+                        break;
+                    default:
+                        this.state = 0;
+                        break;
+                }
+                this.state |= Input.ICON_TO_BUTTONS[icon];
+            };
+            IconsState.prototype.isIconSelected = function (icon) {
+                return !!(this.state & Input.ICON_TO_BUTTONS[icon]);
+            };
+            return IconsState;
         }());
-        Input.HudState = HudState;
+        Input.IconsState = IconsState;
+        var IconMenu = (function () {
+            function IconMenu(game) {
+                var _this = this;
+                this.lastIconSelected = Icon.None;
+                this.state = new IconsState();
+                this.menuToggled = false;
+                this.game = game;
+                this.game.input.keyboard.addKeyCapture(IconMenu.TOGGLE_MENU_KEY_CODE);
+                this.game.input.keyboard.addKeyCapture(IconMenu.FUNCTION_KEY_CODES);
+                this.game.input.keyboard.addCallbacks(this, this.keyPressed);
+                this.game.input.keyboard.addKey(IconMenu.TOGGLE_MENU_KEY_CODE).onDown.add(function () { _this.menuToggled = !_this.menuToggled; });
+                this.game.input.onDown.add(this.menuClicked, this);
+            }
+            Object.defineProperty(IconMenu.prototype, "selectedIcon", {
+                get: function () {
+                    return this.lastIconSelected;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(IconMenu.prototype, "isMenuToggled", {
+                get: function () {
+                    return this.menuToggled;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            IconMenu.prototype.clearInput = function () {
+                this.state = new IconsState();
+            };
+            Object.defineProperty(IconMenu.prototype, "iconSelected", {
+                set: function (icon) {
+                    this.state.selectIcon(icon);
+                    this.lastIconSelected = icon;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            IconMenu.prototype.menuClicked = function (pointer) {
+                if (pointer.y < this.game.world.height - IconMenu.ICON_HEIGHT) {
+                    return;
+                }
+                var iconIndex = Math.floor(pointer.x / IconMenu.ICON_WIDTH);
+                if (!this.menuToggled) {
+                    if (iconIndex < 2) {
+                        if (pointer.x < IconMenu.ICON_WIDTH / 2) {
+                            iconIndex = 0;
+                        }
+                        else if (pointer.x > IconMenu.ICON_WIDTH * 1.5) {
+                            iconIndex = 3;
+                        }
+                        else if (pointer.y > this.game.world.height - IconMenu.ICON_HEIGHT / 2) {
+                            iconIndex = 2;
+                        }
+                        else {
+                            iconIndex = 1;
+                        }
+                    }
+                    else {
+                        iconIndex += 2;
+                    }
+                    this.iconSelected = Icon.Left + iconIndex;
+                }
+                else {
+                    this.iconSelected = Icon.Pickup + iconIndex;
+                }
+            };
+            IconMenu.prototype.keyPressed = function (event) {
+                var iconIndex = IconMenu.FUNCTION_KEY_CODES.indexOf(event.keyCode);
+                if (iconIndex !== -1) {
+                    this.iconSelected = iconIndex + (this.menuToggled ? Icon.Pickup : Icon.Left);
+                }
+            };
+            IconMenu.PRIMARY_ICONS = [
+                Icon.Left,
+                Icon.Up,
+                Icon.Down,
+                Icon.Right,
+                Icon.Stop,
+                Icon.Jump,
+                Icon.Run,
+                Icon.Attack,
+                Icon.Defend,
+                Icon.Flee,
+            ];
+            IconMenu.SECONDARY_ICONS = [
+                Icon.Pickup,
+                Icon.Use,
+                Icon.Drop,
+                Icon.Sword,
+                Icon.Bow,
+                Icon.Shield,
+            ];
+            IconMenu.ICON_HEIGHT = Barbarian.TILE_SIZE * 5;
+            IconMenu.ICON_WIDTH = Barbarian.TILE_SIZE * 5;
+            IconMenu.TOGGLE_MENU_KEY_CODE = Phaser.KeyCode.BACKSPACE;
+            IconMenu.FUNCTION_KEY_CODES = [
+                Phaser.KeyCode.F1,
+                Phaser.KeyCode.F2,
+                Phaser.KeyCode.F3,
+                Phaser.KeyCode.F4,
+                Phaser.KeyCode.F5,
+                Phaser.KeyCode.F6,
+                Phaser.KeyCode.F7,
+                Phaser.KeyCode.F8,
+                Phaser.KeyCode.F9,
+                Phaser.KeyCode.F10
+            ];
+            return IconMenu;
+        }());
+        Input.IconMenu = IconMenu;
         var KeyboardState = (function () {
             function KeyboardState() {
                 this.controlState = new Array(25);
             }
             KeyboardState.GetState = function (game) {
                 var keyboardState = new KeyboardState();
-                keyboardState.controlState[ControlCodes.F1] = game.input.keyboard.isDown(Phaser.KeyCode.F1);
-                keyboardState.controlState[ControlCodes.F2] = game.input.keyboard.isDown(Phaser.KeyCode.F2);
-                keyboardState.controlState[ControlCodes.F3] = game.input.keyboard.isDown(Phaser.KeyCode.F3);
-                keyboardState.controlState[ControlCodes.F4] = game.input.keyboard.isDown(Phaser.KeyCode.F4);
-                keyboardState.controlState[ControlCodes.F5] = game.input.keyboard.isDown(Phaser.KeyCode.F5);
-                keyboardState.controlState[ControlCodes.F6] = game.input.keyboard.isDown(Phaser.KeyCode.F6);
-                keyboardState.controlState[ControlCodes.F7] = game.input.keyboard.isDown(Phaser.KeyCode.F7);
-                keyboardState.controlState[ControlCodes.F8] = game.input.keyboard.isDown(Phaser.KeyCode.F8);
-                keyboardState.controlState[ControlCodes.F9] = game.input.keyboard.isDown(Phaser.KeyCode.F9);
-                keyboardState.controlState[ControlCodes.F10] = game.input.keyboard.isDown(Phaser.KeyCode.F10);
                 return keyboardState;
             };
             KeyboardState.prototype.isKeyUp = function (key) {
@@ -1800,18 +1934,37 @@ var Barbarian;
         var ControlDirection = (function () {
             function ControlDirection() {
             }
-            ControlDirection.fromInput = function (keyboardState, hudState) {
+            ControlDirection.fromInput = function (keyboardState, iconsState) {
                 var direction = ControlDirection.None;
-                if (keyboardState.isKeyDown(ControlCodes.UP) || hudState.isButtonSelected(Buttons.Up) || hudState.isIconSelected(Icon.Up)) {
+                if (keyboardState.isKeyDown(ControlCodes.UP) || iconsState.isIconSelected(Icon.Up)) {
                     direction |= ControlDirection.Up;
                 }
-                else if (keyboardState.isKeyDown(ControlCodes.DOWN) || hudState.isButtonSelected(Buttons.Down) || hudState.isIconSelected(Icon.Down)) {
+                else if (keyboardState.isKeyDown(ControlCodes.DOWN) || iconsState.isIconSelected(Icon.Down)) {
                     direction |= ControlDirection.Down;
                 }
-                if (keyboardState.isKeyDown(ControlCodes.LEFT) || hudState.isButtonSelected(Buttons.Left) || hudState.isIconSelected(Icon.Left)) {
+                if (keyboardState.isKeyDown(ControlCodes.LEFT) || iconsState.isIconSelected(Icon.Left)) {
                     direction |= ControlDirection.Left;
                 }
-                else if (keyboardState.isKeyDown(ControlCodes.RIGHT) || hudState.isButtonSelected(Buttons.Right) || hudState.isIconSelected(Icon.Right)) {
+                else if (keyboardState.isKeyDown(ControlCodes.RIGHT) || iconsState.isIconSelected(Icon.Right)) {
+                    direction |= ControlDirection.Right;
+                }
+                return direction;
+            };
+            ControlDirection.fromButtons = function (buttons) {
+                return buttons & ControlDirection.Any;
+            };
+            ControlDirection.fromIconState = function (iconState) {
+                var direction = ControlDirection.None;
+                if (iconState.isIconSelected(Icon.Up)) {
+                    direction |= ControlDirection.Up;
+                }
+                else if (iconState.isIconSelected(Icon.Down)) {
+                    direction |= ControlDirection.Down;
+                }
+                if (iconState.isIconSelected(Icon.Left)) {
+                    direction |= ControlDirection.Left;
+                }
+                else if (iconState.isIconSelected(Icon.Right)) {
                     direction |= ControlDirection.Right;
                 }
                 return direction;
@@ -1825,43 +1978,43 @@ var Barbarian;
             ControlDirection.UpRight = ControlDirection.Up | ControlDirection.Right;
             ControlDirection.DownLeft = ControlDirection.Down | ControlDirection.Left;
             ControlDirection.DownRight = ControlDirection.Down | ControlDirection.Right;
+            ControlDirection.Horizontal = ControlDirection.Left | ControlDirection.Right;
+            ControlDirection.Vertical = ControlDirection.Up | ControlDirection.Down;
             ControlDirection.Any = ControlDirection.Up | ControlDirection.Down | ControlDirection.Left | ControlDirection.Right;
             return ControlDirection;
         }());
         Input.ControlDirection = ControlDirection;
         var InputManager = (function () {
             function InputManager(game, hud) {
+                var _this = this;
                 this.lastInputTime = 0;
                 this.nonDirectionButtons = {};
                 this.game = game;
                 this.hud = hud;
-                this.game.input.keyboard.addKeyCapture([
-                    Phaser.KeyCode.F1,
-                    Phaser.KeyCode.F2,
-                    Phaser.KeyCode.F3,
-                    Phaser.KeyCode.F4,
-                    Phaser.KeyCode.F5,
-                    Phaser.KeyCode.F6,
-                    Phaser.KeyCode.F7,
-                    Phaser.KeyCode.F8,
-                    Phaser.KeyCode.F9,
-                    Phaser.KeyCode.F10
-                ]);
+                this.iconMenu = new IconMenu(game);
+                this.game.input.keyboard.addKey(Phaser.KeyCode.D).onDown.add(function () { _this.game.debugOn = !_this.game.debugOn; });
                 this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
                 this.keyboardState = KeyboardState.GetState(this.game);
-                this.hudState = this.hud.getState();
+                this.iconsState = IconsState.GetState(this.iconMenu);
                 this.nonDirectionButtons[Buttons.Stop.toString()] = { button: Buttons.Stop, controlKey: ControlCodes.F5, icon: Icon.Stop };
                 this.nonDirectionButtons[Buttons.Jump.toString()] = { button: Buttons.Jump, controlKey: ControlCodes.F6, icon: Icon.Jump };
                 this.nonDirectionButtons[Buttons.Attack.toString()] = { button: Buttons.Attack, controlKey: ControlCodes.F8, icon: Icon.Attack };
+                this.nonDirectionButtons[Buttons.Defend.toString()] = { button: Buttons.Defend, controlKey: ControlCodes.F9, icon: Icon.Defend };
                 this.nonDirectionButtons[Buttons.Flee.toString()] = { button: Buttons.Flee, controlKey: ControlCodes.F10, icon: Icon.Flee };
+                this.nonDirectionButtons[Buttons.Get.toString()] = { button: Buttons.Get, controlKey: ControlCodes.DOWN, icon: Icon.Pickup };
+                this.nonDirectionButtons[Buttons.Run.toString()] = { button: Buttons.Run, controlKey: ControlCodes.F7, icon: Icon.Run };
+                this.nonDirectionButtons[Buttons.Sword.toString()] = { button: Buttons.Sword, controlKey: ControlCodes.F7, icon: Icon.Sword };
+                this.nonDirectionButtons[Buttons.Bow.toString()] = { button: Buttons.Bow, controlKey: ControlCodes.F7, icon: Icon.Bow };
+                this.nonDirectionButtons[Buttons.Shield.toString()] = { button: Buttons.Shield, controlKey: ControlCodes.F7, icon: Icon.Shield };
             }
+            InputManager.prototype.clearInput = function () {
+                this.iconMenu.clearInput();
+            };
             InputManager.prototype.update = function (gameTime) {
                 this.lastKeyboardState = this.keyboardState;
-                this.lastHudState = this.hudState;
+                this.lastIconsState = this.iconsState;
                 this.keyboardState = KeyboardState.GetState(this.game);
-                this.hudState = this.hud.getState();
-                if (this.lastKeyboardState.isKeyUp(ControlCodes.F1) && this.keyboardState.isKeyDown(ControlCodes.F1))
-                    console.log('F1 pressed.');
+                this.iconsState = IconsState.GetState(this.iconMenu);
                 var time = gameTime.time;
                 var timeSinceLast = time - this.lastInputTime;
                 if (timeSinceLast > InputManager.bufferTimeOut) {
@@ -1874,12 +2027,12 @@ var Barbarian;
                     var controlKey = this.nonDirectionButtons[key].controlKey;
                     var icon = this.nonDirectionButtons[key].icon;
                     if ((this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey))
-                        || (!this.lastHudState.isIconSelected(icon) && this.hudState.isIconSelected(icon))) {
+                        || (!this.lastIconsState.isIconSelected(icon) && this.iconsState.isIconSelected(icon))) {
                         buttons |= button;
                     }
                 }
                 var mergeInput = (this.buttonBuffer.length > 0 && timeSinceLast < InputManager.mergeInputTime);
-                var direction = ControlDirection.fromInput(this.keyboardState, this.hudState);
+                var direction = ControlDirection.fromInput(this.keyboardState, this.iconsState);
                 buttons |= direction;
                 mergeInput = false;
                 if (buttons != 0) {
@@ -1895,6 +2048,7 @@ var Barbarian;
                     }
                 }
                 this.buttonsState = buttons;
+                this.iconMenu.state.reset();
             };
             InputManager.bufferTimeOut = 500;
             InputManager.mergeInputTime = 100;
@@ -2092,10 +2246,13 @@ var Barbarian;
         Play.prototype.render = function () {
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
-                this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
-                for (var i = 0; i < 40; i++)
-                    for (var j = 0; j < 20; j++)
+                this.game.debug.text(this.game.inputManager.iconsState.toString(), 50, 20);
+                for (var i = 0; i < 40; i++) {
+                    for (var j = 0; j < 20; j++) {
+                        this.game.debug.text(this.game.hero.tileMap.getTileValue(i, j), i * Barbarian.TILE_SIZE + 4, j * Barbarian.TILE_SIZE + 12);
                         this.game.debug.rectangle(new Phaser.Rectangle(i * Barbarian.TILE_SIZE, j * Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), null, false);
+                    }
+                }
                 var dumbAdjust = this.game.hero.direction == Barbarian.Direction.Right ? -Barbarian.TILE_SIZE : 0;
                 this.game.debug.rectangle(new Phaser.Rectangle(this.game.hero.x + dumbAdjust, this.game.hero.y - Barbarian.TILE_SIZE, Barbarian.TILE_SIZE, Barbarian.TILE_SIZE), "green", true);
                 this.game.debug.pixel(this.game.hero.x, this.game.hero.y, 'rgba(0,255,255,1)');
@@ -2114,17 +2271,6 @@ var Barbarian;
         return Play;
     }(Phaser.State));
     Barbarian.Play = Play;
-    (function (IconBitFlags) {
-        IconBitFlags[IconBitFlags["Stop"] = 0] = "Stop";
-        IconBitFlags[IconBitFlags["Up"] = 1] = "Up";
-        IconBitFlags[IconBitFlags["Down"] = 2] = "Down";
-        IconBitFlags[IconBitFlags["Right"] = 4] = "Right";
-        IconBitFlags[IconBitFlags["Left"] = 8] = "Left";
-        IconBitFlags[IconBitFlags["Attack"] = 16] = "Attack";
-        IconBitFlags[IconBitFlags["Jump"] = 32] = "Jump";
-        IconBitFlags[IconBitFlags["Run"] = 64] = "Run";
-    })(Barbarian.IconBitFlags || (Barbarian.IconBitFlags = {}));
-    var IconBitFlags = Barbarian.IconBitFlags;
     var Hud = (function (_super) {
         __extends(Hud, _super);
         function Hud(game, key, x, y) {
@@ -2132,84 +2278,66 @@ var Barbarian;
             this.primaryVisible = true;
             this.weaponIcons = [];
             this.heroIcons = [];
-            this.iconsSelected = new Array(Barbarian.Input.NumIcons);
             this.iconSelected = Barbarian.Input.Icon.None;
-            this.iconState = 0;
+            this.icons = {};
             this.x = x;
             this.y = y;
             this.primaryHud = this.create(0, 0, key, 'ICON-06.PNG');
-            this.primaryHud.inputEnabled = true;
-            this.primaryHud.events.onInputDown.add(this.onPressed, this);
             this.secondaryHud = this.create(640, 0, key, 'ICON-07.PNG');
-            this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 240, 80), true);
-            this.secondaryHud.inputEnabled = true;
+            this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 480, 80), true);
             this.weaponIcons[Barbarian.Weapon.Sword] = this.create(640 + 3 * 80, 0, key, 'ICON-03.PNG');
             this.weaponIcons[Barbarian.Weapon.Bow] = this.create(640 + 4 * 80, 0, key, 'ICON-04.PNG');
             this.weaponIcons[Barbarian.Weapon.Shield] = this.create(640 + 5 * 80, 0, key, 'ICON-05.PNG');
+            this.iconSelector = this.create(0, 0, 'misc', '000.PNG');
+            this.iconSelector.anchor.setTo(0.5, 0.5);
             for (var i = 0; i < 3; i++) {
                 this.heroIcons[i] = this.create(640 + 544 + i * 32, 0, 'hud', 'ICON-01.PNG');
             }
-            var toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
-            toggleKey.onDown.add(this.toggle, this);
+            this.icons[Barbarian.Input.Icon.Left.toString()] = { icon: Barbarian.Input.Icon.Left, hitBox: new Phaser.Rectangle(0, 0, 40, 80) };
+            this.icons[Barbarian.Input.Icon.Up.toString()] = { icon: Barbarian.Input.Icon.Up, hitBox: new Phaser.Rectangle(40, 0, 80, 40) };
+            this.icons[Barbarian.Input.Icon.Down.toString()] = { icon: Barbarian.Input.Icon.Down, hitBox: new Phaser.Rectangle(40, 40, 80, 40) };
+            this.icons[Barbarian.Input.Icon.Right.toString()] = { icon: Barbarian.Input.Icon.Right, hitBox: new Phaser.Rectangle(120, 0, 40, 80) };
+            this.icons[Barbarian.Input.Icon.Stop.toString()] = { icon: Barbarian.Input.Icon.Stop, hitBox: new Phaser.Rectangle(160, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Jump.toString()] = { icon: Barbarian.Input.Icon.Jump, hitBox: new Phaser.Rectangle(240, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Run.toString()] = { icon: Barbarian.Input.Icon.Run, hitBox: new Phaser.Rectangle(320, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Attack.toString()] = { icon: Barbarian.Input.Icon.Attack, hitBox: new Phaser.Rectangle(400, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Defend.toString()] = { icon: Barbarian.Input.Icon.Defend, hitBox: new Phaser.Rectangle(480, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Flee.toString()] = { icon: Barbarian.Input.Icon.Flee, hitBox: new Phaser.Rectangle(560, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Pickup.toString()] = { icon: Barbarian.Input.Icon.Pickup, hitBox: new Phaser.Rectangle(640, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Use.toString()] = { icon: Barbarian.Input.Icon.Use, hitBox: new Phaser.Rectangle(720, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Drop.toString()] = { icon: Barbarian.Input.Icon.Drop, hitBox: new Phaser.Rectangle(800, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Sword.toString()] = { icon: Barbarian.Input.Icon.Sword, hitBox: new Phaser.Rectangle(880, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Bow.toString()] = { icon: Barbarian.Input.Icon.Bow, hitBox: new Phaser.Rectangle(960, 0, 80, 80) };
+            this.icons[Barbarian.Input.Icon.Shield.toString()] = { icon: Barbarian.Input.Icon.Shield, hitBox: new Phaser.Rectangle(1040, 0, 80, 80) };
         }
-        Hud.prototype.getState = function () {
-            var state = this.iconSelected != Barbarian.Input.Icon.None ? [this.iconSelected] : [];
-            if (this.iconSelected != Barbarian.Input.Icon.Left && this.iconSelected != Barbarian.Input.Icon.Right)
-                this.iconSelected = Barbarian.Input.Icon.None;
-            return new Barbarian.Input.HudState([], this.iconState);
-        };
-        Hud.prototype.onPressed = function (sprite, pointer) {
-            console.log('Icon pressed x: ' + pointer.x + ' y: ' + pointer.y);
-            var bounds = new Phaser.Rectangle(560, 320, 80, 80);
-            if (pointer.x >= 560 && pointer.x < 640)
-                this.iconSelected = Barbarian.Input.Icon.Flee;
-            else if (pointer.x >= 400 && pointer.x < 480)
-                this.iconSelected = Barbarian.Input.Icon.Attack;
-            else if (pointer.x >= 240 && pointer.x < 320)
-                this.iconSelected = Barbarian.Input.Icon.Jump;
-            else if (pointer.x >= 160 && pointer.x < 240) {
-                this.iconSelected = Barbarian.Input.Icon.Stop;
-                this.iconState = Hud.None;
-            }
-            else if (pointer.x >= 0 && pointer.x < 40) {
-                this.iconSelected = Barbarian.Input.Icon.Left;
-                this.iconState = Hud.Left | (this.iconState & Hud.UpDown);
-            }
-            else if (pointer.x >= 120 && pointer.x < 160) {
-                this.iconSelected = Barbarian.Input.Icon.Right;
-                this.iconState = Hud.Right | (this.iconState & Hud.UpDown);
-            }
-            else if (pointer.x >= 40 && pointer.x < 120) {
-                if (pointer.y >= 320 && pointer.y < 360) {
-                    this.iconSelected = Barbarian.Input.Icon.Up;
-                    this.iconState = Hud.Up | (this.iconState & Hud.LeftRight);
-                }
-                else {
-                    this.iconSelected = Barbarian.Input.Icon.Down;
-                    this.iconState = Hud.Down | (this.iconState & Hud.LeftRight);
-                }
-            }
-            else {
-                this.iconSelected = this.iconSelected;
-                this.iconState = this.iconState;
-            }
-            console.log(this.iconState);
-        };
         Hud.prototype.update = function () {
             this.forEach(function (part) { if (part.animations.currentFrame.name.startsWith("DIGIT")) {
                 part.kill();
             } }, this);
-            this.render();
-        };
-        Hud.prototype.toggle = function () {
-            this.primaryVisible = !this.primaryVisible;
+            this.iconSelected = this.game.inputManager.iconMenu.selectedIcon;
+            this.primaryVisible = !this.game.inputManager.iconMenu.isMenuToggled;
             this.x = this.primaryVisible ? 0 : -640;
+            this.render();
         };
         Hud.prototype.render = function () {
             this.renderTimer();
             this.renderArrowCount(this.game.hero.inventory.numArrows);
             this.renderWeaponIcons();
             this.renderLives();
+            this.renderSelector();
+        };
+        Hud.prototype.renderSelector = function () {
+            if (this.iconSelected == Barbarian.Input.Icon.None) {
+                return;
+            }
+            for (var key in this.icons) {
+                if (this.iconSelected == this.icons[key].icon) {
+                    var hitBox = this.icons[key].hitBox;
+                    this.iconSelector.x = hitBox.centerX;
+                    this.iconSelector.y = hitBox.centerY;
+                    break;
+                }
+            }
         };
         Hud.prototype.renderLives = function () {
             this.heroIcons.forEach(function (icon) {
@@ -2249,18 +2377,7 @@ var Barbarian;
                 this.renderDigit(count.charAt(i), 640 + 480 + i * 16, 0);
             }
         };
-        Hud.None = 0;
-        Hud.Up = 1;
-        Hud.Down = 2;
-        Hud.Right = 4;
-        Hud.Left = 8;
-        Hud.UpLeft = Hud.Up | Hud.Left;
-        Hud.UpRight = Hud.Up | Hud.Right;
-        Hud.DownLeft = Hud.Down | Hud.Left;
-        Hud.DownRight = Hud.Down | Hud.Right;
-        Hud.UpDown = Hud.Up | Hud.Down;
-        Hud.LeftRight = Hud.Left | Hud.Right;
-        Hud.Any = Hud.Up | Hud.Down | Hud.Left | Hud.Right;
+        Hud.DirectionIcons = Barbarian.Input.Icons.Left | Barbarian.Input.Icons.Right | Barbarian.Input.Icons.Up | Barbarian.Input.Icons.Down | Barbarian.Input.Icons.Run;
         return Hud;
     }(Phaser.Group));
     Barbarian.Hud = Hud;
@@ -2432,6 +2549,12 @@ var Barbarian;
         function TileMap(entity) {
             this.entity = entity;
         }
+        TileMap.prototype.getTileValue = function (x, y) {
+            var tile = this.entity.game.level.currentRoom
+                .layout[y].rowData
+                .substring(x, x + 1);
+            return tile;
+        };
         TileMap.prototype.getTile = function (adjustX, adjustY) {
             if (adjustX == null) {
                 adjustX = 0;
@@ -2442,10 +2565,7 @@ var Barbarian;
             var position = this.entity.getTileMapPosition(adjustX, adjustY);
             if (position.x == -1 || position.y == -1)
                 return '?';
-            var tile = this.entity.game.level.currentRoom
-                .layout[position.y].rowData
-                .substring(position.x, position.x + 1);
-            return tile;
+            return this.getTileValue(position.x, position.y);
         };
         TileMap.prototype.isAbleToJump = function () {
             var position = this.entity.getTileMapPosition();

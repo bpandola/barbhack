@@ -290,14 +290,14 @@ namespace Barbarian {
                 this.frame = 0;
         }
 
-        checkWeaponSwitch() {
+        checkWeaponSwitch(input) {
             var newWeapon: Weapon = this.inventory.activeWeapon;
 
-            if (this.keys.sword.isDown) {
+            if (input.buttonsState & Input.Buttons.Sword) {
                 newWeapon = Weapon.Sword;
-            } else if (this.keys.bow.isDown) {
+            } else if (input.buttonsState & Input.Buttons.Bow) {
                 newWeapon = Weapon.Bow;
-            } else if (this.keys.shield.isDown) {
+            } else if (input.buttonsState & Input.Buttons.Shield) {
                 newWeapon = Weapon.Shield;
             }
 
@@ -341,7 +341,7 @@ namespace Barbarian {
 
             var input = this.game.inputManager;
 
-            this.checkWeaponSwitch();
+            this.checkWeaponSwitch(input);
 
             if (input.buttonsState & Input.Buttons.Defend) {
                 this.fsm.transition('BackFlip');

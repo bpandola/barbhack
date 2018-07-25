@@ -61,39 +61,12 @@
             this.hud = new Hud(this.game, 'hud', 0, 320); // this.make.sprite(0, 320, 'hud', 5);
             this.stage.addChild(this.hud);
 
-            //var test_input = this.hud.getState();
-
 
             // Button Test
             //hud.inputEnabled = true;
             //hud.input.enableDrag();
             //hud.input.allowVerticalDrag = false;
             //hud.input.enableSnap(10, 10);
-            //hud.events.onInputDown.add((sprite, pointer) => {
-            //    console.log(pointer.x);
-
-            //    if (pointer.x >= 120 && pointer.x < 160) {
-            //        this.game.hero.keys.right.isDown = true;
-            //        this.game.hero.keys.left.isDown = false;
-            //    } else if (pointer.x >= 0 && pointer.x < 40) {
-            //        this.game.hero.keys.left.isDown = true;
-            //        this.game.hero.keys.right.isDown = false;
-            //    } else if (pointer.x >= 40 && pointer.x < 120) {
-            //        if (pointer.y < 20) {
-            //            this.game.hero.keys.up.isDown = true;
-            //            this.game.hero.keys.down.isDown = true;
-            //        } else {
-            //            this.game.hero.keys.up.isDown = false;
-            //            this.game.hero.keys.down.isDown = true;
-            //        }
-            //    } else if (pointer.x >= 160 && pointer.x < 240) {
-            //        this.game.hero.keys.right.isDown = false;
-            //        this.game.hero.keys.left.isDown = false;
-            //        this.game.hero.keys.up.isDown = false;
-            //        this.game.hero.keys.down.isDown = false;
-            //    }
-            //}, this);
-
 
             this.game.inputManager = new Input.InputManager(this.game, this.hud);
 
@@ -290,11 +263,11 @@
 
         render() {
             //this.game.debug.text(this.game.hero.frame.toString(), 20, 20);
-
+            
             
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
-
+                this.game.debug.text(this.game.inputManager.iconsState.toString(), 50, 20);
                 // this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
                 // Draw Gridlines and TileMap Values
                 for (var i = 0; i < 40; i++) {
@@ -337,61 +310,29 @@
         weaponIcons: Phaser.Sprite[] = [];
         heroIcons: Phaser.Sprite[] = [];
         iconSelector: Phaser.Sprite;
-        //activeMenu: Phaser.Sprite;
-        //activeIcons: Input.Icon[] = [];
-
-        onIconPressed: Phaser.Signal = new Phaser.Signal();
 
         private static DirectionIcons: Input.Icons = Input.Icons.Left | Input.Icons.Right | Input.Icons.Up | Input.Icons.Down | Input.Icons.Run;
 
         private iconSelected: Input.Icon = Input.Icon.None;
 
-        //private static primaryIcons: Input.Icon[] = [
-        //    Input.Icon.Left,
-        //    Input.Icon.Up,
-        //    Input.Icon.Down,
-        //    Input.Icon.Right,
-        //    Input.Icon.Stop,
-        //    Input.Icon.Jump,
-        //    Input.Icon.Run,
-        //    Input.Icon.Attack,
-        //    Input.Icon.Defend,
-        //    Input.Icon.Flee,
-        //];
-
-        //private static secondaryIcons: Input.Icon[] = [
-        //    Input.Icon.Pickup,
-        //    Input.Icon.Use,
-        //    Input.Icon.Drop,
-        //    Input.Icon.Sword,
-        //    Input.Icon.Bow,
-        //    Input.Icon.Shield,
-        //];
-
-        private icons: { [key: string]: { icon: Input.Icon, hitBox: Phaser.Rectangle; keyCode: Phaser.KeyCode } } = {};
+        private icons: { [key: string]: { icon: Input.Icon, hitBox: Phaser.Rectangle } } = {};
 
         constructor(game: Barbarian.Game, key: string, x: number, y: number) {
             super(game);
             this.x = x;
             this.y = y;
-            //this.inputEnableChildren = true;  // we only want this for icons, not for digits and stuff
+
             this.primaryHud = this.create(0, 0, key, 'ICON-06.PNG');
-            //this.primaryHud.inputEnabled = true;
-            //this.primaryHud.events.onInputDown.add(this.onPressed, this);
             //this.primaryHud.input.enableDrag(true);
             this.secondaryHud = this.create(640, 0, key, 'ICON-07.PNG');
             // We have to crop this because data from Barb has 00:00:00 for the time...
             this.secondaryHud.crop(new Phaser.Rectangle(0, 0, 480, 80), true);
-            //this.secondaryHud.inputEnabled = true;
-            //this.secondaryHud.events.onInputDown.add(this.onPressed, this);
             //this.secondaryHud.input.enableDrag(true);
             // Create weapon icons on secondary Hud
             this.weaponIcons[Weapon.Sword] = this.create(640 + 3 * 80, 0, key, 'ICON-03.PNG');
             this.weaponIcons[Weapon.Bow] = this.create(640 + 4 * 80, 0, key, 'ICON-04.PNG');
             this.weaponIcons[Weapon.Shield] = this.create(640 + 5 * 80, 0, key, 'ICON-05.PNG');
 
-            //this.activeMenu = this.primaryHud;
-            //this.activeIcons = Hud.primaryIcons;
             // Icon Selector
             this.iconSelector = this.create(0, 0, 'misc', '000.PNG');
             this.iconSelector.anchor.setTo(0.5, 0.5);
@@ -399,73 +340,27 @@
             for (var i = 0; i < 3; i++) {
                 this.heroIcons[i] = this.create(640 + 544 + i * 32, 0, 'hud', 'ICON-01.PNG');
             }
-            
-            //var toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
-            //toggleKey.onDown.add(this.toggle, this);
 
             // TODO: Maybe have a spritesheet for these icons to make this code cleaner and avoid having to specify the hitbox.
             // Hitboxes for Icons
-            this.icons[Input.Icon.Left.toString()] = { icon: Input.Icon.Left, keyCode: Phaser.KeyCode.F1, hitBox: new Phaser.Rectangle(0, 0, 40, 80) };
-            this.icons[Input.Icon.Up.toString()] = { icon: Input.Icon.Up, keyCode: Phaser.KeyCode.F2, hitBox: new Phaser.Rectangle(40, 0, 80, 40) };
-            this.icons[Input.Icon.Down.toString()] = { icon: Input.Icon.Down, keyCode: Phaser.KeyCode.F3, hitBox: new Phaser.Rectangle(40, 40, 80, 40) };
-            this.icons[Input.Icon.Right.toString()] = { icon: Input.Icon.Right, keyCode: Phaser.KeyCode.F4, hitBox: new Phaser.Rectangle(120, 0, 40, 80) };
-            this.icons[Input.Icon.Stop.toString()] = { icon: Input.Icon.Stop, keyCode: Phaser.KeyCode.F5, hitBox: new Phaser.Rectangle(160, 0, 80, 80) };
-            this.icons[Input.Icon.Jump.toString()] = { icon: Input.Icon.Jump, keyCode: Phaser.KeyCode.F6, hitBox: new Phaser.Rectangle(240, 0, 80, 80) };
-            this.icons[Input.Icon.Run.toString()] = { icon: Input.Icon.Run, keyCode: Phaser.KeyCode.F7, hitBox: new Phaser.Rectangle(320, 0, 80, 80) };
-            this.icons[Input.Icon.Attack.toString()] = { icon: Input.Icon.Attack, keyCode: Phaser.KeyCode.F8, hitBox: new Phaser.Rectangle(400, 0, 80, 80) };
-            this.icons[Input.Icon.Defend.toString()] = { icon: Input.Icon.Defend, keyCode: Phaser.KeyCode.F9, hitBox: new Phaser.Rectangle(480, 0, 80, 80) };
-            this.icons[Input.Icon.Flee.toString()] = { icon: Input.Icon.Flee, keyCode: Phaser.KeyCode.F10, hitBox: new Phaser.Rectangle(560, 0, 80, 80) };
+            this.icons[Input.Icon.Left.toString()] = { icon: Input.Icon.Left, hitBox: new Phaser.Rectangle(0, 0, 40, 80) };
+            this.icons[Input.Icon.Up.toString()] = { icon: Input.Icon.Up, hitBox: new Phaser.Rectangle(40, 0, 80, 40) };
+            this.icons[Input.Icon.Down.toString()] = { icon: Input.Icon.Down, hitBox: new Phaser.Rectangle(40, 40, 80, 40) };
+            this.icons[Input.Icon.Right.toString()] = { icon: Input.Icon.Right, hitBox: new Phaser.Rectangle(120, 0, 40, 80) };
+            this.icons[Input.Icon.Stop.toString()] = { icon: Input.Icon.Stop, hitBox: new Phaser.Rectangle(160, 0, 80, 80) };
+            this.icons[Input.Icon.Jump.toString()] = { icon: Input.Icon.Jump, hitBox: new Phaser.Rectangle(240, 0, 80, 80) };
+            this.icons[Input.Icon.Run.toString()] = { icon: Input.Icon.Run, hitBox: new Phaser.Rectangle(320, 0, 80, 80) };
+            this.icons[Input.Icon.Attack.toString()] = { icon: Input.Icon.Attack, hitBox: new Phaser.Rectangle(400, 0, 80, 80) };
+            this.icons[Input.Icon.Defend.toString()] = { icon: Input.Icon.Defend, hitBox: new Phaser.Rectangle(480, 0, 80, 80) };
+            this.icons[Input.Icon.Flee.toString()] = { icon: Input.Icon.Flee, hitBox: new Phaser.Rectangle(560, 0, 80, 80) };
             // Secondary Icons
-            this.icons[Input.Icon.Pickup.toString()] = { icon: Input.Icon.Pickup, keyCode: Phaser.KeyCode.F1, hitBox: new Phaser.Rectangle(640, 0, 80, 80) };
-            this.icons[Input.Icon.Use.toString()] = { icon: Input.Icon.Use, keyCode: Phaser.KeyCode.F2, hitBox: new Phaser.Rectangle(720, 0, 80, 80) };
-            this.icons[Input.Icon.Drop.toString()] = { icon: Input.Icon.Drop, keyCode: Phaser.KeyCode.F3, hitBox: new Phaser.Rectangle(800, 0, 80, 80) };
-            this.icons[Input.Icon.Sword.toString()] = { icon: Input.Icon.Sword, keyCode: Phaser.KeyCode.F4, hitBox: new Phaser.Rectangle(880, 0, 80, 80) };
-            this.icons[Input.Icon.Bow.toString()] = { icon: Input.Icon.Bow, keyCode: Phaser.KeyCode.F5, hitBox: new Phaser.Rectangle(960, 0, 80, 80) };
-            this.icons[Input.Icon.Shield.toString()] = { icon: Input.Icon.Shield, keyCode: Phaser.KeyCode.F6, hitBox: new Phaser.Rectangle(1040, 0, 80, 80) };
+            this.icons[Input.Icon.Pickup.toString()] = { icon: Input.Icon.Pickup, hitBox: new Phaser.Rectangle(640, 0, 80, 80) };
+            this.icons[Input.Icon.Use.toString()] = { icon: Input.Icon.Use, hitBox: new Phaser.Rectangle(720, 0, 80, 80) };
+            this.icons[Input.Icon.Drop.toString()] = { icon: Input.Icon.Drop, hitBox: new Phaser.Rectangle(800, 0, 80, 80) };
+            this.icons[Input.Icon.Sword.toString()] = { icon: Input.Icon.Sword, hitBox: new Phaser.Rectangle(880, 0, 80, 80) };
+            this.icons[Input.Icon.Bow.toString()] = { icon: Input.Icon.Bow, hitBox: new Phaser.Rectangle(960, 0, 80, 80) };
+            this.icons[Input.Icon.Shield.toString()] = { icon: Input.Icon.Shield, hitBox: new Phaser.Rectangle(1040, 0, 80, 80) };
         }
-
-        clearInput(): void {
-            // this.iconSelected = Input.Icon.None;
-        }
-
-        getState(): Input.HudState {
-            
-            var state = new Input.HudState(this.iconSelected);
-            //if (!(this.iconSelected & Hud.DirectionIcons)) {
-            //    this.iconSelected = Input.Icon.None;
-            //}
-            return state;
-
-        }
-
-        //onKeyPressed(keyCode) {
-        //    for (var icon of this.activeIcons) {
-        //        var key = icon.toString();
-        //        if (this.icons[key].keyCode == keyCode) {
-        //            var hitBox = this.icons[key].hitBox;
-        //            this.iconSelected = this.icons[key].icon;
-        //            this.iconSelector.x = hitBox.centerX;
-        //            this.iconSelector.y = hitBox.centerY;
-        //            this.onIconPressed.dispatch(this.iconSelected);
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //onPressed(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
-        //    for (var key in this.icons) {
-        //        var hitBox = this.icons[key].hitBox;
-        //        if (hitBox.contains(this.activeMenu.x + pointer.x, pointer.y - this.activeMenu.world.y)) {
-        //            this.iconSelected = this.icons[key].icon;
-        //            this.iconSelector.x = hitBox.centerX;
-        //            this.iconSelector.y = hitBox.centerY;
-        //            this.onIconPressed.dispatch(this.iconSelected);
-        //            break;
-        //        }
-        //    }
-        //}
-
-        
 
         update() {
             // Primitive object pooling for digit sprites.
@@ -473,17 +368,8 @@
             this.iconSelected = this.game.inputManager.iconMenu.selectedIcon;
             this.primaryVisible = !this.game.inputManager.iconMenu.isMenuToggled;
             this.x = this.primaryVisible ? 0 : -640;
-            //this.activeMenu = this.primaryVisible ? this.primaryHud : this.secondaryHud;
-            //this.activeIcons = this.primaryVisible ? Hud.primaryIcons : Hud.secondaryIcons;
             this.render();
         }
-
-        //toggle() {
-        //    this.primaryVisible = !this.primaryVisible;
-        //    this.x = this.primaryVisible ? 0 : -640;
-        //    this.activeMenu = this.primaryVisible ? this.primaryHud : this.secondaryHud;
-        //    this.activeIcons = this.primaryVisible ? Hud.primaryIcons : Hud.secondaryIcons;
-        //}
 
         render() {
             this.renderTimer();
@@ -491,13 +377,13 @@
             this.renderWeaponIcons();
             this.renderLives();
             this.renderSelector();
-
-            
         }
 
         renderSelector() {
-            
-            this.iconSelector.visible = this.iconSelected != Input.Icon.None;
+            if (this.iconSelected == Input.Icon.None) {
+                return;
+            }
+            // this.iconSelector.visible = this.iconSelected != Input.Icon.None;
             for (var key in this.icons) {
                 if (this.iconSelected == this.icons[key].icon) {
                     var hitBox = this.icons[key].hitBox;
@@ -512,7 +398,7 @@
             this.heroIcons.forEach((icon) => {
                 icon.visible = false;
             });
-           
+
             for (var i = 0; i < this.game.lives && i < 3; i++) {
                 this.heroIcons[i].visible = true;
             }

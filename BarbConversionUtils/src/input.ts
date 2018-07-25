@@ -107,37 +107,46 @@
 
         private state: Buttons = 0;
 
-        constructor() {
-            this.reset();
+        constructor(state: Buttons = 0) {
+            this.lastIconSelected = Icon.None;
+            this.state = state;
+        }
+
+        static GetState(menu: IconMenu): IconsState {
+            var iconsState = new IconsState();
+
+            iconsState.state = menu.state.state;
+            return iconsState;
+        }
+
+        toString() {
+            return this.state.toString();
         }
 
         reset() {
-            this.lastIconSelected = Icon.None;
-            this.state = 0;
+            // this.lastIconSelected = Icon.None;
+            this.state &= (Buttons.Left | Buttons.Right | Buttons.Up | Buttons.Down | Buttons.Run);
         }
 
         selectIcon(icon: Icon) {
             this.lastIconSelected = icon;
             switch (this.lastIconSelected) {
                 case Icon.Left:
-                    this.state &= (Buttons.Left | Buttons.Up | Buttons.Down);
+                case Icon.Right:
+                    this.state &= (Buttons.Up | Buttons.Down);
                     break;
                 case Icon.Up:
-                    this.state &= (Buttons.Up | Buttons.Left | Buttons.Right);
-                    break;
                 case Icon.Down:
-                    this.state &= (Buttons.Down | Buttons.Left | Buttons.Right);
-                    break;
-                case Icon.Right:
-                    this.state &= (Buttons.Right | Buttons.Up | Buttons.Down);
+                    this.state &= (Buttons.Left | Buttons.Right);
                     break;
                 case Icon.Jump:
-                    this.state &= (Buttons.Jump | Buttons.Run);
+                    this.state &= Buttons.Run;
                     break;
                 default:
-                    this.state &= ICON_TO_BUTTONS[icon];
+                    this.state = 0;
                     break;
             }
+            this.state |= ICON_TO_BUTTONS[icon];
         }
 
         isIconSelected(icon: Icon): boolean {
@@ -187,6 +196,8 @@
             Phaser.KeyCode.F10
         ]
 
+        private lastIconSelected: Icon = Icon.None;
+
         public state: IconsState = new IconsState();
 
         private menuToggled: boolean = false;
@@ -207,7 +218,7 @@
         }
 
         public get selectedIcon(): Icon {
-            return this.state.lastIconSelected;
+            return this.lastIconSelected;
         }
 
         public get isMenuToggled(): boolean {
@@ -215,11 +226,12 @@
         }
 
         public clearInput() {
-            this.state.reset();
+            this.state = new IconsState();
         }
 
         private set iconSelected(icon: Icon) {
             this.state.selectIcon(icon);
+            this.lastIconSelected = icon;
         }
 
         private menuClicked(pointer: Phaser.Pointer) {
@@ -389,7 +401,7 @@
 
             this.buttonBuffer = new Array(InputManager.BUFFER_SIZE);
             this.keyboardState = KeyboardState.GetState(this.game);
-            this.iconsState = this.iconMenu.state;
+            this.iconsState = IconsState.GetState(this.iconMenu);
 
             //this.nonDirectionButtons[Buttons.A.toString()] = { button: Buttons.A, controlKey: ControlCodes.A };
             //this.nonDirectionButtons[Buttons.B.toString()] = { button: Buttons.B, controlKey: ControlCodes.B };
@@ -400,13 +412,16 @@
             this.nonDirectionButtons[Buttons.Flee.toString()] = { button: Buttons.Flee, controlKey: ControlCodes.F10, icon: Icon.Flee };
             this.nonDirectionButtons[Buttons.Get.toString()] = { button: Buttons.Get, controlKey: ControlCodes.DOWN, icon: Icon.Pickup };
             this.nonDirectionButtons[Buttons.Run.toString()] = { button: Buttons.Run, controlKey: ControlCodes.F7, icon: Icon.Run };
+            this.nonDirectionButtons[Buttons.Sword.toString()] = { button: Buttons.Sword, controlKey: ControlCodes.F7, icon: Icon.Sword };
+            this.nonDirectionButtons[Buttons.Bow.toString()] = { button: Buttons.Bow, controlKey: ControlCodes.F7, icon: Icon.Bow };
+            this.nonDirectionButtons[Buttons.Shield.toString()] = { button: Buttons.Shield, controlKey: ControlCodes.F7, icon: Icon.Shield };
 
 
             // Uh...these are directions, so we need to rename...
-            this.nonDirectionButtons[Buttons.Left.toString()] = { button: Buttons.Left, controlKey: ControlCodes.F1, icon: Icon.Left };
-            this.nonDirectionButtons[Buttons.Up.toString()] = { button: Buttons.Up, controlKey: ControlCodes.F2, icon: Icon.Up };
-            this.nonDirectionButtons[Buttons.Down.toString()] = { button: Buttons.Down, controlKey: ControlCodes.F3, icon: Icon.Down };
-            this.nonDirectionButtons[Buttons.Right.toString()] = { button: Buttons.Right, controlKey: ControlCodes.F4, icon: Icon.Right };
+            //this.nonDirectionButtons[Buttons.Left.toString()] = { button: Buttons.Left, controlKey: ControlCodes.F1, icon: Icon.Left };
+            //this.nonDirectionButtons[Buttons.Up.toString()] = { button: Buttons.Up, controlKey: ControlCodes.F2, icon: Icon.Up };
+            //this.nonDirectionButtons[Buttons.Down.toString()] = { button: Buttons.Down, controlKey: ControlCodes.F3, icon: Icon.Down };
+            //this.nonDirectionButtons[Buttons.Right.toString()] = { button: Buttons.Right, controlKey: ControlCodes.F4, icon: Icon.Right };
         }
 
         clearInput(): void {
@@ -419,7 +434,8 @@
             this.lastIconsState = this.iconsState;
             // Get new keyboard state
             this.keyboardState = KeyboardState.GetState(this.game);
-            this.iconsState = this.iconMenu.state;
+            this.iconsState = IconsState.GetState(this.iconMenu);
+            
 
             // Expire old input
             var time: number = gameTime.time; //gameTime.elapsedMS;
@@ -437,7 +453,7 @@
                 var icon: Icon = this.nonDirectionButtons[key].icon;
                 // Check if just pressed
                 if ((this.lastKeyboardState.isKeyUp(controlKey) && this.keyboardState.isKeyDown(controlKey))
-                    || (this.iconsState.isIconSelected(icon))
+                    || (!this.lastIconsState.isIconSelected(icon) && this.iconsState.isIconSelected(icon))
                 ) {
                     // Use a bitwise-or to accumulate button presses.
                     buttons |= button;
@@ -488,6 +504,8 @@
             }
             this.buttonsState = buttons;
 
+            // HACK!!!
+            this.iconMenu.state.reset();
             
 
         }
