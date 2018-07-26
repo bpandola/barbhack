@@ -143,7 +143,7 @@ namespace Barbarian {
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
-            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run', 'Flee']);
+            this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run', 'Flee', 'TakeStairs']);
             this.fsm.add('Jump', new Barbarian.HeroStates.Jump(this), ['Idle', 'Flee', 'Walk']);
             this.fsm.add('Stop', new Barbarian.HeroStates.Stop(this), ['Walk','Run', 'Flee']);
             this.fsm.add('ChangeDirection', new Barbarian.HeroStates.ChangeDirection(this), ['Idle','Walk','Run','Flee']);

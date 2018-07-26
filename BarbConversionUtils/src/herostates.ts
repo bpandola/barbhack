@@ -302,7 +302,8 @@ namespace Barbarian.HeroStates {
     }
     export class TakeStairs extends HeroBaseState {
 
-       onEnter() {
+        onEnter() {
+            this.hero.clearInput();
             if (this.hero.direction == Direction.Up) {
                 this.hero.setAnimation(Animations.UpStairs);
             } else {
@@ -318,9 +319,9 @@ namespace Barbarian.HeroStates {
             }
 
             if (this.hero.direction == Direction.Up && this.hero.tileMap.isEntityAt(TileMapLocation.StairsTop)) {
-                this.hero.fsm.transition('Idle');
+                this.hero.fsm.transition('Walk');
             } else if (this.hero.direction == Direction.Down && this.hero.tileMap.isEntityAt(TileMapLocation.StairsBottom)) {
-                this.hero.fsm.transition('Idle');
+                this.hero.fsm.transition('Walk');
             }
         }
 
