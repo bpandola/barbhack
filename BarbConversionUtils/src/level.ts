@@ -49,8 +49,8 @@
         constructor(hero: Barbarian.Hero) {
             super(hero.game, hero.x, hero.y-64, 'hero', 128);
             // Set the arrow movement and initial position based on which way the Hero is facing.
-            this.velocity = hero.facing == Direction.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
-            this.scale.x = hero.facing == Direction.Left ? -1 : 1;
+            this.velocity = hero.facing == Facing.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
+            this.scale.x = hero.facing == Facing.Left ? -1 : 1;
             this.x += this.velocity * 2;
             // Kill the arrow if it goes off the edge of the screen.
             this.checkWorldBounds = true;

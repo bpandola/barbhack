@@ -10,8 +10,8 @@ namespace Barbarian.Enemies {
         constructor(entity: Entity) {
             super(entity.game, entity.x, entity.y - 28, 'POP', 9);
             // Set the arrow movement and initial position based on which way the Hero is facing.
-            this.velocity = entity.facing == Direction.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
-            this.scale.x = entity.facing == Direction.Left ? -1 : 1;
+            this.velocity = entity.facing == Facing.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
+            this.scale.x = entity.facing == Facing.Left ? -1 : 1;
             this.x += this.velocity * 2;
             // Kill the arrow if it goes off the edge of the screen.
             this.checkWorldBounds = true;

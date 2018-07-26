@@ -65,7 +65,7 @@ var Barbarian;
             configurable: true
         });
         Entity.prototype.moveRelative = function (numTilesX, numTilesY) {
-            var xMovement = this.facing == Barbarian.Direction.Right ? Barbarian.TILE_SIZE : -Barbarian.TILE_SIZE;
+            var xMovement = this.facing == Barbarian.Facing.Right ? Barbarian.TILE_SIZE : -Barbarian.TILE_SIZE;
             var yMovement = this.direction == Barbarian.Direction.Up ? -Barbarian.TILE_SIZE : Barbarian.TILE_SIZE;
             this.x += xMovement * numTilesX;
             this.y += yMovement * numTilesY;
@@ -84,14 +84,14 @@ var Barbarian;
                 var part = parts[i];
                 var spr = this.getChildAt(part.index);
                 spr.scale.setTo(1, 1);
-                spr.x = this.facing === Barbarian.Direction.Left ? part.rx : part.x;
-                spr.y = this.facing === Barbarian.Direction.Left ? part.ry : part.y;
+                spr.x = this.facing === Barbarian.Facing.Left ? part.rx : part.x;
+                spr.y = this.facing === Barbarian.Facing.Left ? part.ry : part.y;
                 spr.x += spr.width / 2;
                 spr.y += spr.height / 2;
                 spr.z = i;
                 var xScale = part.flags & 1 ? -1 : 1;
                 var yScale = part.flags & 2 ? -1 : 1;
-                xScale = this.facing === Barbarian.Direction.Left ? -xScale : xScale;
+                xScale = this.facing === Barbarian.Facing.Left ? -xScale : xScale;
                 spr.scale.setTo(xScale, yScale);
                 spr.visible = true;
             }
@@ -158,7 +158,7 @@ var Barbarian;
                 this.animNum = 0;
                 this.frame = 0;
                 this.direction = direction;
-                this.facing = this.dataBlob.flags[this.direction + 1] ? Barbarian.Direction.Left : Barbarian.Direction.Right;
+                this.facing = this.dataBlob.flags[this.direction + 1] ? Barbarian.Facing.Left : Barbarian.Facing.Right;
                 this.timeStep = Barbarian.FIXED_TIMESTEP;
             }
             Enemy.createEnemy = function (game, data, direction) {
@@ -245,9 +245,9 @@ var Barbarian;
                         this.animNum = 0;
                     }
                     if (this.x < this.game.hero.x)
-                        this.facing = Barbarian.Direction.Right;
+                        this.facing = Barbarian.Facing.Right;
                     else
-                        this.facing = Barbarian.Direction.Left;
+                        this.facing = Barbarian.Facing.Left;
                     if (this.x < this.dataBlob.xMin)
                         this.x = this.dataBlob.xMin;
                     if (this.x > this.dataBlob.xMax)
@@ -272,8 +272,8 @@ var Barbarian;
             function SmallArrow(entity) {
                 var _this = this;
                 _super.call(this, entity.game, entity.x, entity.y - 28, 'POP', 9);
-                this.velocity = entity.facing == Barbarian.Direction.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
-                this.scale.x = entity.facing == Barbarian.Direction.Left ? -1 : 1;
+                this.velocity = entity.facing == Barbarian.Facing.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
+                this.scale.x = entity.facing == Barbarian.Facing.Left ? -1 : 1;
                 this.x += this.velocity * 2;
                 this.checkWorldBounds = true;
                 this.outOfBoundsKill = true;
@@ -447,7 +447,7 @@ var Barbarian;
                                     this.frame = 0;
                                 }
                                 else {
-                                    if (this.facing == Barbarian.Direction.Left) {
+                                    if (this.facing == Barbarian.Facing.Left) {
                                         this.x -= Barbarian.TILE_SIZE;
                                     }
                                     else {
@@ -474,9 +474,9 @@ var Barbarian;
                         }
                 }
                 if (this.x < this.game.hero.x)
-                    this.facing = Barbarian.Direction.Right;
+                    this.facing = Barbarian.Facing.Right;
                 else
-                    this.facing = Barbarian.Direction.Left;
+                    this.facing = Barbarian.Facing.Left;
                 if (this.x < this.dataBlob.xMin)
                     this.x = this.dataBlob.xMin;
                 if (this.x > this.dataBlob.xMax)
@@ -729,7 +729,7 @@ var Barbarian;
         function Ghost(entity) {
             var _this = this;
             _super.call(this, entity.game, entity.x, entity.y - Barbarian.TILE_SIZE, 'misc', 20);
-            this.anchor.setTo(entity.facing == Barbarian.Direction.Left ? 0 : 1, 1);
+            this.anchor.setTo(entity.facing == Barbarian.Facing.Left ? 0 : 1, 1);
             this.deathAnim = this.animations.add('rise', Ghost.FRAMES, Barbarian.FRAMERATE, false, true);
             this.deathAnim.enableUpdate = true;
             this.deathAnim.onUpdate.add(function () { _this.y -= Barbarian.TILE_SIZE; }, this);
@@ -813,6 +813,11 @@ var Barbarian;
         Direction[Direction["Down"] = 3] = "Down";
     })(Barbarian.Direction || (Barbarian.Direction = {}));
     var Direction = Barbarian.Direction;
+    (function (Facing) {
+        Facing[Facing["Right"] = 0] = "Right";
+        Facing[Facing["Left"] = 1] = "Left";
+    })(Barbarian.Facing || (Barbarian.Facing = {}));
+    var Facing = Barbarian.Facing;
     var Inventory = (function () {
         function Inventory() {
             this.availableWeapons = [];
@@ -870,7 +875,7 @@ var Barbarian;
             this.animData = this.game.cache.getJSON('hero');
             this.inventory = new Inventory();
             this.direction = Direction.Right;
-            this.facing = Direction.Right;
+            this.facing = Facing.Right;
             this.tileMap = new Barbarian.TileMap(this);
             this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F, 'flee': Phaser.KeyCode.FOUR });
             this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
@@ -915,8 +920,8 @@ var Barbarian;
             var tileX = -1;
             var tileY = -1;
             if (this.x >= Barbarian.TILE_SIZE && this.x <= 640) {
-                tileX = this.facing == Direction.Right ? (this.x >> Barbarian.TILE_SHIFT) - 1 : (this.x >> Barbarian.TILE_SHIFT);
-                tileX = tileX + (this.facing == Direction.Right ? adjustX : -adjustX);
+                tileX = this.facing == Facing.Right ? (this.x >> Barbarian.TILE_SHIFT) - 1 : (this.x >> Barbarian.TILE_SHIFT);
+                tileX = tileX + (this.facing == Facing.Right ? adjustX : -adjustX);
             }
             if (this.y >= Barbarian.TILE_SIZE && this.y <= 320) {
                 tileY = (this.y >> Barbarian.TILE_SHIFT) - 1;
@@ -1094,7 +1099,7 @@ var Barbarian;
                     this.fsm.transition('Idle');
                 }
             }
-            if (this.facing == Direction.Right) {
+            if (this.facing == Facing.Right) {
                 if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
@@ -1106,7 +1111,7 @@ var Barbarian;
                 else if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left)
                     this.fsm.transition('ChangeDirection');
             }
-            else if (this.facing == Direction.Left) {
+            else if (this.facing == Facing.Left) {
                 if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
@@ -1146,7 +1151,7 @@ var Barbarian;
         };
         Hero.prototype.getBodyBounds = function () {
             var bounds;
-            if (this.facing == Direction.Right)
+            if (this.facing == Facing.Right)
                 bounds = new Phaser.Rectangle(this.x - 32, this.y - 80, 32, 80);
             else
                 bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);
@@ -1264,11 +1269,13 @@ var Barbarian;
             };
             ChangeDirection.prototype.onLeave = function () {
                 this.hero.moveRelative(-3, 0);
-                if (this.hero.facing == Barbarian.Direction.Left) {
-                    this.hero.direction = this.hero.facing = Barbarian.Direction.Right;
+                if (this.hero.facing == Barbarian.Facing.Left) {
+                    this.hero.direction = Barbarian.Direction.Right;
+                    this.hero.facing = Barbarian.Facing.Right;
                 }
                 else {
-                    this.hero.direction = this.hero.facing = Barbarian.Direction.Left;
+                    this.hero.direction = Barbarian.Direction.Right;
+                    this.hero.facing = Barbarian.Facing.Left;
                 }
             };
             return ChangeDirection;
@@ -1385,7 +1392,7 @@ var Barbarian;
                 else if (this.hero.direction == Barbarian.Direction.Down) {
                     this.hero.moveRelative(1, 0);
                 }
-                if (this.hero.facing == Barbarian.Direction.Right)
+                if (this.hero.facing == Barbarian.Facing.Right)
                     this.hero.direction = Barbarian.Direction.Right;
                 else
                     this.hero.direction = Barbarian.Direction.Left;
@@ -1413,9 +1420,9 @@ var Barbarian;
                     this.hero.fsm.transition('Idle');
                     return;
                 }
-                if (this.hero.facing == Barbarian.Direction.Left)
+                if (this.hero.facing == Barbarian.Facing.Left)
                     this.hero.moveRelative(-1, 0);
-                this.hero.facing = Barbarian.Direction.Right;
+                this.hero.facing = Barbarian.Facing.Right;
                 this.hero.tileMap.positionOnLadder();
             };
             UseLadder.prototype.onUpdate = function () {
@@ -1610,7 +1617,7 @@ var Barbarian;
             };
             Fall.prototype.onLeave = function () {
                 this.hero.moveRelative(0, -1);
-                this.hero.direction = this.hero.facing;
+                this.hero.direction = this.hero.facing ? Barbarian.Direction.Left : Barbarian.Direction.Right;
             };
             return Fall;
         }(HeroBaseState));
@@ -1640,7 +1647,7 @@ var Barbarian;
                 }
             };
             FallDeath.prototype.onLeave = function () {
-                this.hero.direction = this.hero.facing;
+                this.hero.direction = this.hero.facing ? Barbarian.Direction.Left : Barbarian.Direction.Right;
             };
             return FallDeath;
         }(HeroBaseState));
@@ -1668,7 +1675,7 @@ var Barbarian;
                 }
             };
             Die.prototype.onLeave = function () {
-                this.hero.direction = this.hero.facing;
+                this.hero.direction = this.hero.facing ? Barbarian.Direction.Left : Barbarian.Direction.Right;
             };
             return Die;
         }(HeroBaseState));
@@ -1680,12 +1687,12 @@ var Barbarian;
             }
             Flee.prototype.onEnter = function () {
                 this.hero.setAnimation(Barbarian.Animations.Flee);
-                if (this.hero.facing == Barbarian.Direction.Left) {
-                    this.hero.facing = Barbarian.Direction.Right;
+                if (this.hero.facing == Barbarian.Facing.Left) {
+                    this.hero.facing = Barbarian.Facing.Right;
                     this.hero.direction = Barbarian.Direction.Right;
                 }
                 else {
-                    this.hero.facing = Barbarian.Direction.Left;
+                    this.hero.facing = Barbarian.Facing.Left;
                     this.hero.direction = Barbarian.Direction.Left;
                 }
                 this.hero.dropWeapon();
@@ -2480,8 +2487,8 @@ var Barbarian;
         function Arrow(hero) {
             var _this = this;
             _super.call(this, hero.game, hero.x, hero.y - 64, 'hero', 128);
-            this.velocity = hero.facing == Barbarian.Direction.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
-            this.scale.x = hero.facing == Barbarian.Direction.Left ? -1 : 1;
+            this.velocity = hero.facing == Barbarian.Facing.Left ? -Barbarian.TILE_SIZE * 2 : Barbarian.TILE_SIZE * 2;
+            this.scale.x = hero.facing == Barbarian.Facing.Left ? -1 : 1;
             this.x += this.velocity * 2;
             this.checkWorldBounds = true;
             this.outOfBoundsKill = true;
@@ -2624,7 +2631,7 @@ var Barbarian;
             if (position.x == -1 || position.y == -1)
                 return false;
             var tileMapRow = this.entity.game.level.currentRoom.layout[position.y - 1].rowData;
-            var relativeMovement = this.entity.facing == Barbarian.Direction.Right ? 1 : -1;
+            var relativeMovement = this.entity.facing == Barbarian.Facing.Right ? 1 : -1;
             for (var x = 0; x < 10; x++) {
                 if (tileMapRow.charAt(position.x) === '#')
                     return false;

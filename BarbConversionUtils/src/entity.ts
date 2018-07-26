@@ -5,7 +5,7 @@ namespace Barbarian {
 
         timeStep: number = 0;
 
-        facing: Direction;      // Which way the entity is facing (left or right).
+        facing: Facing;      // Which way the entity is facing (left or right).
         direction: Direction;   // Which way the entity is moving (up, down, left, right).
 
         constructor(game: Barbarian.Game, key: string) {
@@ -26,7 +26,7 @@ namespace Barbarian {
         // arguments can be decimals, e.g. 0.5 for a half-tile movement.
         moveRelative(numTilesX: number, numTilesY: number): void {
 
-            var xMovement = this.facing == Direction.Right ? TILE_SIZE : -TILE_SIZE;
+            var xMovement = this.facing == Facing.Right ? TILE_SIZE : -TILE_SIZE;
             var yMovement = this.direction == Direction.Up ? -TILE_SIZE : TILE_SIZE;
 
             this.x += xMovement * numTilesX;
@@ -59,8 +59,8 @@ namespace Barbarian {
                 // {@link https://github.com/photonstorm/phaser/issues/1210 Issue}
                 spr.scale.setTo(1, 1);
                 // Reset coordinates for this part.
-                spr.x = this.facing === Direction.Left ? part.rx : part.x;
-                spr.y = this.facing === Direction.Left ? part.ry : part.y;
+                spr.x = this.facing === Facing.Left ? part.rx : part.x;
+                spr.y = this.facing === Facing.Left ? part.ry : part.y;
                 // Translate Barbarian x/y data for use with a Phaser middle anchor.
                 spr.x += spr.width / 2;
                 spr.y += spr.height / 2;
@@ -70,7 +70,7 @@ namespace Barbarian {
                 var xScale = part.flags & 1 ? -1 : 1;
                 var yScale = part.flags & 2 ? -1 : 1;
                 // Flip the part horizontally again based on which way the *entity* is facing.
-                xScale = this.facing === Direction.Left ? -xScale : xScale
+                xScale = this.facing === Facing.Left ? -xScale : xScale
                 spr.scale.setTo(xScale, yScale);
                 // And finally, make sure this sprite part is rendered by Phaser.
                 spr.visible = true;

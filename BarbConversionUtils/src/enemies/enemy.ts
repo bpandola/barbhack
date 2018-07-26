@@ -80,7 +80,7 @@ namespace Barbarian.Enemies {
 
             this.direction = direction;
             
-            this.facing = this.dataBlob.flags[this.direction + 1] ? Direction.Left : Direction.Right;
+            this.facing = this.dataBlob.flags[this.direction + 1] ? Facing.Left : Facing.Right;
 
             // Make sure we update right away
             this.timeStep = FIXED_TIMESTEP;
@@ -191,9 +191,9 @@ namespace Barbarian.Enemies {
                     }
 
                     if (this.x < this.game.hero.x)
-                        this.facing = Direction.Right;
+                        this.facing = Facing.Right;
                     else
-                        this.facing = Direction.Left;
+                        this.facing = Facing.Left;
 
                     if (this.x < this.dataBlob.xMin)
                         this.x = this.dataBlob.xMin;

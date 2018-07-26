@@ -15,7 +15,7 @@
         game: Barbarian.Game;
         getTileMapPosition(adjustX?: number, adjustY?: number): Phaser.Point;
         moveRelative(numTilesX: number, numTilesY: number): void;
-        facing: Direction;
+        facing: Facing;
     }
 
     export class TileMap {
@@ -60,7 +60,7 @@
             // Get one row above entity because '#' is not on same row as entity.
             var tileMapRow: string = this.entity.game.level.currentRoom.layout[position.y-1].rowData;
 
-            var relativeMovement = this.entity.facing == Direction.Right ? 1 : -1;
+            var relativeMovement = this.entity.facing == Facing.Right ? 1 : -1;
 
             for (var x = 0; x < 10; x++) {
                 if (tileMapRow.charAt(position.x) === '#')

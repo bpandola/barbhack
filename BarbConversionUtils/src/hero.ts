@@ -50,6 +50,11 @@ namespace Barbarian {
         Down
     }
 
+    export enum Facing {
+        Right,
+        Left
+    }
+
     export class Inventory {
         numArrows: number;
         activeWeapon: Weapon;
@@ -135,7 +140,7 @@ namespace Barbarian {
 
             this.inventory = new Inventory();
             this.direction = Direction.Right;
-            this.facing = Direction.Right;
+            this.facing = Facing.Right;
 
             this.tileMap = new TileMap(this);
 
@@ -184,8 +189,8 @@ namespace Barbarian {
             var tileY: number = -1;
 
             if (this.x >= TILE_SIZE && this.x <= 640) {
-                tileX = this.facing == Direction.Right ? (this.x >> TILE_SHIFT) - 1 : (this.x >> TILE_SHIFT);
-                tileX = tileX + (this.facing == Direction.Right ? adjustX : -adjustX);
+                tileX = this.facing == Facing.Right ? (this.x >> TILE_SHIFT) - 1 : (this.x >> TILE_SHIFT);
+                tileX = tileX + (this.facing == Facing.Right ? adjustX : -adjustX);
             }
 
             if (this.y >= TILE_SIZE && this.y <= 320) {
@@ -386,7 +391,7 @@ namespace Barbarian {
                     this.fsm.transition('Idle');
                 }
             }
-            if (this.facing == Direction.Right) {
+            if (this.facing == Facing.Right) {
                 if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
@@ -395,7 +400,7 @@ namespace Barbarian {
                     }
                 } else if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left)
                     this.fsm.transition('ChangeDirection');
-            } else if (this.facing == Direction.Left) {
+            } else if (this.facing == Facing.Left) {
                 if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left) {
                     if (this.keys.shift.isDown) {
                         this.fsm.transition('Run');
@@ -442,7 +447,7 @@ namespace Barbarian {
 
             var bounds: Phaser.Rectangle;
 
-            if (this.facing == Direction.Right) 
+            if (this.facing == Facing.Right) 
                 bounds = new Phaser.Rectangle(this.x - 32, this.y - 80, 32, 80);
             else
                 bounds = new Phaser.Rectangle(this.x, this.y - 80, 32, 80);

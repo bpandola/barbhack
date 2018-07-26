@@ -10,7 +10,7 @@ namespace Barbarian {
         constructor(entity: Entity) {
             super(entity.game, entity.x, entity.y - TILE_SIZE, 'misc', 20);
             // Set the x anchor based on which way the enemy was facing.
-            this.anchor.setTo(entity.facing == Direction.Left ? 0 : 1, 1);
+            this.anchor.setTo(entity.facing == Facing.Left ? 0 : 1, 1);
             // Create a Phaser animation that plays at our fixed timestep.
             this.deathAnim = this.animations.add('rise', Ghost.FRAMES, FRAMERATE, false, true);
             // Decrease the y value on each frame, so the ghost rises into the air.

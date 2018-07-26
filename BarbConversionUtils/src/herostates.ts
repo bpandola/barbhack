@@ -142,11 +142,13 @@ namespace Barbarian.HeroStates {
         onLeave() {
             // this.hero.direction = this.hero.facing;
             this.hero.moveRelative(-3, 0);
-            if (this.hero.facing == Direction.Left) {
-                this.hero.direction = this.hero.facing = Direction.Right;
+            if (this.hero.facing == Facing.Left) {
+                this.hero.direction = Direction.Right;
+                    this.hero.facing = Facing.Right;
             }
             else {
-                this.hero.direction = this.hero.facing = Direction.Left;
+                this.hero.direction = Direction.Right;
+                this.hero.facing = Facing.Left;
             }
         }
     }
@@ -331,7 +333,7 @@ namespace Barbarian.HeroStates {
             } else if (this.hero.direction == Direction.Down) {
                 this.hero.moveRelative(1, 0);
             }
-            if (this.hero.facing == Direction.Right)
+            if (this.hero.facing == Facing.Right)
                 this.hero.direction = Direction.Right;
             else
                 this.hero.direction = Direction.Left;
@@ -358,10 +360,10 @@ namespace Barbarian.HeroStates {
             }
 
             // If facing left, need to push the x coord out, so the tile is the same when we manually set facing to the right...
-            if (this.hero.facing == Direction.Left)
+            if (this.hero.facing == Facing.Left)
                 this.hero.moveRelative(-1, 0);
             // Ladder animation only supports facing right and it makes it easier to position player on ladder.
-            this.hero.facing = Direction.Right;
+            this.hero.facing = Facing.Right;
             this.hero.tileMap.positionOnLadder();     
         }
 
@@ -571,7 +573,7 @@ namespace Barbarian.HeroStates {
         onLeave() {
             this.hero.moveRelative(0, -1);
             // Set direction to whichever way hero was facing before fall.
-            this.hero.direction = this.hero.facing;
+            this.hero.direction = this.hero.facing ? Direction.Left : Direction.Right;
         }
 
     }
@@ -607,7 +609,7 @@ namespace Barbarian.HeroStates {
 
         onLeave() {
             // Set direction to whichever way hero was facing before fall.
-            this.hero.direction = this.hero.facing;
+            this.hero.direction = this.hero.facing ? Direction.Left : Direction.Right;
         }
 
     }
@@ -637,7 +639,7 @@ namespace Barbarian.HeroStates {
 
         onLeave() {
             // Set direction to whichever way hero was facing before fall.
-            this.hero.direction = this.hero.facing;
+            this.hero.direction = this.hero.facing ? Direction.Left : Direction.Right;
         }
 
     }
@@ -646,11 +648,11 @@ namespace Barbarian.HeroStates {
 
         onEnter() {
             this.hero.setAnimation(Animations.Flee);
-            if (this.hero.facing == Direction.Left) {
-                this.hero.facing = Direction.Right;
+            if (this.hero.facing == Facing.Left) {
+                this.hero.facing = Facing.Right;
                 this.hero.direction = Direction.Right;
             } else {
-                this.hero.facing = Direction.Left;
+                this.hero.facing = Facing.Left;
                 this.hero.direction = Direction.Left;
             }
             this.hero.dropWeapon();

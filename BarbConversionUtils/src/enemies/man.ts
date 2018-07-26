@@ -36,7 +36,7 @@ namespace Barbarian.Enemies {
                                 this.animNum = 1;
                                 this.frame = 0;
                             } else {
-                                if (this.facing == Direction.Left) {
+                                if (this.facing == Facing.Left) {
                                     this.x -= TILE_SIZE;
                                 } else {
                                     this.x += TILE_SIZE;
@@ -62,9 +62,9 @@ namespace Barbarian.Enemies {
             }
 
             if (this.x < this.game.hero.x)
-                this.facing = Direction.Right;
+                this.facing = Facing.Right;
             else
-                this.facing = Direction.Left;
+                this.facing = Facing.Left;
 
             if (this.x < this.dataBlob.xMin)
                 this.x = this.dataBlob.xMin;
