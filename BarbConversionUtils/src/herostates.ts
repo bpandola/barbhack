@@ -74,6 +74,37 @@ namespace Barbarian.HeroStates {
 
     }
 
+    export class CarryOrb extends Walk {
+
+        onEnter() {
+            this.hero.setAnimation(Animations.CarryOrb);
+            this.hero.inventory.switchWeapon(Weapon.Orb);
+            this.hero.facing = Facing.Left;
+        }
+
+        onUpdate() {
+            this.hero.moveRelative(1, 0);
+            this.hero.checkMovement();
+
+        }
+
+    }
+
+    export class ThrowOrb extends HeroBaseState {
+
+        onEnter() {
+            this.hero.setAnimation(Animations.ThrowOrb);
+        }
+
+        onUpdate() {
+            if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length) {
+                this.hero.frame = 0;
+            }
+
+        }
+
+    }
+
     export class Run extends HeroBaseState {
 
         onEnter() {
@@ -142,6 +173,8 @@ namespace Barbarian.HeroStates {
         onLeave() {
             // this.hero.direction = this.hero.facing;
             this.hero.moveRelative(-3, 0);
+            // TODO: Get rid of direction, it's redundant with Facing
+            // Plus, I just really want to be able to do this.hero.facing ^= 1;
             if (this.hero.facing == Facing.Left) {
                 this.hero.direction = Direction.Right;
                     this.hero.facing = Facing.Right;
@@ -461,6 +494,9 @@ namespace Barbarian.HeroStates {
             if (this.hero.frame == 3) {
                 var itemType = this.hero.game.level.pickUpItem(this.hero);
                 this.hero.inventory.addItem(itemType);
+                if (itemType == ItemType.Orb) {
+                    this.hero.fsm.transition('CarryOrb');
+                }
             }
         }        
     }

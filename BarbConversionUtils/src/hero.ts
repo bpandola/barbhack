@@ -32,14 +32,17 @@ namespace Barbarian {
         BackFlip = 38,
         FrontFlip = 39,
         PickUp = 42,
-        Idle = 43
+        Idle = 43,
+        CarryOrb = 44,
+        ThrowOrb = 45,
     }
 
     export enum Weapon {
         None = 1,
         Sword = 2,
         Shield = 3,
-        Bow = 4
+        Bow = 4,
+        Orb = 5,
     }
 
     export enum Direction {
@@ -64,6 +67,7 @@ namespace Barbarian {
             this.numArrows = 10;
             this.availableWeapons[Weapon.Bow] = true;
             this.availableWeapons[Weapon.Shield] = true;
+            this.availableWeapons[Weapon.Orb] = false;
             // Start with sword.
             this.availableWeapons[Weapon.Sword] = true;
             this.activeWeapon = Weapon.Sword;
@@ -86,6 +90,9 @@ namespace Barbarian {
                     break;
                 case ItemType.Sword:
                     this.availableWeapons[Weapon.Sword] = true;
+                    break;
+                case ItemType.Orb:
+                    this.availableWeapons[Weapon.Orb] = true;
                     break;
             }
         }
@@ -167,6 +174,8 @@ namespace Barbarian {
             this.fsm.add('DropWeapon', new Barbarian.HeroStates.DropWeapon(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
             this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD], true);
+            this.fsm.add('CarryOrb', new Barbarian.HeroStates.CarryOrb(this), ['PickUp']);
+            this.fsm.add('ThrowOrb', new Barbarian.HeroStates.ThrowOrb(this), ['CarryOrb']);
             this.fsm.transition('Idle');
 
             this.render();
@@ -260,6 +269,10 @@ namespace Barbarian {
                         this.fsm.transition('FallDeath', true);
                         return false;
                     }
+                    break;
+                case '8':
+                    this.fsm.transition('ThrowOrb');
+                    break;
             }
 
             if (this.tileMap.isEntityAt(TileMapLocation.StairsUp)) {

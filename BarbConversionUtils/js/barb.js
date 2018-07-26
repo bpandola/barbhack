@@ -796,6 +796,8 @@ var Barbarian;
         Animations[Animations["FrontFlip"] = 39] = "FrontFlip";
         Animations[Animations["PickUp"] = 42] = "PickUp";
         Animations[Animations["Idle"] = 43] = "Idle";
+        Animations[Animations["CarryOrb"] = 44] = "CarryOrb";
+        Animations[Animations["ThrowOrb"] = 45] = "ThrowOrb";
     })(Barbarian.Animations || (Barbarian.Animations = {}));
     var Animations = Barbarian.Animations;
     (function (Weapon) {
@@ -803,6 +805,7 @@ var Barbarian;
         Weapon[Weapon["Sword"] = 2] = "Sword";
         Weapon[Weapon["Shield"] = 3] = "Shield";
         Weapon[Weapon["Bow"] = 4] = "Bow";
+        Weapon[Weapon["Orb"] = 5] = "Orb";
     })(Barbarian.Weapon || (Barbarian.Weapon = {}));
     var Weapon = Barbarian.Weapon;
     (function (Direction) {
@@ -824,6 +827,7 @@ var Barbarian;
             this.numArrows = 10;
             this.availableWeapons[Weapon.Bow] = true;
             this.availableWeapons[Weapon.Shield] = true;
+            this.availableWeapons[Weapon.Orb] = false;
             this.availableWeapons[Weapon.Sword] = true;
             this.activeWeapon = Weapon.Sword;
         }
@@ -843,6 +847,9 @@ var Barbarian;
                     break;
                 case Barbarian.ItemType.Sword:
                     this.availableWeapons[Weapon.Sword] = true;
+                    break;
+                case Barbarian.ItemType.Orb:
+                    this.availableWeapons[Weapon.Orb] = true;
                     break;
             }
         };
@@ -900,6 +907,8 @@ var Barbarian;
             this.fsm.add('DropWeapon', new Barbarian.HeroStates.DropWeapon(this), ['Idle']);
             this.fsm.add('SwitchWeapon', new Barbarian.HeroStates.SwitchWeapon(this), ['Idle']);
             this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [Barbarian.StateMachine.WILDCARD], true);
+            this.fsm.add('CarryOrb', new Barbarian.HeroStates.CarryOrb(this), ['PickUp']);
+            this.fsm.add('ThrowOrb', new Barbarian.HeroStates.ThrowOrb(this), ['CarryOrb']);
             this.fsm.transition('Idle');
             this.render();
         }
@@ -989,6 +998,10 @@ var Barbarian;
                         this.fsm.transition('FallDeath', true);
                         return false;
                     }
+                    break;
+                case '8':
+                    this.fsm.transition('ThrowOrb');
+                    break;
             }
             if (this.tileMap.isEntityAt(Barbarian.TileMapLocation.StairsUp)) {
                 this.direction = Direction.Up;
@@ -1233,6 +1246,39 @@ var Barbarian;
             return Walk;
         }(HeroBaseState));
         HeroStates.Walk = Walk;
+        var CarryOrb = (function (_super) {
+            __extends(CarryOrb, _super);
+            function CarryOrb() {
+                _super.apply(this, arguments);
+            }
+            CarryOrb.prototype.onEnter = function () {
+                this.hero.setAnimation(Barbarian.Animations.CarryOrb);
+                this.hero.inventory.switchWeapon(Barbarian.Weapon.Orb);
+                this.hero.facing = Barbarian.Facing.Left;
+            };
+            CarryOrb.prototype.onUpdate = function () {
+                this.hero.moveRelative(1, 0);
+                this.hero.checkMovement();
+            };
+            return CarryOrb;
+        }(Walk));
+        HeroStates.CarryOrb = CarryOrb;
+        var ThrowOrb = (function (_super) {
+            __extends(ThrowOrb, _super);
+            function ThrowOrb() {
+                _super.apply(this, arguments);
+            }
+            ThrowOrb.prototype.onEnter = function () {
+                this.hero.setAnimation(Barbarian.Animations.ThrowOrb);
+            };
+            ThrowOrb.prototype.onUpdate = function () {
+                if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length) {
+                    this.hero.frame = 0;
+                }
+            };
+            return ThrowOrb;
+        }(HeroBaseState));
+        HeroStates.ThrowOrb = ThrowOrb;
         var Run = (function (_super) {
             __extends(Run, _super);
             function Run() {
@@ -1505,6 +1551,9 @@ var Barbarian;
                 if (this.hero.frame == 3) {
                     var itemType = this.hero.game.level.pickUpItem(this.hero);
                     this.hero.inventory.addItem(itemType);
+                    if (itemType == Barbarian.ItemType.Orb) {
+                        this.hero.fsm.transition('CarryOrb');
+                    }
                 }
             };
             return PickUp;
@@ -2188,6 +2237,7 @@ var Barbarian;
             this.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
                 _this.game.time.reset();
                 _this.game.hero.reset(_this.game.level.getStartPosition().tileX, _this.game.level.getStartPosition().tileY);
+                _this.game.inputManager.clearInput();
                 _this.drawRoom(Barbarian.Direction.None);
             }, this);
         };
@@ -2235,7 +2285,7 @@ var Barbarian;
                 this.game.hero.x = 0;
                 this.game.hero.tilePos.x = 0;
             }
-            else if (this.game.hero.x <= -16 && this.game.hero.direction == Barbarian.Direction.Left) {
+            else if (this.game.hero.x <= -16 && (this.game.hero.direction == Barbarian.Direction.Left || this.game.hero.facing == Barbarian.Facing.Left)) {
                 this.game.level.nextRoom(Barbarian.Direction.Left);
                 this.game.hero.x = 640;
                 this.game.hero.tilePos.x = 39;
@@ -2515,6 +2565,7 @@ var Barbarian;
                     this.items.push(new Item(this.game, item.id, item.x, item.y, room.id));
                 }
             }
+            this.items.push(new Item(this.game, ItemType.Orb, 600, 304, 53));
         }
         Level.prototype.addItem = function (id, x, y) {
             var newItem = new Item(this.game, id, x, y, this.room);

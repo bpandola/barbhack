@@ -121,6 +121,7 @@
             this.game.time.events.add(Phaser.Timer.SECOND/2, () => {
                 this.game.time.reset();
                 this.game.hero.reset(this.game.level.getStartPosition().tileX, this.game.level.getStartPosition().tileY);
+                this.game.inputManager.clearInput();
                 this.drawRoom(Direction.None);
             }, this);
         }
@@ -182,7 +183,7 @@
                 this.game.level.nextRoom(Direction.Right);
                 this.game.hero.x = 0;
                 this.game.hero.tilePos.x = 0;
-            } else if (this.game.hero.x <= -16 && this.game.hero.direction == Direction.Left) {
+            } else if (this.game.hero.x <= -16 && (this.game.hero.direction == Direction.Left || this.game.hero.facing == Facing.Left)) {
                 this.game.level.nextRoom(Direction.Left);
                 this.game.hero.x = 640;
                 this.game.hero.tilePos.x = 39;

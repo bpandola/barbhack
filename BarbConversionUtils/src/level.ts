@@ -93,6 +93,8 @@
                     this.items.push(new Item(this.game, item.id, item.x, item.y, room.id));
                 }
             }
+            // TEST: Add the orb
+            this.items.push(new Item(this.game, ItemType.Orb, 600, 304, 53));
 
         }
 
