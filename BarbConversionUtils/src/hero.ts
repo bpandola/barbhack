@@ -135,6 +135,12 @@ namespace Barbarian {
         inventory: Inventory;
         timeStep: number = 0;
 
+        // HACK!!!
+        bitmapData: Phaser.BitmapData;
+        orb: Phaser.Sprite;
+        colorIndex: number = 0;
+        orbTimeStep: number = 0;
+
         constructor(game: Barbarian.Game, tileX: number, tileY: number) {
             super(game, 'hero');
 
@@ -178,6 +184,17 @@ namespace Barbarian {
             this.fsm.add('ThrowOrb', new Barbarian.HeroStates.ThrowOrb(this), ['CarryOrb']);
             this.fsm.transition('Idle');
 
+            // HACKY ORB SHIT
+            this.orb = game.make.sprite(0, 0, 'hero', 138);
+            this.bitmapData = game.make.bitmapData(this.width, this.height);
+            this.bitmapData.load(this.orb);
+            this.bitmapData.update()
+            var orb = <Phaser.Sprite>this.getChildAt(138);
+            orb.setTexture(this.bitmapData.texture);
+
+            
+
+            //this.addChildAt(new Orb2(game, orb.x, orb.y), 138);
             this.render();
         }
 
@@ -308,6 +325,37 @@ namespace Barbarian {
 
             if (this.frame >= numFrames)
                 this.frame = 0;
+
+           
+        }
+
+        forEachPixel(pixel): boolean | Phaser.Color {
+
+
+            /**
+            * This callback will be sent a single object with 6 properties: `{ r: number, g: number, b: number, a: number, color: number, rgba: string }`.
+            * Where r, g, b and a are integers between 0 and 255 representing the color component values for red, green, blue and alpha.
+            * The `color` property is an Int32 of the full color. Note the endianess of this will change per system.
+            * The `rgba` property is a CSS style rgba() string which can be used with context.fillStyle calls, among others.
+            * The callback must return either `false`, in which case no change will be made to the pixel, or a new color object.
+            * If a new color object is returned the pixel will be set to the r, g, b and a color values given within it.
+            */
+            if (pixel.color.toString(16) == 'ffaa00aa') {
+                return Phaser.Color.fromRGBA(EGA_COLORS[this.colorIndex]);
+            } else {
+                return false;
+            }
+            //  The incoming pixel values
+            //var r = pixel.r;
+            //var g = pixel.g;
+            //var b = pixel.b;
+
+            ////  And let's mix them up a bit
+            //pixel.r = g;
+            //pixel.g = b;
+            //pixel.b = r;
+
+            //return pixel;
         }
 
         checkWeaponSwitch(input) {
@@ -450,7 +498,27 @@ namespace Barbarian {
                 
                 this.animate();
                 this.fsm.update();
+
+                this.bitmapData.load(this.orb);
+                this.bitmapData.update()
+                this.bitmapData.processPixelRGB(this.forEachPixel, this);
+                this.colorIndex++;
+                if (this.colorIndex > 15) {
+                    this.colorIndex = 0;
+                }
             }
+
+            //this.orbTimeStep += this.game.time.elapsedMS;
+            //if (this.orbTimeStep >= (FIXED_TIMESTEP /1.5)) {
+            //    this.orbTimeStep = this.timeStep % (FIXED_TIMESTEP / 1.5);
+            //    this.bitmapData.load(this.orb);
+            //    this.bitmapData.update()
+            //    this.bitmapData.processPixelRGB(this.forEachPixel, this);
+            //    this.colorIndex++;
+            //    if (this.colorIndex > 15) {
+            //        this.colorIndex = 0;
+            //    }
+            //}
 
             this.render();
                 

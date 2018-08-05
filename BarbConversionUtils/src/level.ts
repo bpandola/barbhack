@@ -9,6 +9,8 @@
         Orb
     }
 
+    // TODO: These should just be sprites and the level can have an object map that holds the sprite with room number.
+    // There's no reason why the object would need to know what room number it's in.
     export class Item extends Phaser.Sprite {
         roomNum: number;
         itemType: ItemType;
@@ -63,6 +65,150 @@
             this.flightAnim.play();
         }
     }
+    
+    export class Orb extends Item {
+
+        bitmapData: Phaser.BitmapData;
+        timeStep: number = 0;
+        orb: Phaser.Sprite;
+        colorIndex: number = 0;
+
+        constructor(game: Barbarian.Game, id: number, x: number, y: number, roomNum: number) {
+            super(game, id, x, y, roomNum);
+
+            this.orb = game.make.sprite(0, 0, 'misc', 28);
+            this.bitmapData = game.make.bitmapData(this.width, this.height);
+            //this.bitmapData.draw(this);
+            //this.bitmapData.update()
+            this.bitmapData.ctx.beginPath();
+            this.bitmapData.ctx.rect(0, 0, this.width, this.height);
+            this.bitmapData.ctx.fillStyle = '#ff0000';
+            this.bitmapData.ctx.fill();
+            this.bitmapData.load(this.orb);
+            this.bitmapData.update()
+            this.setTexture(this.bitmapData.texture);
+            
+        }
+
+        update() {
+
+            this.timeStep += this.game.time.elapsedMS;
+            if (this.timeStep >= (FIXED_TIMESTEP>>1)) {
+                this.timeStep = this.timeStep % (FIXED_TIMESTEP>>1);
+                this.bitmapData.load(this.orb);
+                this.bitmapData.update()
+                this.bitmapData.processPixelRGB(this.forEachPixel, this);
+                this.colorIndex++;
+                if (this.colorIndex > 15) {
+                    this.colorIndex = 0;
+                }
+            }
+        }
+
+
+
+        forEachPixel(pixel): boolean | Phaser.Color {
+
+
+            /**
+            * This callback will be sent a single object with 6 properties: `{ r: number, g: number, b: number, a: number, color: number, rgba: string }`.
+            * Where r, g, b and a are integers between 0 and 255 representing the color component values for red, green, blue and alpha.
+            * The `color` property is an Int32 of the full color. Note the endianess of this will change per system.
+            * The `rgba` property is a CSS style rgba() string which can be used with context.fillStyle calls, among others.
+            * The callback must return either `false`, in which case no change will be made to the pixel, or a new color object.
+            * If a new color object is returned the pixel will be set to the r, g, b and a color values given within it.
+            */
+            if (pixel.color.toString(16) == 'ffaa00aa') {
+                return Phaser.Color.fromRGBA(EGA_COLORS[this.colorIndex]);
+            } else {
+                return false;
+            }
+            //  The incoming pixel values
+            //var r = pixel.r;
+            //var g = pixel.g;
+            //var b = pixel.b;
+
+            ////  And let's mix them up a bit
+            //pixel.r = g;
+            //pixel.g = b;
+            //pixel.b = r;
+
+            //return pixel;
+        }
+
+    }
+
+    export class Orb2 extends Phaser.Sprite {
+
+        bitmapData: Phaser.BitmapData;
+        timeStep: number = 0;
+        orb: Phaser.Sprite;
+        colorIndex: number = 0;
+
+        constructor(game: Barbarian.Game, x: number, y: number) {
+            super(game, x, y, 'hero', 138 );
+
+            this.orb = game.make.sprite(0, 0, 'hero', 138);
+            this.bitmapData = game.make.bitmapData(this.width, this.height);
+            //this.bitmapData.draw(this);
+            //this.bitmapData.update()
+            //this.bitmapData.ctx.beginPath();
+            //this.bitmapData.ctx.rect(0, 0, this.width, this.height);
+            //this.bitmapData.ctx.fillStyle = '#ff0000';
+            //this.bitmapData.ctx.fill();
+            this.bitmapData.load(this.orb);
+            this.bitmapData.update()
+            this.setTexture(this.bitmapData.texture);
+
+        }
+
+        update() {
+
+            this.timeStep += this.game.time.elapsedMS;
+            if (this.timeStep >= (FIXED_TIMESTEP >> 1)) {
+                this.timeStep = this.timeStep % (FIXED_TIMESTEP >> 1);
+                this.bitmapData.load(this.orb);
+                this.bitmapData.update()
+                this.bitmapData.processPixelRGB(this.forEachPixel, this);
+                this.colorIndex++;
+                if (this.colorIndex > 15) {
+                    this.colorIndex = 0;
+                }
+            }
+        }
+
+
+
+        forEachPixel(pixel): boolean | Phaser.Color {
+
+
+            /**
+            * This callback will be sent a single object with 6 properties: `{ r: number, g: number, b: number, a: number, color: number, rgba: string }`.
+            * Where r, g, b and a are integers between 0 and 255 representing the color component values for red, green, blue and alpha.
+            * The `color` property is an Int32 of the full color. Note the endianess of this will change per system.
+            * The `rgba` property is a CSS style rgba() string which can be used with context.fillStyle calls, among others.
+            * The callback must return either `false`, in which case no change will be made to the pixel, or a new color object.
+            * If a new color object is returned the pixel will be set to the r, g, b and a color values given within it.
+            */
+            if (pixel.color.toString(16) == 'ffaa00aa') {
+                return Phaser.Color.fromRGBA(EGA_COLORS[this.colorIndex]);
+            } else {
+                return false;
+            }
+            //  The incoming pixel values
+            //var r = pixel.r;
+            //var g = pixel.g;
+            //var b = pixel.b;
+
+            ////  And let's mix them up a bit
+            //pixel.r = g;
+            //pixel.g = b;
+            //pixel.b = r;
+
+            //return pixel;
+        }
+
+    }
 
     export interface RoomData {
         id: number;
@@ -94,7 +240,7 @@
                 }
             }
             // TEST: Add the orb
-            this.items.push(new Item(this.game, ItemType.Orb, 600, 304, 53));
+            this.items.push(new Orb(this.game, ItemType.Orb, 600, 304, 53));
 
         }
 
