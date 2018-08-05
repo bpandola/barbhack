@@ -210,6 +210,13 @@
 
     }
 
+    export enum AreaAttributes {
+        None = 0,
+        FlipHorizontal = 1,
+        FlipVertical = 2,
+        BlackOut = 4,
+    }
+
     export interface RoomData {
         id: number;
         startPos: { tileX: number, tileY: number };

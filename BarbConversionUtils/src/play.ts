@@ -133,7 +133,10 @@
             this.background.clear();
             for (var obj of this.game.level.currentRoom.area) {
 
-                if (obj.flags !== 5) {
+                if (obj.flags & AreaAttributes.BlackOut) {
+                    // Black out area of background with height of a single tile and width of tile * obj.unknown.
+                    this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
+                } else {
                     var spr: Phaser.Sprite;
 
                     spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
@@ -141,18 +144,13 @@
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);
 
-                    var xScale = obj.flags & 1 ? -1 : 1;
-                    var yScale = obj.flags & 2 ? -1 : 1;
+                    var xScale = obj.flags & AreaAttributes.FlipHorizontal ? -1 : 1;
+                    var yScale = obj.flags & AreaAttributes.FlipVertical ? -1 : 1;
 
                     spr.scale.setTo(xScale, yScale);
 
                     this.background.draw(spr, spr.x, spr.y);
                 }
-                else {
-                    // Black out area of background with height of a single tile and width of tile * obj.unknown.
-                    this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
-                }
-
             }
             // Order is important here to maintain correct z-ordering of entities.
             this.background.addToWorld(0, 0);
