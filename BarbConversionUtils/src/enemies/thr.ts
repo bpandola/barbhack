@@ -3,6 +3,8 @@ namespace Barbarian.Enemies {
 
     export class Thr extends Barbarian.GameEntity {
 
+        static ATTACK = 1;
+
         static KILL_FRAMES = [7, 8, 9, 10, 11];
 
         static KILL_X_MIN = [
@@ -12,6 +14,7 @@ namespace Barbarian.Enemies {
             0x50 * SCALE,
             0x40 * SCALE,
         ];
+
         static KILL_X_MAX = [
             0x80 * SCALE,
             0x78 * SCALE,
@@ -20,16 +23,14 @@ namespace Barbarian.Enemies {
             0x50 * SCALE,
         ];
 
-        constructor(game: Barbarian.Game, x = 0, y = 0, key: string, anim_data) {
+        constructor(game: Barbarian.Game, x, y, key: string, anim_data) {
             super(game, x, y, key, anim_data);
-            var attack = this.animations.getAnimation("1");
-            attack.loop = true;
-            attack.play();
+            this.animations.play(Thr.ATTACK);
         }
 
         update() {
-            if (this.animations.frameIndex >= 7 && this.animations.frameIndex <= 11) {
-                var i = this.animations.frameIndex - 7;
+            if (Thr.KILL_FRAMES.indexOf(this.animations.frameIndex) != -1) {
+                var i = this.animations.frameIndex - Thr.KILL_FRAMES[0];
                 var xMin = Thr.KILL_X_MIN[i];
                 var xMax = Thr.KILL_X_MAX[i];
                 if (this.game.hero.x >= xMin && this.game.hero.x < xMax) {
@@ -37,8 +38,6 @@ namespace Barbarian.Enemies {
                 }
             }
         }
-
-
 
     }
 
