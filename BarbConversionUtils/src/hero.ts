@@ -70,7 +70,7 @@ namespace Barbarian {
             this.availableWeapons[Weapon.Orb] = false;
             // Start with sword.
             this.availableWeapons[Weapon.Sword] = true;
-            this.activeWeapon = Weapon.Sword;
+            this.activeWeapon = Weapon.Bow;
         }
 
         hasWeapon(weapon: Weapon) {
@@ -120,7 +120,7 @@ namespace Barbarian {
 
     }
 
-    export class Hero extends Entity {
+    export class Hero extends EntityOld {
         
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -157,8 +157,8 @@ namespace Barbarian {
 
             this.tileMap = new TileMap(this);
 
-            this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F, 'flee': Phaser.KeyCode.FOUR });
-            this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
+            //this.keys = this.game.input.keyboard.addKeys({ 'up': Phaser.KeyCode.UP, 'down': Phaser.KeyCode.DOWN, 'left': Phaser.KeyCode.LEFT, 'right': Phaser.KeyCode.RIGHT, 'shift': Phaser.KeyCode.SHIFT, 'attack': Phaser.KeyCode.ALT, 'jump': Phaser.KeyCode.SPACEBAR, 'sword': Phaser.KeyCode.ONE, 'bow': Phaser.KeyCode.TWO, 'shield': Phaser.KeyCode.THREE, 'slow': Phaser.KeyCode.S, 'fast': Phaser.KeyCode.F, 'flee': Phaser.KeyCode.FOUR });
+            //this.game.input.keyboard.addKeyCapture([Phaser.KeyCode.UP, Phaser.KeyCode.DOWN, Phaser.KeyCode.LEFT, Phaser.KeyCode.RIGHT, Phaser.KeyCode.SHIFT, Phaser.KeyCode.ALT, Phaser.KeyCode.SPACEBAR]);
             this.fsm = new Barbarian.StateMachine.StateMachine(this);
             this.fsm.add('Idle', new Barbarian.HeroStates.Idle(this), [StateMachine.WILDCARD]);
             this.fsm.add('Walk', new Barbarian.HeroStates.Walk(this), ['Idle','Run', 'Flee', 'TakeStairs']);
@@ -182,6 +182,7 @@ namespace Barbarian {
             this.fsm.add('Flee', new Barbarian.HeroStates.Flee(this), [StateMachine.WILDCARD], true);
             this.fsm.add('CarryOrb', new Barbarian.HeroStates.CarryOrb(this), ['PickUp']);
             this.fsm.add('ThrowOrb', new Barbarian.HeroStates.ThrowOrb(this), ['CarryOrb']);
+            this.fsm.add('WaitForArrow', new HeroStates.WaitForArrow(this), ['Attack']);
             this.fsm.transition('Idle');
 
             // HACKY ORB SHIT
@@ -230,6 +231,7 @@ namespace Barbarian {
         setAnimation(id: Animations) {
             this.animNum = id;
             this.frame = 0;
+            this.render();
         }
 
         get isDead(): boolean {
@@ -242,8 +244,9 @@ namespace Barbarian {
         get currentParts() {
             // For the hero, we return the parts for the animation frame as well as the current 
             // weapon, which is stored in the upper 4 bits of the part flags value.
-            var parts: { flags: number }[] = this.animData[this.animNum].frames[this.frame].parts;
-            return parts.filter((part) => { return part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon; });
+            var parts: { flags: number, index: number }[] = this.animData[this.animNum].frames[this.frame].parts;
+            // There are a couple animations for shooting an arrow that have a -1 as an index in the parts list...
+            return parts.filter((part) => { return (part.flags < 5 || (part.flags >> 4) == this.inventory.activeWeapon) && part.index >= 0; });
         }
 
         get isAttackingWithSword(): boolean {
@@ -301,13 +304,13 @@ namespace Barbarian {
                 this.fsm.transition('TakeStairs');
                 return false;
             } else if (this.tileMap.isEntityAt(TileMapLocation.StairsDownOptional)) {
-                if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
+                if (input.buttonsState & Barbarian.Input.Buttons.Down) {
                     this.direction = Direction.Down;
                     this.fsm.transition('TakeStairs');
                     return false;
                 }
             } else if (this.tileMap.isEntityAt(TileMapLocation.StairsUpOptional)) {
-                if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
+                if (input.buttonsState & Barbarian.Input.Buttons.Up) {
                     this.direction = Direction.Up;
                     this.fsm.transition('TakeStairs');
                     return false;
@@ -427,11 +430,6 @@ namespace Barbarian {
                 this.fsm.transition('Run');
             }
 
-            //if (this.keys.flee.isDown) {
-            //    this.fsm.transition('Flee');
-            //}
-
-            // if (this.keys.attack.isDown) {
             if (input.buttonsState & Barbarian.Input.Buttons.Attack) {
                 this.fsm.transition('Attack');              
             }
@@ -441,34 +439,34 @@ namespace Barbarian {
                     this.fsm.transition('FrontFlip');
                 else
                     this.fsm.transition('Jump');
-            } else if (this.keys.jump.isDown) {
-                if (this.tileMap.isAbleToJump()) {
-                    if (this.keys.shift.isDown) {
-                        this.fsm.transition('FrontFlip');
-                    } else {
-                        this.fsm.transition('Jump');
-                    }
-                } else {
-                    this.fsm.transition('Idle');
-                }
+            //} else if (this.keys.jump.isDown) {
+            //    if (this.tileMap.isAbleToJump()) {
+            //        if (this.keys.shift.isDown) {
+            //            this.fsm.transition('FrontFlip');
+            //        } else {
+            //            this.fsm.transition('Jump');
+            //        }
+            //    } else {
+            //        this.fsm.transition('Idle');
+            //    }
             }
             if (this.facing == Facing.Right) {
-                if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right) {
-                    if (this.keys.shift.isDown) {
+                if (input.buttonsState & Barbarian.Input.Buttons.Right) {
+                    if (input.buttonsState & Input.Buttons.Run) {
                         this.fsm.transition('Run');
                     } else {
                         this.fsm.transition('Walk');
                     }
-                } else if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left)
+                } else if (input.buttonsState & Barbarian.Input.Buttons.Left)
                     this.fsm.transition('ChangeDirection');
             } else if (this.facing == Facing.Left) {
-                if (this.keys.left.isDown || input.buttonsState & Barbarian.Input.Buttons.Left) {
-                    if (this.keys.shift.isDown) {
+                if (input.buttonsState & Barbarian.Input.Buttons.Left) {
+                    if (input.buttonsState & Input.Buttons.Run) {
                         this.fsm.transition('Run');
                     } else {
                         this.fsm.transition('Walk');
                     }
-                } else if (this.keys.right.isDown || input.buttonsState & Barbarian.Input.Buttons.Right)
+                } else if (input.buttonsState & Barbarian.Input.Buttons.Right)
                     this.fsm.transition('ChangeDirection');
             }
 
@@ -477,11 +475,11 @@ namespace Barbarian {
             }
             if (input.buttonsState & Input.Buttons.Get) {
                 this.fsm.transition('PickUp');
-            } else if (this.keys.down.isDown || input.buttonsState & Barbarian.Input.Buttons.Down) {
+            } else if (input.buttonsState & Barbarian.Input.Buttons.Down) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderTop)) {
                     this.fsm.transition('UseLadder');
                 }
-            } else if (this.keys.up.isDown || input.buttonsState & Barbarian.Input.Buttons.Up) {
+            } else if (input.buttonsState & Barbarian.Input.Buttons.Up) {
                 if (this.tileMap.isEntityAt(TileMapLocation.LadderBottom)) {
                     this.fsm.transition('UseLadder');
                 }

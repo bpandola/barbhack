@@ -1,5 +1,6 @@
 ﻿/// <reference path="../entity.ts" />
 /// <reference path="../game.ts" />
+/// <reference path="../test.ts" />
 namespace Barbarian.Enemies {
 
     export enum EnemyKeys {
@@ -54,7 +55,7 @@ namespace Barbarian.Enemies {
         flags: number[];
     }
 
-    export class Enemy extends Entity {
+    export class Enemy extends EntityOld {
 
         tilePos: Phaser.Point = new Phaser.Point();
         public animNum: number;
@@ -96,12 +97,32 @@ namespace Barbarian.Enemies {
         * @param direction The direction the player entered the current room, which determines enemy placement/facing direction.
         * @return The newly-created Enemy object.
         */
-        public static createEnemy(game: Barbarian.Game, data: EnemyJSON, direction: Direction): Enemy {
+        public static createEnemy(game: Barbarian.Game, data: EnemyJSON, direction: Direction): Enemy | any {
             switch (data.id) {
+                case EnemyKeys.THR:
+                    var anim_data = game.cache.getJSON('enemies')[data.id].animations;
+                    var x = data.xOff[direction + 1];
+                    var y = data.yOff;
+                    var thr = new Thr(game, x, y, Barbarian.Entity[data.id], anim_data);
+                    thr.facing = data.flags[direction + 1] ? Facing.Left : Facing.Right;
+                    return thr;
+                case EnemyKeys.AXE:
+                    var anim_data = game.cache.getJSON('enemies')[data.id].animations;
+                    var x = data.xOff[direction + 1];
+                    var y = data.yOff;
+                    var axe = new Axe(game, x, y, Barbarian.Entity[data.id], anim_data);
+                    axe.facing = data.flags[direction + 1] ? Facing.Left : Facing.Right;
+                    return axe;
                 case EnemyKeys.ROT:
                     return new Rotate(game, data, direction);
                 case EnemyKeys.SCY:
-                    return new Scythe(game, data, direction);
+                    var anim_data = game.cache.getJSON('enemies')[data.id].animations;
+                    var x = data.xOff[direction + 1];
+                    var y = data.yOff;
+                    var scy = new Scythe(game, x, y, Barbarian.Entity[data.id], anim_data);
+                    scy.facing = data.flags[direction + 1] ? Facing.Left : Facing.Right;
+                    return scy;
+                    //return new Scythe(game, data, direction);
                 case EnemyKeys.BLK:
                     return new Block(game, data, direction);
                 case EnemyKeys.SPK:

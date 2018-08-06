@@ -181,7 +181,7 @@
         private static ICON_HEIGHT = TILE_SIZE * 5;
         private static ICON_WIDTH = TILE_SIZE * 5;
 
-        private static TOGGLE_MENU_KEY_CODE = Phaser.KeyCode.BACKSPACE;
+        private static TOGGLE_MENU_KEY_CODE = Phaser.KeyCode.SPACEBAR;
 
         private static FUNCTION_KEY_CODES: Phaser.KeyCode[] = [
             Phaser.KeyCode.F1,

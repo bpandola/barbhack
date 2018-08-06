@@ -43,18 +43,51 @@
         }
     }
 
-    export class Arrow extends Phaser.Sprite {
+    export class Arrow2 extends Phaser.Sprite {
 
         private velocity: number;
         private flightAnim: Phaser.Animation;
 
         constructor(hero: Barbarian.Hero) {
-            super(hero.game, hero.x, hero.y-64, 'hero', 128);
+            var arrow = hero.animData[hero.animNum].frames[hero.frame].parts.find(p => p.index == -1);
+            var x = hero.facing === Facing.Left ? arrow.rx : arrow.x;
+            var y = hero.facing === Facing.Left ? arrow.ry : arrow.y;
+            super(hero.game, hero.x+x, hero.y+y, 'hero', 128);
             // Set the arrow movement and initial position based on which way the Hero is facing.
             this.velocity = hero.facing == Facing.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
             this.scale.x = hero.facing == Facing.Left ? -1 : 1;
-            this.x += this.velocity * 2;
+            this.anchor.setTo(0.5, 1);
+            //if (hero.facing == Facing.Right) {
+            //this.x += this.velocity;
+            //} else {
+            //    this.x += TILE_SIZE;
+            //}
             // Kill the arrow if it goes off the edge of the screen.
+            this.checkWorldBounds = true;
+            this.outOfBoundsKill = true;
+            // Create a single frame Phaser animation that loops indefinitely.
+            this.flightAnim = this.animations.add('fly', [128], FRAMERATE, true, true);
+            // Move the x value on each frame, so the arrow flies through the air.
+            this.flightAnim.enableUpdate = true;
+            this.flightAnim.onUpdate.add(() => { this.x += this.velocity; }, this);
+            this.flightAnim.play();
+        }
+    }
+
+    export class Arrow extends Phaser.Sprite {
+
+        private velocity: number;
+        private flightAnim: Phaser.Animation;
+
+        constructor(game: Barbarian.Game, x, y, facing: Facing) {
+            super(game, x, y, 'hero', 128);
+            this.anchor.setTo(0.5, 0.5);
+            this.x += this.width / 2;
+            this.y += this.height / 2;
+            // Set the arrow movement and initial position based on which way the Hero is facing.
+            this.velocity = facing == Facing.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;
+            this.scale.x = facing == Facing.Left ? -1 : 1;
+            
             this.checkWorldBounds = true;
             this.outOfBoundsKill = true;
             // Create a single frame Phaser animation that loops indefinitely.

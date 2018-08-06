@@ -131,15 +131,17 @@
             this.world.removeAll();
             // Render background.
             this.background.clear();
+            var color = Phaser.Color.getRGB(Phaser.Color.getRandomColor());
+            this.background.fill(color.r, color.g, color.b, color.a);
             for (var obj of this.game.level.currentRoom.area) {
 
                 if (obj.flags & AreaAttributes.BlackOut) {
                     // Black out area of background with height of a single tile and width of tile * obj.unknown.
                     this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
                 } else {
-                    var spr: Phaser.Sprite;
+                    var spr: Phaser.Image;
 
-                    spr = this.make.sprite(obj.xOff, obj.yOff, 'area', obj.imageId);
+                    spr = this.make.image(obj.xOff, obj.yOff, 'area', obj.imageId);
                     spr.x += spr.width / 2;
                     spr.y += spr.height / 2;
                     spr.anchor.setTo(0.5);
@@ -204,20 +206,20 @@
 
             this.handleMovement();
 
-            if (this.game.hero.keys.fast.isDown) {
-                FIXED_TIMESTEP -= 1;
-                if (FIXED_TIMESTEP < 1)
-                    FIXED_TIMESTEP = 1;
-                FRAMERATE = 1000 / FIXED_TIMESTEP;
-                console.log(FIXED_TIMESTEP.toString());
-            }
-            else if (this.game.hero.keys.slow.isDown) {
-                FIXED_TIMESTEP += 1;
-                if (FIXED_TIMESTEP > 999)
-                    FIXED_TIMESTEP = 999;
-                FRAMERATE = 1000 / FIXED_TIMESTEP;
-                console.log(FIXED_TIMESTEP.toString());
-            }
+            //if (this.game.hero.keys.fast.isDown) {
+            //    FIXED_TIMESTEP -= 1;
+            //    if (FIXED_TIMESTEP < 1)
+            //        FIXED_TIMESTEP = 1;
+            //    FRAMERATE = 1000 / FIXED_TIMESTEP;
+            //    console.log(FIXED_TIMESTEP.toString());
+            //}
+            //else if (this.game.hero.keys.slow.isDown) {
+            //    FIXED_TIMESTEP += 1;
+            //    if (FIXED_TIMESTEP > 999)
+            //        FIXED_TIMESTEP = 999;
+            //    FRAMERATE = 1000 / FIXED_TIMESTEP;
+            //    console.log(FIXED_TIMESTEP.toString());
+            //}
 
             // Basic sword killing test
             if (this.game.hero.isAttackingWithSword) {
@@ -267,6 +269,7 @@
             if (this.game.debugOn) {
                 this.game.debug.text(this.game.level.currentRoom.id.toString(), 20, 20);
                 this.game.debug.text(this.game.inputManager.iconsState.toString(), 50, 20);
+                this.game.debug.text(this.game.hero.animNum.toString(), 40, 80);
                 // this.game.debug.text(this.game.hero.tileMap.getTile(), 20, 40);
                 // Draw Gridlines and TileMap Values
                 for (var i = 0; i < 40; i++) {

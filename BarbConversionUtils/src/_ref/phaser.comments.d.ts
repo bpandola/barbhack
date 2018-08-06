@@ -83,7 +83,7 @@ declare module Phaser {
         */
         constructor(game: Phaser.Game, parent: Phaser.Sprite, name: string, frameData: Phaser.FrameData, frames: number[] | string[], frameRate?: number, loop?: boolean);
 
-
+        _frameIndex: number;
         /**
         * The currently displayed frame of the Animation.
         */
@@ -307,7 +307,7 @@ declare module Phaser {
         */
         constructor(sprite: Phaser.Sprite);
 
-
+        _frameData: any;
         /**
         * The currently displayed animation, if any.
         */

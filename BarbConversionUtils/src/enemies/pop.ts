@@ -7,7 +7,7 @@ namespace Barbarian.Enemies {
         private velocity: number;
         private flightAnim: Phaser.Animation;
 
-        constructor(entity: Entity) {
+        constructor(entity: EntityOld) {
             super(entity.game, entity.x, entity.y - 28, 'POP', 9);
             // Set the arrow movement and initial position based on which way the Hero is facing.
             this.velocity = entity.facing == Facing.Left ? -TILE_SIZE * 2 : TILE_SIZE * 2;

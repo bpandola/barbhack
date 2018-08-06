@@ -42,9 +42,19 @@
 
             this.state.add('Boot', new Barbarian.Boot());
             this.state.add('Play', new Barbarian.Play());
+            this.state.add('Test', new Test());
 
-            this.state.start('Boot', true, true, 'Play');  // pass in the state to start after boot
+            // TODO: Use phaser.net for query string stuff instead of stackoverflow copy/paste...
+            var net = new Phaser.Net(this);
+            var params: Object = net.getQueryString();
 
+            if (!('startingState' in params)) {
+                params['startingState'] = 'Play';
+            }
+            
+            this.state.start('Boot', true, true, params['startingState']);  // pass in the state to start after boot
+
+            
             if ('debugOn' in queryParams) {
                 this.debugOn = true;
             }

@@ -38,6 +38,10 @@
             this.updateIfVisible = false;
         }
 
+        play(name, frameRate?, loop?, killOnComplete?) {
+            return super.play(name.toString(), frameRate, loop, killOnComplete);
+        }
+
         nextAnim() {
             var next = 0;
             if (this.currentAnim) {
@@ -83,30 +87,94 @@
         }
     }
 
+    export enum Entity {
+        NLL,
+        AXE,
+        THR,
+        POP,
+        DOG,
+        HOP,
+        REP,
+        ARO,
+        MET,
+        REN,
+        VER,
+        BAD,
+        ROC,
+        APE,
+        SCY,
+        RHI,
+        MN1,
+        MN2,
+        MN3,
+        MN4,
+        MN5,
+        MN6,
+        MN7,
+        MOR,
+        OC1,
+        OC2,
+        NT1,
+        NT2,
+        NT3,
+        AC1,
+        AC2,
+        AC3,
+        BLK,
+        SPK,
+        STN,
+        DRA,
+        ROT,
+        VSP,
+        HERO
+    }
+
+    export class EntityFactory {
+
+        game: Barbarian.Game;
+
+        constructor(game: Barbarian.Game) {
+            this.game = game;
+        }
+
+        create(id: Entity, x, y): GameEntity {
+            var anim_data = [];
+            if (id == Entity.HERO) {
+                anim_data = this.game.cache.getJSON('heroanims');
+            } else {
+                anim_data = this.game.cache.getJSON('enemies')[id].animations
+            }
+            return new GameEntity(this.game, x, y, Entity[id], anim_data);
+        }
+    }
+
     export class GameEntity extends Phaser.Sprite {
+
+        game: Barbarian.Game;
 
         timeStep: number = 0;
 
         facing: Facing;      // Which way the entity is facing (left or right).
         direction: Direction;   // Which way the entity is moving (up, down, left, right).
 
-        group: Phaser.Group;
-
-        constructor(game: Barbarian.Game, key: string) {
-            super(game, 0, 0, 'NLL');
-            // Add all parts to the group
-            this.group = new Phaser.Group(game, this);
+        animator: AnimationManager;
+        animations: AnimationManager;
+        constructor(game: Barbarian.Game, x = 0, y = 0, key: string, anim_data) {
+            // Null sprite backing this...
+            super(game, x, y, 'NLL');
+            // Add all parts as child sprites
             for (var i = 0; i < game.cache.getFrameCount(key); i++) {
-                var part = <Phaser.Sprite>this.group.create(0, 0, key, i);
+                var part = <Phaser.Sprite>this.addChild(game.make.sprite(0, 0, key, i));
                 // Set default properties.
                 part.anchor.setTo(0.5);
                 part.visible = false;
             }
+            this.animator = new AnimationManager(this, anim_data);
+            this.animations = this.animator;
         }
 
-        // Should be overridden by subclasses
         get currentParts() {
-            return [];
+            return this.animator.currentParts;
         }
 
         // arguments can be decimals, e.g. 0.5 for a half-tile movement.
@@ -125,25 +193,29 @@
             this.timeStep += this.game.time.elapsedMS;
             if (this.timeStep >= FIXED_TIMESTEP) {
                 this.timeStep = this.timeStep % FIXED_TIMESTEP;
+                this.animator.update();
                 this.tick()
             }
         }
 
-        // Should be overridden by subclasses
-        tick() { }
+        // should be overridden by subclasses
+        tick() {
+            
+        }
 
-        render() {
+        postUpdate() {
+            // This is called automatically by the Phaser Game Loop.
             // Start from scratch every time.
-            this.group.forEach((part) => { part.visible = false; }, this);
+            this.children.forEach((part) => { part.visible = false; });
             // For each currently visible part, reset properties and set visible to true.
             for (var i = 0, parts = this.currentParts; i < parts.length; i++) {
                 // Get a reference to the sprite for this part.
                 var part = parts[i];
-                // We have to ignore the arrow part...
+                // There are a couple of anomalous parts in the Barbarian data (e.g. ShootArrow animation).
                 if (part.index < 0) {
                     continue;
                 }
-                var spr = <Phaser.Sprite>this.group.getChildAt(part.index);
+                var spr = <Phaser.Sprite>this.getChildAt(part.index);
                 // Need to reset the scale here or we may get negative sprite width/height,
                 // which will throw off the x/y calculations.
                 // {@link https://github.com/photonstorm/phaser/issues/1210 Issue}
@@ -151,7 +223,7 @@
                 // Reset coordinates for this part.
                 spr.x = this.facing === Facing.Left ? part.rx : part.x;
                 spr.y = this.facing === Facing.Left ? part.ry : part.y;
-                // Translate Barbarian x/y data for use with a Phaser middle anchor.
+                // Translate Barbarian part x/y data for use with a Phaser middle anchor.
                 spr.x += spr.width / 2;
                 spr.y += spr.height / 2;
                 // Set z relative to when the part was added for proper overlap.
@@ -169,77 +241,21 @@
 
     }
 
-    class TestEntity extends GameEntity {
-
-        game: Barbarian.Game;
-        fakeSprite: Phaser.Sprite;
-        animations: Phaser.AnimationManager;
-        animator: AnimationManager;
-
-        constructor(game: Barbarian.Game, key: string, x: number, y: number) {
-            super(game, key);
-            this.x = x;
-            this.y = y;
-
-            
-            this.fakeSprite = new Phaser.Sprite(game, -1000, -1000, key);
-            this.animator = new AnimationManager(this.fakeSprite, game.cache.getJSON('enemies')[Enemies.EnemyKeys[key]].animations);
-            this.animator.play("0");
-            
-        }
-
-        get currentParts() {
-            return this.animator.currentParts;
-        }
-
-        tick() {
-            this.animator.update();
-            this.render();
-        }
-
-    }
-
-
-    class TestHero extends GameEntity {
-
-        game: Barbarian.Game;
-        fakeSprite: Phaser.Sprite;
-        animations: Phaser.AnimationManager;
-        animator: AnimationManager;
-
-        constructor(game: Barbarian.Game, x: number, y: number) {
-            super(game, 'hero');
-            this.x = x;
-            this.y = y;
-
-
-            this.fakeSprite = new Phaser.Sprite(game, -1000, -1000, 'hero');
-            this.animator = new AnimationManager(this.fakeSprite, game.cache.getJSON('hero'));
-            this.animator.play("0");
-
-        }
-
-        get currentParts() {
-            return this.animator.currentParts;
-        }
-
-        tick() {
-            this.animator.update();
-            this.render();
-        }
-
-    }
     export class Test extends Phaser.State {
 
         game: Barbarian.Game;
-        enemyLeft: TestEntity;
-        enemyRight: TestEntity;
-        heroLeft: TestHero;
-        heroRight: TestHero;
+
+        entities: GameEntity[];
+        entityFactory: EntityFactory;
+
+        currentEntityId: Entity = Entity.HERO;
 
         preload() {
-            this.load.atlasJSONArray('hero', 'assets/hero.png', 'assets/hero.json');
-            this.load.json('hero', 'assets/heroanims.json');
+
+            this.load.atlasJSONArray('area', 'assets/area.png', 'assets/area.json');
+            this.load.json('rooms', 'assets/rooms.json');
+            this.load.atlasJSONArray('HERO', 'assets/hero.png', 'assets/hero.json');
+            this.load.json('heroanims', 'assets/heroanims.json');
 
             // Enemies
             this.load.json('enemies', 'assets/enemyanims.json');
@@ -249,85 +265,80 @@
                 var key: string = Enemies.EnemyKeys[i].toLowerCase();
                 this.load.atlasJSONArray(key.toUpperCase(), 'assets/enemies/' + key + '.png', 'assets/enemies/' + key + '.json');
             }
+
+            
         }
 
         create() {
-
-            this.placeEntities(0);
+            this.entityFactory = new EntityFactory(this.game);
+            this.placeEntities(this.currentEntityId);
 
             // Hot Keys
             var key1 = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
             key1.onDown.add(() => {
-                this.enemyLeft.animator.previousAnim();
-                this.enemyRight.animator.previousAnim();
-                this.heroLeft.animator.previousAnim();
-                this.heroRight.animator.previousAnim();
+                this.entities.forEach((entity) => {
+                    entity.animator.previousAnim();
+                })
             });
 
             var key2 = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
             key2.onDown.add(() => {
-                this.enemyLeft.animator.nextAnim();
-                this.enemyRight.animator.nextAnim();
-                this.heroLeft.animator.nextAnim();
-                this.heroRight.animator.nextAnim();
+                this.entities.forEach((entity) => {
+                    entity.animator.nextAnim();
+                })
             });
 
             var key3 = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-            key3.onDown.add(() => { this.nextEnemy() });
+            key3.onDown.add(() => { this.nextEntity() });
 
             var key4 = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            key4.onDown.add(() => { this.previousEnemy() });
+            key4.onDown.add(() => { this.previousEntity() });
            
         }
 
-        placeEntities(currentEnemy) {
+        placeEntities(entityId) {
             this.game.stage.backgroundColor = Phaser.Color.getRandomColor();
             this.world.removeAll();
 
-            this.enemyLeft = new TestEntity(this.game, Enemies.EnemyKeys[currentEnemy], 200, 300);
-            this.enemyRight = new TestEntity(this.game, Enemies.EnemyKeys[currentEnemy], 400, 300);
-            this.enemyRight.facing = Facing.Left;
-            this.world.add(this.enemyLeft);
-            this.world.add(this.enemyRight);
+            // Draw room.
+            this.entities = [];
 
-            if (!currentEnemy) {
-                this.heroLeft = new TestHero(this.game, 200, 300);
-                this.heroRight = new TestHero(this.game, 400, 300);
-                this.heroRight.facing = Facing.Left;
-                this.world.add(this.heroLeft);
-                this.world.add(this.heroRight);
-            }
+            this.entities.push(this.entityFactory.create(entityId, 240, 300));
+            this.entities.push(this.entityFactory.create(entityId, 400, 300));
+            this.entities[1].facing = Facing.Left;
+
+            this.entities.forEach((entity) => {
+                this.world.add(entity);
+                entity.animator.play('0');
+            });
         }
 
-        previousEnemy() {
-            var currentEnemy = Enemies.EnemyKeys[<string>this.enemyLeft.fakeSprite.key];
-            currentEnemy--;
-            if (currentEnemy < 0) {
-                currentEnemy = 0;
+        previousEntity() {
+            this.currentEntityId--;
+            if (this.currentEntityId < 0) {
+                this.currentEntityId = 0;
+                return;
             }
-            this.placeEntities(currentEnemy);
+            this.placeEntities(this.currentEntityId);
         }
 
-        nextEnemy() {
-            var currentEnemy = Enemies.EnemyKeys[<string>this.enemyLeft.fakeSprite.key];
-            currentEnemy++;
-            if (currentEnemy > Enemies.EnemyKeys.VSP) {
-                currentEnemy = Enemies.EnemyKeys.VSP;
+        nextEntity() {
+            this.currentEntityId++;
+            if (this.currentEntityId > Entity.HERO) {
+                this.currentEntityId = Entity.HERO;
+                return;
             }
-            this.placeEntities(currentEnemy);
-
+            this.placeEntities(this.currentEntityId);
         }
 
         update() {
 
-            this.enemyLeft.group.x += .1;
+            //this.entities[0].x += 1;
+            //this.entities[0].y -= 1;
 
 
         }
 
-        render() {
-        
-        }
 
     }
 

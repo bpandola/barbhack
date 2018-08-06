@@ -7,7 +7,7 @@ namespace Barbarian {
 
         private deathAnim: Phaser.Animation;
 
-        constructor(entity: Entity) {
+        constructor(entity: EntityOld) {
             super(entity.game, entity.x, entity.y - TILE_SIZE, 'misc', 20);
             // Set the x anchor based on which way the enemy was facing.
             this.anchor.setTo(entity.facing == Facing.Left ? 0 : 1, 1);
@@ -23,7 +23,7 @@ namespace Barbarian {
     }
 
     export class Spirit extends Enemies.Enemy {
-        constructor(entity: Entity) {
+        constructor(entity: EntityOld) {
             var dataBlob: Enemies.EnemyJSON = {
                 id: Enemies.EnemyKeys.misc,
                 xOff: [entity.x,entity.x,entity.x,entity.x,entity.x],

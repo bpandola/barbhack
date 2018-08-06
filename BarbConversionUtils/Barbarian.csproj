@@ -64,12 +64,15 @@
     <Content Include="index.html" />
     <Content Include="js\barb.js" />
     <Content Include="js\lib\phaser-2-10-5.min.js" />
+    <Content Include="js\lib\phaser-latest.js" />
     <Content Include="js\lib\phaser.js" />
     <Content Include="js\lib\phaser.min.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\enemies\axe.ts" />
     <TypeScriptCompile Include="src\enemies\pop.ts" />
+    <TypeScriptCompile Include="src\enemies\thr.ts" />
     <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\boot.ts" />
     <TypeScriptCompile Include="src\enemies\blk.ts" />
@@ -86,6 +89,7 @@
     <TypeScriptCompile Include="src\input.ts" />
     <TypeScriptCompile Include="src\play.ts" />
     <TypeScriptCompile Include="src\level.ts" />
+    <TypeScriptCompile Include="src\test.ts" />
     <TypeScriptCompile Include="src\tilemap.ts" />
     <TypeScriptCompile Include="src\_ref\p2.d.ts" />
     <TypeScriptCompile Include="src\_ref\phaser.comments.d.ts" />

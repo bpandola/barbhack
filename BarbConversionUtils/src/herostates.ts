@@ -459,22 +459,51 @@ namespace Barbarian.HeroStates {
             // BAD HACK
             if (this.animDone && !this.waitForArrow) {
                 if (this.hero.animNum == Animations.ShootArrow) {
-                    this.hero.setAnimation(Animations.WaitForArrow);
-                    this.arrow = new Arrow(this.hero);
-                    this.hero.game.world.add(this.arrow);
-                    this.hero.inventory.numArrows--;
-                    this.waitForArrow = true;
+                    //this.hero.setAnimation(Animations.WaitForArrow);
+                    //this.arrow = new Arrow(this.hero);
+                    //this.hero.game.world.add(this.arrow);
+                    //this.hero.inventory.numArrows--;
+                    //this.waitForArrow = true;
+                    
                 } else {
                     this.hero.fsm.transition('Idle');
                 }
             } else if (this.hero.frame == this.hero.animData[this.hero.animNum].frames.length - 1) {
                 this.animDone = true;
+                if (this.hero.animNum == Animations.ShootArrow) {
+                    var arrowData = this.hero.animData[Animations.WaitForArrow].frames[0].parts.find(p => p.index == -1);
+                    var x = this.hero.facing === Facing.Left ? arrowData.rx : arrowData.x;
+                    var y = this.hero.facing === Facing.Left ? arrowData.ry : arrowData.y;
+                    this.arrow = new Arrow(this.hero.game, this.hero.x + x, this.hero.y + y, this.hero.facing);
+                    this.hero.game.world.add(this.arrow);
+                    this.hero.inventory.numArrows--;
+                    this.hero.fsm.transition('WaitForArrow', false, this.arrow);
+                }
             }
 
             if (this.waitForArrow) {
                 if (!this.arrow || !this.arrow.alive) {
                     this.hero.fsm.transition('Idle');
                 }
+            }
+        }
+    }
+
+    export class WaitForArrow extends HeroBaseState {
+
+        private arrow: Arrow;
+
+        onEnter(...args: any[]) {
+            this.arrow = args[0][0];
+            this.hero.setAnimation(Animations.WaitForArrow);
+            
+        }
+
+        onUpdate() {
+            // Can't transition out of this state until the error has hit something or is off the screen.
+            if (!this.arrow || !this.arrow.alive) {
+                this.hero.fsm.transition('Idle');
+
             }
         }
     }
@@ -539,6 +568,7 @@ namespace Barbarian.HeroStates {
         private animDone: boolean;
 
         onEnter() {
+            this.hero.clearInput();
             this.hero.setAnimation(Animations.TripFall);
            
             this.animDone = false;
@@ -551,27 +581,31 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
-
+            var movement = this.hero.animData[this.hero.animNum].frames[this.hero.frame].movement;
+            this.hero.moveRelative(movement.x / TILE_SIZE, movement.y / TILE_SIZE);
+            if (this.hero.frame == 4) {
+                this.animDone = true;
+            }
             
 
-            switch (this.hero.frame) {
-                case 0:
-                    this.hero.moveRelative(2, 0);
-                    break;
-                case 1:
-                    this.hero.moveRelative(1, 0);
-                    break;
-                case 2:
-                    this.hero.moveRelative(1, 1);
-                    break;
-                case 3:
-                    this.hero.moveRelative(2, 1);
-                    break;
-                case 4:
-                    this.hero.moveRelative(0, 1);
-                    this.animDone = true;
-                    break;
-            }
+            //switch (this.hero.frame) {
+            //    case 0:
+            //        this.hero.moveRelative(2, 0);
+            //        break;
+            //    case 1:
+            //        this.hero.moveRelative(1, 0);
+            //        break;
+            //    case 2:
+            //        this.hero.moveRelative(1, 1);
+            //        break;
+            //    case 3:
+            //        this.hero.moveRelative(2, 1);
+            //        break;
+            //    case 4:
+            //        this.hero.moveRelative(0, 1);
+            //        this.animDone = true;
+            //        break;
+            //}
 
             if (!this.hero.checkMovement())
                 return;
@@ -638,6 +672,8 @@ namespace Barbarian.HeroStates {
                 this.hero.frame = 3;
                 this.hero.onDied.dispatch();
                 this.deathDispatched = true;
+            } else if (this.animDone && this.deathDispatched) {
+                this.hero.frame = 3;
             } else {
                 this.animDone = true;
             }
@@ -664,6 +700,10 @@ namespace Barbarian.HeroStates {
         }
 
         onUpdate() {
+            if (this.animDone && this.deathDispatched) {
+                this.hero.frame = this.hero.animData[this.hero.animNum].frames.length - 1;
+                return;
+            }
             if (this.hero.frame == 0 && this.animDone && !this.deathDispatched) {
                 this.hero.frame = this.hero.animData[this.hero.animNum].frames.length-1;
                 this.hero.onDied.dispatch();

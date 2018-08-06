@@ -1,13 +1,13 @@
 ﻿/// <reference path="game.ts" />
 namespace Barbarian {
 
-    export class Entity extends Phaser.Group {
+    export class EntityOld extends Phaser.Group {
 
         timeStep: number = 0;
 
         facing: Facing;      // Which way the entity is facing (left or right).
         direction: Direction;   // Which way the entity is moving (up, down, left, right).
-
+        
         constructor(game: Barbarian.Game, key: string) {
             super(game);
             // Add all parts to the group
@@ -15,6 +15,7 @@ namespace Barbarian {
                 var part = <Phaser.Sprite>this.create(0, 0, key, i);
                 // Set default properties.
                 part.anchor.setTo(0.5);
+                part.visible = false;
             }
         }
 
@@ -53,6 +54,10 @@ namespace Barbarian {
             for (var i = 0, parts = this.currentParts; i < parts.length; i++) {
                 // Get a reference to the sprite for this part.
                 var part = parts[i];
+                // We have to ignore the arrow part...
+                if (part.index < 0) {
+                    continue;
+                }
                 var spr = <Phaser.Sprite>this.getChildAt(part.index);
                 // Need to reset the scale here or we may get negative sprite width/height,
                 // which will throw off the x/y calculations.
