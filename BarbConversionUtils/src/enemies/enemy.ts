@@ -99,6 +99,20 @@ namespace Barbarian.Enemies {
         */
         public static createEnemy(game: Barbarian.Game, data: EnemyJSON, direction: Direction): Enemy | any {
             switch (data.id) {
+                case EnemyKeys.ROC:
+                    var anim_data = game.cache.getJSON('enemies')[data.id].animations;
+                    var x = data.xOff[direction + 1];
+                    var y = data.yOff;
+                    var roc = new Roc(game, x, y, Barbarian.Entity[data.id], anim_data);
+                    roc.facing = data.flags[direction + 1] ? Facing.Left : Facing.Right;
+                    return roc;
+                case EnemyKeys.POP:
+                    var anim_data = game.cache.getJSON('enemies')[data.id].animations;
+                    var x = data.xOff[direction + 1];
+                    var y = data.yOff;
+                    var pop = new Pop(game, x, y, Barbarian.Entity[data.id], anim_data);
+                    pop.facing = data.flags[direction + 1] ? Facing.Left : Facing.Right;
+                    return pop;
                 case EnemyKeys.THR:
                     var anim_data = game.cache.getJSON('enemies')[data.id].animations;
                     var x = data.xOff[direction + 1];
@@ -127,8 +141,6 @@ namespace Barbarian.Enemies {
                     return new Block(game, data, direction);
                 case EnemyKeys.SPK:
                     return new Spikes(game, data, direction);
-                case EnemyKeys.POP:
-                    return new Pop(game, data, direction);
                 case EnemyKeys.MN1:
                 case EnemyKeys.MN2:
                 case EnemyKeys.MN3:
@@ -163,8 +175,8 @@ namespace Barbarian.Enemies {
         }
 
         kill() {
-            //this.game.world.add(new Ghost(this));
-            this.game.world.add(new Spirit(this));
+            this.game.world.add(new Ghost(this));
+            //this.game.world.add(new Spirit(this));
             this.destroy();
         }
 

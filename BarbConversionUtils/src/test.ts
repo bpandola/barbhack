@@ -42,6 +42,10 @@
             return super.play(name.toString(), frameRate, loop, killOnComplete);
         }
 
+        getAnimation(name: string | number) {
+            return super.getAnimation(name.toString());
+        }
+
         nextAnim() {
             var next = 0;
             if (this.currentAnim) {
@@ -177,6 +181,13 @@
             return this.animator.currentParts;
         }
 
+        adjustForFacing(value: number) {
+            if (this.facing == Facing.Left) {
+                return -value;
+            } else {
+                return value;
+            }
+        }
         // arguments can be decimals, e.g. 0.5 for a half-tile movement.
         moveRelative(numTilesX: number, numTilesY: number): void {
 

@@ -132,12 +132,13 @@
             // Render background.
             this.background.clear();
             var color = Phaser.Color.getRGB(Phaser.Color.getRandomColor());
+      
             this.background.fill(color.r, color.g, color.b, color.a);
             for (var obj of this.game.level.currentRoom.area) {
 
                 if (obj.flags & AreaAttributes.BlackOut) {
                     // Black out area of background with height of a single tile and width of tile * obj.unknown.
-                    this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, '#000');
+                    this.background.rect(obj.xOff, obj.yOff, TILE_SIZE * obj.unknown, TILE_SIZE, Phaser.Color.RGBtoString(color.r, color.g, color.b, color.a, '#'));
                 } else {
                     var spr: Phaser.Image;
 

@@ -72,6 +72,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\enemies\axe.ts" />
     <TypeScriptCompile Include="src\enemies\pop.ts" />
+    <TypeScriptCompile Include="src\enemies\roc.ts" />
     <TypeScriptCompile Include="src\enemies\thr.ts" />
     <TypeScriptCompile Include="src\game.ts" />
     <TypeScriptCompile Include="src\boot.ts" />

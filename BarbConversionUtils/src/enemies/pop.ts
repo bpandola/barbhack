@@ -25,7 +25,7 @@ namespace Barbarian.Enemies {
         }
     }
 
-    export class Pop extends Enemy {
+    export class Pop2 extends Enemy {
 
         hasAlreadyPopped: boolean = false;
 
@@ -88,17 +88,98 @@ namespace Barbarian.Enemies {
                 this.nllSprite.play('pop');
             }
             this.render();
-      
-
-       
-
-            
-            
-            
 
            
         }
 
+    }
+
+    export class PopArrow extends Phaser.Sprite {
+
+        private velocity: number = 0;
+        private flightAnim: Phaser.Animation;
+        private entity: GameEntity;
+
+        constructor(entity: GameEntity) {
+            super(entity.game, 0, 0, 'POP', 9);
+            this.entity = entity;
+            // Kill the arrow if it goes off the edge of the screen.
+            this.checkWorldBounds = true;
+            this.outOfBoundsKill = true;
+            // Create a single frame Phaser animation that loops indefinitely.
+            this.flightAnim = this.animations.add('fly', [9], FRAMERATE, true, true);
+            // Move the x value on each frame, so the arrow flies through the air.
+            this.flightAnim.enableUpdate = true;
+            this.flightAnim.onUpdate.add(() => { this.x += this.velocity; }, this);
+            // Hide until launched.
+            this.game.world.add(this);
+            this.visible = false;
+        }
+
+        launch() {
+            this.reset(this.entity.x, this.entity.y - 28);
+            this.x += this.velocity * 2;
+            // Set the arrow movement and initial position based on which way the entity is facing.
+            this.velocity = this.entity.adjustForFacing(TILE_SIZE * 2);
+            this.scale.x = this.entity.adjustForFacing(1);
+            this.flightAnim.play();
+        }
+    }
+
+    export class Pop extends GameEntity {
+
+        static IDLE = 0;
+        static ATTACK = 1;
+
+        arrow: PopArrow;
+        hasAlreadyPopped: boolean = false;
+
+        constructor(game: Barbarian.Game, x = 0, y = 0, key: string, anim_data) {
+            super(game, x, y, key, anim_data);
+
+            this.arrow = new PopArrow(this);
+
+            var attack = this.animations.getAnimation(Pop.ATTACK);
+            attack.loop = false;
+            attack.enableUpdate = true;
+            attack.onUpdate.add(() => {
+                if (this.animations.frameIndex == 3) {
+                    this.arrow.launch();
+                    this.hasAlreadyPopped = true;
+                }
+            });
+            attack.onComplete.add(() => {
+                this.hasAlreadyPopped = true;
+                this.animations.play(Pop.IDLE);
+            });
+            this.animations.play(Pop.IDLE);
+        }
+
+        isWithinStrikingDistance(): boolean {
+            if (this.game.hero.y + TILE_SIZE == this.y) {
+                let delta = Math.abs(this.x - this.game.hero.x);
+                if (delta >= 0 && delta <= TILE_SIZE * 15)
+                    return true;
+            }
+            return false;
+        }
+
+        update() {
+            if (this.isWithinStrikingDistance() && !this.hasAlreadyPopped) {
+                this.animations.play(Pop.ATTACK);
+            }
+            if (this.arrow.visible) {
+                if (this.game.hero.y == 0x90 * SCALE) {
+                    if (Math.abs(this.game.hero.x - this.arrow.x) < TILE_SIZE * 1.5) {
+                        // Eh, we don't want to use distance... I just looked at the source. 
+                        // We probably just want to write a calculateDelta helper method (with an optional abs=true)
+                        let distance = Phaser.Point.distance(this.arrow.position, this.game.hero.position);
+                        this.arrow.kill();
+                        this.game.hero.fsm.transition('Die');
+                    }
+                }
+            }
+        }
     }
 
 }
